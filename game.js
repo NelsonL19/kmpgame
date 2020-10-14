@@ -23,9 +23,9 @@
 window.addEventListener('keydown', (event) => {
 	const {style} = kmp
 	switch(event.key){
-		case 'ArrowUp': style.top = `${parseInt(style.top)-10}px`; break;
-		case 'ArrowDown': style.top = `${parseInt(style.top)+10}px`; break;
-		case 'ArrowLeft': style.left = `${parseInt(style.left)-10}px`; break;
-		case 'ArrowRight': style.left = `${parseInt(style.left)+10}px`; break;
+		case 'ArrowUp': style.top = `${parseInt(style.top)-50}px`; break;
+		case 'ArrowDown': style.top = `${parseInt(style.top)+50}px`; break;
+		case 'ArrowLeft': style.left = `${parseInt(style.left)-50}px`; break;
+		case 'ArrowRight': style.left = `${parseInt(style.left)+50}px`; break;
 	}
 });
