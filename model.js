@@ -62,9 +62,8 @@ OUTPUT:
                 row = tileMatrix[object].indexOf(i)
             }
         }
-        return row
+        return row;
     }
-    
     /*
     getCol():
         Gets the column in tileMatrix that a given object lies in
@@ -83,13 +82,6 @@ OUTPUT:
     }
 
     return {tileMatrix, get, set, getRow, getCo};
-}
-
-function alexMagicAlgorithm () {
-
-    
-
-    return "no.....";
 }
 
 function Main() {
