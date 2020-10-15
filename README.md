@@ -5,11 +5,10 @@
     <h3>Player 1</h3>
         <p>You Control KMP</p>
 
+<h3>Player 2</h3>
+<p>You Control Howdy</p>
 
-    <h3>Player 2</h3>
-        <p>You Control Howdy</p>
-
-    <h2>Story</h2>
+<h2>Story</h2>
 
 
 <h2>Credits</h2>
