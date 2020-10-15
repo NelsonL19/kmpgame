@@ -26,7 +26,7 @@ OUTPUT:
     OUTPUT:
         Returns the object (if any) occupying tileMatrix[row][col]
     */
-    let get = function(row, col) {
+    this.get = function(row, col) {
         return tileMatrix[row][col];
     }
 
@@ -40,7 +40,7 @@ OUTPUT:
     OUTPUT:
         Returns the object (if any) previously occupying tileMatrix[row][col]
     */
-    let set = function(object, row, col) {
+    this.set = function(object, row, col) {
         let returnObj = get(row, col);
         tileMatrix[row][col] = object;
         return returnObj;
@@ -55,7 +55,7 @@ OUTPUT:
         Returns the index of the row the Object occupies. If tileMatrix does
         not contain object, return -1
     */
-    let getRow = function(object) {
+    this.getRow = function(object) {
         let row = -1;
         for (let i = 0; i < tileMatrix[object].length; i++) {
             if (tileMatrix[object].indexOf(i) != -1) {
@@ -73,7 +73,7 @@ OUTPUT:
         Returns the index of the column the Object occupies. If tileMatrix does
         not contain object, return -1
     */
-    let getCol = function(object) {
+    this.getCol = function(object) {
         let row = getRow(object);
         if (row == -1) {
             return -1;
