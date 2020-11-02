@@ -1,3 +1,3 @@
-export function Player() {
+export function Player(gameObject) {
     
 }
