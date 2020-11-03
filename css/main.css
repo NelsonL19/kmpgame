@@ -1,0 +1,12 @@
+header{
+    text-align:center;
+    /* I hope this works I cannot really test this */
+    background-image: linear-gradient(rgb(226, 134, 28), white);
+}
+h1{
+    color: black;
+}
+footer{
+    position:relative;
+    bottom: 0px;
+}
