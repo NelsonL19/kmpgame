@@ -1,3 +1,9 @@
+var app = require('express')();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
+
+
 export function Game(size) {
     let gameBoard = new Array(size**2);
    
@@ -30,7 +36,7 @@ export function Game(size) {
     }
 
     /**
-     * 
+     * Returns the column a particular instance of an object is located in
      * @param {Object} object 
      */
     this.getColumnOf = function(object) {
@@ -38,6 +44,39 @@ export function Game(size) {
     }
 
     this.move = function(object, direction) { 
+        switch (direction) {
+            case 'up':
+                shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object)-1, this.getColumnOf(object));
+                break;
+            case 'down':
+                shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object)+1, this.getColumnOf(object));
+                break;
+            case 'left':
+                shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object), this.getColumnOf(object)-1);
+                break;
+            case 'right':
+                shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object), this.getColumnOf(object)+1);
+                break;
+        }
+    }
+
+    /**
+     * Attempts to move the element in aRow, aCol to the location bRow, bCol. Returns true if success. False if move cannot be made
+     * @param {number} aRow 
+     * @param {number} aCol 
+     * @param {number} bRow 
+     * @param {number} bCol 
+     */
+    let shift = function(aRow, aCol, bRow, bCol) {
+        bElement = this.get(bRow, bCol);
         
+        if (bElement == undefined || bCol < 0 || bRow < 0 || bCol >= size || bRow >= size) {
+            return false;
+        }
+
+        let element = this.get(aRow, aCol);
+        this.set(aRow, aCol, undefined);
+        this.set(bRow, bCol, element);
+        return true; 
     }
 }
