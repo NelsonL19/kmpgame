@@ -1,9 +1,15 @@
+@font-face {
+    font-family: pixel;
+    src: url(./BACKTO1982.TTF);
+  }
+  /* the text is not orking as of this moment */
 header{
     text-align:center;
     /* I hope this works I cannot really test this */
-    background-image: linear-gradient(#80CED7, white);
+    background-image: linear-gradient(#80CED7 55%, white);
     height: 50px;
 }
+
 table{
     margin-top: 40px;
 }
@@ -13,12 +19,18 @@ td{
     background-image: url(../Assets/floor.jpg);
 }
 .wall{
-    background-color: black;
+    background-image:url(../Assets/wall15x15.jpg);
 }
 h1{
+    font-family:pixel;
     color: black;
 }
 footer{
+    text-align:center;
     position:relative;
     bottom: 0px;
 }
+/* As of this moment, the images and text font 
+are not working. Not sure if this is because of the
+live share. Will attempt to fix locally - AMJ
+ */
