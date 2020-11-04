@@ -6,8 +6,8 @@ var io = require('socket.io')(http);
 
 export function Game(size) {
     let gameBoard = new Array(size**2);
-   
-
+    let score = 0;
+    let alive = true;
     /**
      * Returns element at row r and column c
      * @param {number} r row number
@@ -101,7 +101,7 @@ export function Game(size) {
             case 1://Air
                 return 0;
             case 2://Sushi
-                this.collectSushi();
+                this.collectSushi(row,col);
                 return 1;
             case 3://Enemy
                 this.enemyAhead();
@@ -115,8 +115,14 @@ export function Game(size) {
          }
      }
 
-     let collectSushi = function() {
+     let collectSushi = function(row, col) {
+        //Remove Sushi
+        this.set(row, col, undefined);
 
+
+        //Increase Score
+
+        //Update Player Position
      }
 
      let enemyAhead = function() {
