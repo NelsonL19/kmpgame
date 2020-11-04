@@ -6,7 +6,8 @@ var io = require('socket.io')(http);
 
 export function Game(size) {
     let gameBoard = new Array(size**2);
-    let score = 0;
+    let playerScore = 0;
+    let playerTime = new Date();
     let alive = true;
     /**
      * Returns element at row r and column c
@@ -118,7 +119,7 @@ export function Game(size) {
      let collectSushi = function(row, col) {
         //Remove Sushi
         this.set(row, col, undefined);
-
+        this
 
         //Increase Score
 
