@@ -7,7 +7,7 @@ var io = require('socket.io')(http);
 export function Game(size) {
     let gameBoard = new Array(size**2);
     let playerScore = 0;
-    let playerTime = new Date();
+    let startPlayerTime = new Date();
     let alive = true;
     /**
      * Returns element at row r and column c
@@ -119,15 +119,21 @@ export function Game(size) {
      let collectSushi = function(row, col) {
         //Remove Sushi
         this.set(row, col, undefined);
-        this
 
         //Increase Score
+        this.playerScore +=1;
 
         //Update Player Position
      }
 
      let enemyAhead = function() {
-         
+        //Get Total Game Time
+        let endPlayerTime = new Date();
+        let totalTime = endPlayerTime-startPlayerTime;
+
+        //Set Dead
+        alive = false;
+
     }
 
     let wallAhead = function() {
