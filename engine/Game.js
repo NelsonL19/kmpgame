@@ -116,7 +116,7 @@ export function Game(size) {
      }
 
      let collectSushi = function() {
-
+        
      }
 
      let enemyAhead = function() {
