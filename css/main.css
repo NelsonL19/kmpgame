@@ -1,12 +1,6 @@
-@font-face {
-    font-family: pixel;
-    src: url(./BACKTO1982.TTF);
-  }
-  /* the text is not orking as of this moment */
-  /* This font is copyright (c) Jakob Fischer at www.pizzadude.dk,  all rights reserved. Do not distribute without the author's permission.
+/* This font is copyright (c) Jakob Fischer at www.pizzadude.dk,  all rights reserved. Do not distribute without the author's permission.
 
 Use this font for non-commercial use only! If you plan to use it for commercial purposes, contact me before doing so!
-
 
 For more original fonts take a look at www.pizzadude.dk
 
@@ -17,34 +11,68 @@ jakob@pizzadude.dk
 www.pizzadude.dk
 */
 
+@font-face {
+    font-family: pixel;
+    src: url(./BACKTO1982.TTF);
+  }
+
+/* TOP start */
 header{
+    font-size: 125%;
     text-align:center;
     /* I hope this works I cannot really test this */
     background-image: linear-gradient(#80CED7 55%, white);
     height: 50px;
 }
-
-table{
-    margin-top: 40px;
-}
-td{
-    height:35px;
-    width:35px;
-    background-image: url(../Assets/floor.jpg);
-}
-.wall{
-    background-image:url(../Assets/wall15x15.jpg);
-}
 h1{
     font-family:pixel;
     color: black;
 }
+/* TOP end */
+
+/* table start*/
+table{
+    margin-top: 40px;
+    background-color: black;
+}
+td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy1, .enemy2, .enemy3 {
+    background-size: contain;
+}
+td{
+    height:40px;
+    width:40px;
+    background-image: url(../Assets/floor_vis.png);
+}
+.sashimi{
+    background-image: url(../Assets/sashimi_on_floor.png);
+}
+.nigiri{
+    background-image: url(../Assets/nigiri_on_floor.png);
+}
+.sushi{
+    background-image: url(../Assets/sushi_on_floor.png);
+}
+.wall{
+    background-image:url(../Assets/wall_no_edge_frame0.png);
+}
+.player{
+    background-image: url(../Assets/kmp_player.png);
+}
+.enemy1{
+    background-image:url(../Assets/kmp_enemy.png);
+}
+.enemy2{
+    background-image: url(../Assets/munsell_enemy.png);
+}
+.enemy3{
+    background-image: url(../Assets/stotts_enemy.png);
+}
+/* table end */
+
+/* footer start */
 footer{
     text-align:center;
     position:relative;
     bottom: 0px;
 }
-/* As of this moment, the images and text font 
-are not working. Not sure if this is because of the
-live share. Will attempt to fix locally - AMJ
- */
+/* footer end */
