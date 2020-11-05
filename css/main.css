@@ -22,22 +22,52 @@ header{
     background-image: linear-gradient(#80CED7 55%, white);
     height: 50px;
 }
-
-table{
-    margin-top: 40px;
-}
-td{
-    height:35px;
-    width:35px;
-    background-image: url(../Assets/floor.jpg);
-}
-.wall{
-    background-image:url(../Assets/wall15x15.jpg);
-}
 h1{
     font-family:pixel;
     color: black;
 }
+/* TOP end */
+
+/* table start*/
+table{
+    margin-top: 40px;
+    background-color: black;
+}
+td{
+    height:40px;
+    width:40px;
+    background-image: url(../Assets/floor_vis.png);
+}
+.sashimi{
+    background-image: url(../Assets/sashimi_on_floor.png);
+}
+.nigiri{
+    background-image: url(../Assets/nigiri_on_floor.png);
+}
+.sushi{
+    background-image: url(../Assets/sushi_on_floor.png);
+}
+.wall{
+    background-image:url(../Assets/wall_no_edge_frame0.png);
+}
+.player{
+    background-image: url(../Assets/kmp_player.png);
+}
+.kmp_enemy{
+    background-image:url(../Assets/kmp_enemy.png);
+}
+.munsell_enemy{
+    background-image: url(../Assets/munsell_enemy.png);
+}
+.stotts_enemy{
+    background-image: url(../Assets/stotts_enemy.png);
+}
+td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy {
+    background-size: contain;
+}
+/* table end */
+
+/* footer start */
 footer{
     text-align:center;
     position:relative;
