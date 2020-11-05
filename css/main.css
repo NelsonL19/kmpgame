@@ -35,9 +35,6 @@ table{
     margin-top: 40px;
     background-color: black;
 }
-td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy1, .enemy2, .enemy3 {
-    background-size: contain;
-}
 td{
     height:40px;
     width:40px;
@@ -58,14 +55,17 @@ td{
 .player{
     background-image: url(../Assets/kmp_player.png);
 }
-.enemy1{
+.kmp_enemy{
     background-image:url(../Assets/kmp_enemy.png);
 }
-.enemy2{
+.munsell_enemy{
     background-image: url(../Assets/munsell_enemy.png);
 }
-.enemy3{
+.stotts_enemy{
     background-image: url(../Assets/stotts_enemy.png);
+}
+td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy {
+    background-size: contain;
 }
 /* table end */
 
