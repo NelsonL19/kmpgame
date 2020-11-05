@@ -45,9 +45,11 @@ export function Game(size) {
     }
 
     this.move = function(object, direction) { 
+        let objectRow = this.getRowOf(object);
+        let objectCol = this.getColumnOf(object);
         switch (direction) {
             case 'up':
-                shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object)-1, this.getColumnOf(object));
+                actionSelector(objectRow-1, objectCol);
                 break;
             case 'down':
                 shift(this.getRowOf(object), this.getColumnOf(object), this.getRowOf(object)+1, this.getColumnOf(object));
@@ -138,27 +140,5 @@ export function Game(size) {
 
     let wallAhead = function() {
          
-    }
-
-        
-    /**
-     * Attempts to move the element in aRow, aCol to the location bRow, bCol. Returns true if success. False if move cannot be made
-     * @param {number} aRow 
-     * @param {number} aCol 
-     * @param {number} bRow 
-     * @param {number} bCol 
-     */
-
-    let shift = function(aRow, aCol, bRow, bCol) {
-        bElement = this.get(bRow, bCol);
-        
-        if (bElement == undefined || bCol < 0 || bRow < 0 || bCol >= size || bRow >= size) {
-            return false;
-        }
-
-        let element = this.get(aRow, aCol);
-        this.set(aRow, aCol, undefined);
-        this.set(bRow, bCol, element);
-        return true; 
     }
 }
