@@ -12,6 +12,7 @@
     "browser-sync": "^2.26.12",
     "bulma": "^0.9.1",
     "express": "^4.15.2",
-    "lance-gg": "^4.0.8"
+    "lance-gg": "^4.0.8",
+    "socket.io": "^3.0.0"
   }
 }
