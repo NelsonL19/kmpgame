@@ -1,13 +1,10 @@
 let randomtable = Math.floor(Math.random()*4);
+let tablenum = randomtable
 
 export function tableGen () {
-    switch(randomtable){
+    switch(tablenum){
         case 0:
-            for (let i = 1; i < 226; i++) {
-                if (i<16 || i>210 || i==16 || i == 23 || i == 30|| i == 31) {
-                    $(`.c${i}`).addClass('wall');
-                }
-            }
+            
         break;
         case 1:
         break;
@@ -21,3 +18,19 @@ export function tableGen () {
     }
 }
 
+export function loadTableDOM() {
+    //loads walls of table
+    for (let i = 1; i < 16; i++) {
+        $(`.c${i}`).addClass('wall');
+    }
+    for (let i = 1; i < 212; i+=15) {
+        $(`.c${i}`).addClass('wall');
+    }
+    for (let i = 15; i < 226; i+=15) {
+        $(`.c${i}`).addClass('wall');
+    }
+    for (let i = 211; i < 226; i++) {
+        $(`.c${i}`).addClass('wall');
+    }
+    tableGen();
+}
