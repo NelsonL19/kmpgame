@@ -1,7 +1,7 @@
 {
   "name": "kmpgame",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h1>Toastipher: the sequel’s prequel’s addendum; live to toast another day: Toastal Recall: Deluxe Ed's private game repo</h1>\r <h2>Controls</h2>\r     <h3>Player 1</h3>\r         <p>You Control KMP</p>",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,11 +9,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "browser-sync": "^2.26.12",
+    "browser-sync": "^2.26.13",
     "bulma": "^0.9.1",
     "express": "^4.17.1",
     "jquery": "^3.5.1",
     "lance-gg": "^4.0.8",
     "socket.io": "^3.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NelsonL19/kmpgame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NelsonL19/kmpgame/issues"
+  },
+  "homepage": "https://github.com/NelsonL19/kmpgame#readme"
 }
