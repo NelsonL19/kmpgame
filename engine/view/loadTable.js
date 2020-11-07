@@ -1,63 +1,62 @@
-let randomtable = Math.floor(Math.random()*4);
-let tablenum = randomtable
+//let randomtable = Math.floor(Math.random()*4);
 
-export function tableGen () {
-    switch(tablenum){
-        case 0:
-            
-        break;
-        case 1:
-        break;
-        case 2:
-        break;
-        case 3:
-        break;
-    }
-    for (let i = 1; i < 226; i++) {
-
-    }
-}
-
-export function loadTableDOM() {
-    //loads walls of table
-    for (let i = 1; i < 16; i++) {
-        $(`.c${i}`).addClass('wall');
-    }
-    for (let i = 1; i < 212; i+=15) {
-        $(`.c${i}`).addClass('wall');
-    }
-    for (let i = 15; i < 226; i+=15) {
-        $(`.c${i}`).addClass('wall');
-    }
-    for (let i = 211; i < 226; i++) {
-        $(`.c${i}`).addClass('wall');
-    }
-    tableGen();
-}
-
-export function loadSpecificTableDOM(board) {
-    for (i = 0; i < 225; i++) {
-        if (board[i] == "w") {
-
-        }
-    }
-}
 
 let board0 = 
 [
 "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w",
-"w","e","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
-"w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+"w","ke","a","a","a","a","a","w","a","a","a","a","a","me","w",
+"w","a","w","w","a","a","a","sa","a","a","a","w","w","a","w",
+"w","a","w","a","a","a","a","a","a","a","a","a","w","a","w",
+"w","a","a","a","a","w","a","w","a","w","a","a","a","a","w",
+"w","a","a","a","w","w","a","w","a","w","w","a","a","a","w",
+"w","a","a","a","a","a","n","a","su","a","a","a","a","a","w",
+"w","sa","a","a","w","w","a","w","a","w","w","a","a","sa","w",
+"w","a","a","a","a","a","su","a","n","a","a","a","a","a","w",
+"w","a","a","a","w","w","a","w","a","w","w","a","a","a","w",
+"w","a","a","a","a","w","a","w","a","w","a","a","a","a","w",
+"w","a","w","a","a","a","a","a","a","a","a","a","w","a","w",
+"w","a","w","w","a","a","a","sa","a","a","a","w","w","a","w",
+"w","se","a","a","a","a","a","w","a","a","a","a","a","p","w",
 "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
 ];
+
+function loadTableDOM(board) {
+    for (i = 0; i < 225; i++) {
+        switch(board[i]){
+            case "w": $(`#c${i+1}`).addClass('wall');break;
+            case "a": $(`#c${i+1}`).addClass('air');break;
+            case "me": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('munsell_enemy');break;
+            case "ke": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('kmp_enemy');break;
+            case "se": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('stotts_enemy');break;
+            case "p": $(`#c${i+1}`).addClass('player');break;
+            case "n": $(`#c${i+1}`).addClass('nigiri');break;
+            case "sa": $(`#c${i+1}`).addClass('sashimi');break;
+            case "su": $(`#c${i+1}`).addClass('sushi');break;
+        }
+    }
+}
+
+$(function() {
+    loadTableDOM(board0);
+});
+
+// let emptyboard = 
+// [
+// "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","a","a","a","a","a","a","a","a","a","a","a","a","a","w",
+// "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
+// ];
+
+
