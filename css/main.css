@@ -62,6 +62,15 @@ td{
 .stotts_enemy{
     background-image: url(../Assets/stotts_enemy.png);
 }
+.snoeyink_enemy{
+    background-image: url(../Assets/snoeyink_enemy.png);
+}
+.majikes_enemy{
+    background-image: url(../Assets/majikes_enemy.png);
+}
+.plaisted_enemy{
+    background-image: url(../Assets/plaisted_enemy.png);
+}
 td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy {
     background-size: contain;
 }

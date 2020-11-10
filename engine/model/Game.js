@@ -3,13 +3,13 @@ var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
 
-
+// Class used for creating Model objects
 export function Game(size) {
     let gameBoard = new Array(size ** 2);
     let playerScore = 0;
     let startPlayerTime = new Date();
     let alive = true;
-
+    let moveListeners = new Array();
 
     /**
      * Returns element at row r and column c
@@ -84,6 +84,8 @@ export function Game(size) {
             this.set(targetRow, targetRow, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air); // set the tile the object used to occupy with a new Air object
         }
+
+        notifyMoveListeners();
     }
 
     /**
@@ -174,5 +176,22 @@ export function Game(size) {
         alive = false;
 
         //Kickback Callbacks
+    }
+
+    /**
+     * Registers move listeners with current instance of Game
+     * @param {function} callback callback function of listener
+     */
+    let onMove = function (callback) {
+        moveListeners.push(callback);
+    }
+
+    /**
+     * Notifies all registered move listeners that a move has taken place
+     */
+    let notifyMoveListeners = function () {
+        moveListeners.forEach(callback => {
+            callback();
+        })
     }
 }

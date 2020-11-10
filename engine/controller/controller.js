@@ -9,6 +9,20 @@
  * 
  */
 
-let contoller = function (game) {
-    this.
+const socket = io();
+
+
+/**
+ * Controller object
+ * @param {Object} game an instance of the Game class to be used as the model
+ */
+export function Controller (game, view1, view2) {
+    this.model = game;
+    this.view1 = view1; // View for player 1
+    this.view2 = view2; // View for player 2
+
+    //let updateViews
+    
+    
 }
+
