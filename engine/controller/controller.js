@@ -21,7 +21,16 @@ export function Controller (game, view1, view2) {
     this.view1 = view1; // View for player 1
     this.view2 = view2; // View for player 2
 
-    //let updateViews
+    game.onMove(function () {
+        this.updateViews();
+    });
+
+    this.updateViews = function () {
+        let gameState = game.getGameState();
+
+    }
+
+
     
     
 }

@@ -8,8 +8,16 @@ export function Game(size) {
     let gameBoard = new Array(size ** 2);
     let playerScore = 0;
     let startPlayerTime = new Date();
-    let alive = true;
+    let playerIsAlive = true;
     let moveListeners = new Array();
+
+    this.getGameState = function () {
+        return {
+            board: gameBoard,
+            score: playerScore,
+            isAlive: playerIsAlive
+        }
+    }
 
     /**
      * Returns element at row r and column c
@@ -173,7 +181,7 @@ export function Game(size) {
         let totalTime = endPlayerTime - startPlayerTime;
 
         //Set Dead
-        alive = false;
+        playerIsAlive = false;
 
         //Kickback Callbacks
     }
