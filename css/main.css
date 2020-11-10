@@ -53,8 +53,8 @@ td{
 .player{
     background-image: url(../Assets/kmp_player.png);
 }
-.kmp_enemy{
-    background-image:url(../Assets/kmp_enemy.png);
+.jordan_enemy{
+    background-image:url(../Assets/jordan_enemy.png);
 }
 .munsell_enemy{
     background-image: url(../Assets/munsell_enemy.png);

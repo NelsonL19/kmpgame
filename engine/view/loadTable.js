@@ -4,7 +4,7 @@
 let board0 = 
 [
 "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w",
-"w","ke","a","a","a","a","a","w","a","a","a","a","a","me","w",
+"w","je","a","a","a","a","a","w","a","a","a","a","a","me","w",
 "w","a","w","w","a","a","a","sa","a","a","a","w","w","a","w",
 "w","a","w","a","a","a","a","a","a","a","a","a","w","a","w",
 "w","a","a","a","a","w","a","w","a","w","a","a","a","a","w",
@@ -20,13 +20,33 @@ let board0 =
 "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
 ];
 
+let board1 = 
+[
+    "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
+    "w", "a", "a", "a", "a", "a", "a", "su", "a", "a", "a", "a", "a", "a", "w",
+    "w", "a", "w", "w", "w", "w", "a", "w", "a", "w", "w", "w", "w", "a", "w",
+    "w", "a", "w", "a", "a", "a", "a", "w", "a", "a", "a", "a", "w", "a", "w",
+    "w", "a", "w", "a", "w", "w", "a", "a", "a", "w", "w", "a", "w", "a", "w",
+    "w", "a", "w", "a", "w", "a", "a", "w", "a", "a", "w", "a", "w", "a", "w",
+    "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
+    "w", "a", "w", "w", "a", "w", "a", "p", "a", "w", "a", "w", "w", "a", "w",
+    "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
+    "w", "a", "w", "a", "w", "a", "a", "w", "a", "a", "w", "a", "w", "a", "w",
+    "w", "a", "w", "a", "w", "w", "a", "a", "a", "w", "w", "a", "w", "a", "w",
+    "w", "a", "w", "a", "a", "a", "a", "w", "a", "a", "a", "a", "w", "a", "w",
+    "w", "a", "w", "w", "w", "w", "a", "w", "a", "w", "w", "w", "w", "a", "w",
+    "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
+    "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
+];
+
+
 function loadTableDOM(board) {
     for (i = 0; i < 225; i++) {
         switch(board[i]){
             case "w": $(`#c${i+1}`).addClass('wall');break;
             case "a": $(`#c${i+1}`).addClass('air');break;
             case "me": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('munsell_enemy');break;
-            case "ke": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('kmp_enemy');break;
+            case "je": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('jordan_enemy');break;
             case "se": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('stotts_enemy');break;
             case "p": $(`#c${i+1}`).addClass('player');break;
             case "n": $(`#c${i+1}`).addClass('nigiri');break;
