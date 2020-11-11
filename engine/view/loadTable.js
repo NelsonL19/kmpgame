@@ -39,6 +39,49 @@ let board1 =
     "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
 ];
 
+function makeRandomBoard(size) {
+    let board = new Array(size*size).fill("a");
+
+    let numEnemies = 0; // counter to determine when to stop adding enemies 
+    let numSushi = 0; // counter to determine when to stop adding sushi
+
+    let numRandomSpaces = (size-1)*(size-1) - 4; 
+    let numOfSushiToAdd = Math.floor(numRandomSpaces * 0.057); // 5.7% chance tile is sushi
+    let numOfAirToAdd = Math.floor(numRandomSpaces * 0.75 ) // Want 75% of spaces to be air
+    let numOfWallsToAdd = numRandomSpaces - numOfSushiToAdd - numOfAirToAdd // All remaining spaces are walls
+
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (i == 0 || i == size - 1 || j == 0 || j == size - 1) { // If it's the first or the last row or first or last column, want to make it just walls
+                board[i*size+j] = "w";
+                console.log("added wall");
+            }
+            else if (i == Math.floor(size/2) && j == Math.floor(size/2)) { // Else if it's the middle of the board, add player
+                board[i*size+j] = "p";
+            }
+            else {   
+                let randomTile = Math.floor(Math.random()*numRandomSpaces);
+                
+                if (randomTile >= 0 && randomTile < numOfSushiToAdd) { // if the space is to be sushi
+                    let randomSushi = Math.floor(Math.random()*3);
+                        switch (randomSushi) {
+                            case 0: board[i*size+j] = "n"; break; // Add Nigiri
+                            case 1: board[i*size+j] = "sa"; break; // Add Sashimi
+                            case 2: board[i*size+j] = "su"; break; // Add Sushi
+                        }
+                }
+                else if (randomTile >= numOfSushiToAdd && randomTile < (numOfSushiToAdd + numOfAirToAdd)) { // if space is to be air
+                    board[i*size+j] = "a";
+                }
+                else { // otherwise, the space is wall
+                    board[i*size+j] = "w";
+                }
+            }
+        }
+    }
+    
+    return board;
+}
 
 function loadTableDOM(board) {
     for (i = 0; i < 225; i++) {
@@ -60,13 +103,15 @@ function loadTableDOM(board) {
 }
 
 $(function() {
-    let table = Math.floor(Math.random()*2);
-    switch(table){
-        case 0:loadTableDOM(board0); break;
-        case 1:loadTableDOM(board1); break;
-        // case 2:loadTableDOM(board2); break;
-        // case 3:loadTableDOM(board3); break;
-    }
+
+    loadTableDOM(makeRandomBoard(15));
+    //let table = Math.floor(Math.random()*2);
+    //switch(table){
+    //    case 0:loadTableDOM(board0); break;
+    //    case 1:loadTableDOM(board1); break;
+    //     case 2:loadTableDOM(board2); break;
+    //    case 3:loadTableDOM(board3); break;
+   // }
     //loadTableDOM(board1);
 });
 

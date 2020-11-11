@@ -11,7 +11,6 @@
 
 const socket = io();
 
-
 /**
  * Controller object
  * @param {Object} game an instance of the Game class to be used as the model
@@ -27,7 +26,7 @@ export function Controller (game, view1, view2) {
 
     this.updateViews = function () {
         let gameState = game.getGameState();
-
+        
     }
 
 
