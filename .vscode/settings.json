@@ -1,0 +1,6 @@
+
+{
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off",
+    "git.ignoreLimitWarning": true
+}

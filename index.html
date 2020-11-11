@@ -1,280 +1,36 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
-        <link rel = "stylesheet" href = "css/main.css">
-        <title>[long name here]</title>
-    </head>
-    <body>
-        <header>
-            <h1>This is the temp text for title</h1>
-        </header>
-        <script src="game.js"></script>
-        <div id="kmp" style="position: absolute; top: 0px; left: 0px; width: 100px; height: 100px">
-            <img src="Kpizzle.jpg">
-        </div>
-        <table name = "game" id = 'game' border = "1" style="margin-left: auto; margin-right: auto;">
-            <tr>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-             <tr>
-                <td class = "wall">1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td>1</td>
-                 <td class = "wall">1</td>
-             </tr>
-            <tr>
-                <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-                 <td class = "wall">1</td>
-            </tr>
-        </table>
 
-        <div style = "margin-left: 48% ; margin-top: 20%" class="easteregg">howdy</div>
-    </body>
-    <footer><h6>Copywrite that Group with the very Long Name<h6></footer>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+    <title>Toastipher 0: Log In</title>
+</head>
+
+<body>
+    <section class="hero is-fullheight is-link is-bold">
+        <div class="hero-body">
+            <div class="container" id="login">
+                <div class="box">
+                    <form>
+                        <label>Please enter in a screen name:</label>
+                        <input type="text" id="username">
+                        <button type="submit" id="submit" value="Enter">Enter</button>
+                    </form>
+                </div>
+            </div>
+
+            <button class="is-danger" type="button" >
+                <a href = "./gameplay.html">Debug Button</a>
+            </button>
+            
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <script type="module" src="loginScript.js"></script>
+</body>
+
 </html>
