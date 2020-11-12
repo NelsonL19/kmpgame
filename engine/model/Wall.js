@@ -1,11 +1,11 @@
 import {Element} from "Element.js";
 
 /**
- * Object representing the Player on the gameboard. Extends the Element class
+ * Object representing the Walls on the gameboard. Extends the Element class
  */
-export class Player extends Element {
+export class Wall extends Element {
     /**
-     * Constructs a new Player object
+     * Constructs a new Wall object
      * @param {Element} neighborLeft Instance of Element object located to the left
      * @param {Element} neighborUp Instance of Element object located above it
      * @param {Element} neighborRight Instance of Element object located to the right
@@ -13,6 +13,6 @@ export class Player extends Element {
      */
     constructor (neighborLeft, neighborUp, neighborRight, neighborDown) {
         super(neighborLeft, neighborUp, neighborRight, neighborDown);
-        this.stringRepresentation = "p";
+        this.stringRepresentation = "w";
     }
 }

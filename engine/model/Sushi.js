@@ -3,7 +3,7 @@ import {Element} from "Element.js";
 /**
  * Object representing Sushi on the gameboard. Extends the Element class
  */
-class Sushi extends Element {
+export class Sushi extends Element {
     /**
      * Constructs a new Sushi object
      * @param {Element} neighborLeft Instance of Element object located to the left
