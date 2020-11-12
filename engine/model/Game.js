@@ -1,9 +1,9 @@
-import {Element} from "Element.js";
-import {Air} from "Air.js";
-import {Enemy} from "Enemy.js";
-import {Player} from "Player.js";
-import {Sushi} from "Sushi.js";
-import {Wall} from "Wall.js";
+import {Element} from "./elements/Element";
+import {Air} from "./elements/Air";
+import {Enemy} from "./elements/Enemy";
+import {Player} from "./elements/Player";
+import {Sushi} from "./elements/Sushi";
+import {Wall} from "./elements/Wall";
 
 var app = require('express')();
 var http = require('http').createServer(app);
@@ -164,14 +164,13 @@ export class Game {
         }
     }
 
-/**
- * CollectSushi(), enemyAhead() both take in the Row, Col and update the game engine based on if the KMP runs into an enemy or a sushi
- * 
- * 
- * @param {number} row - The Row of the Object
- * @param {number} col - The Column of the Object
- */
-
+    /**
+     * CollectSushi(), enemyAhead() both take in the Row, Col and update the game engine based on if the KMP runs into an enemy or a sushi
+     * 
+     * 
+     * @param {number} row - The Row of the Object
+     * @param {number} col - The Column of the Object
+     */
     collectSushi (row, col) {
         //Remove Sushi
         let sushiToBeRemoved = this.get(row, col);
