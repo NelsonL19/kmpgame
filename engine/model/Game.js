@@ -1,21 +1,30 @@
+import {Element} from "Element.js";
+import {Air} from "Air.js";
+import {Enemy} from "Enemy.js";
+import {Player} from "Player.js";
+import {Sushi} from "Sushi.js";
+import {Wall} from "Wall.js";
+
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
-
 // Class used for creating Model objects
-export function Game(size) {
-    let gameBoard = new Array(size ** 2);
-    let playerScore = 0;
-    let startPlayerTime = new Date();
-    let playerIsAlive = true;
-    let moveListeners = new Array();
+export class Game {
+    
+    constructor (size) {
+        this.gameBoard = new Array(size ** 2);
+        this.playerScore = 0;
+        this.startPlayerTime = new Date();
+        this.playerIsAlive = true;
+        this.moveListeners = new Array();
+    }
 
-    this.getGameState = function () {
+    getGameState () {
         return {
-            board: gameBoard,
-            score: playerScore,
-            isAlive: playerIsAlive
+            board: this.gameBoard,
+            score: this.playerScore,
+            isAlive: this.playerIsAlive
         }
     }
 
@@ -24,8 +33,8 @@ export function Game(size) {
      * @param {number} r row number
      * @param {number} c column number
      */
-    this.get = function (r, c) {
-        return gameBoard[size * r + c];
+    get (r, c) {
+        return this.gameBoard[size * r + c];
     }
 
     /**
@@ -34,24 +43,24 @@ export function Game(size) {
      * @param {number} c column number
      * @param {Object} object instance of an object being added to gameBoard
      */
-    this.set = function (r, c, object) {
-        gameBoard[size * r + c] = object;
+    set (r, c, object) {
+        this.gameBoard[size * r + c] = object;
     }
 
     /**
      * Returns the row a particular instance of an object is located in
      * @param {Object} object Instance of an object
      */
-    this.getRowOf = function (object) {
-        return (gameBoard.indexOf(object) - this.getColumnOf(object)) / size;
+    getRowOf (object) {
+        return (this.gameBoard.indexOf(object) - this.getColumnOf(object) / size);
     }
 
     /**
      * Returns the column a particular instance of an object is located in
      * @param {Object} object 
      */
-    this.getColumnOf = function (object) {
-        return gameBoard.indexOf(object) % size;
+    getColumnOf = function (object) {
+        return this.gameBoard.indexOf(object) % size;
     }
 
     /**
@@ -59,7 +68,7 @@ export function Game(size) {
      * @param {Object} object The object that's being moved
      * @param {String} direction String representation of the direction the object is being moved in 
      */
-    this.move = function (object, direction) {
+    move (object, direction) {
         let objectRow = this.getRowOf(object);      // row the object occupies before the move
         let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
         let targetRow;  // row that the object is attempting to move into
@@ -86,21 +95,21 @@ export function Game(size) {
                 break;
         }
 
-        let actionSelectorResult = actionSelector(targetRow, targetCol); // the return value (number) of the actionSelector call
+        let actionSelectorResult = this.actionSelector(targetRow, targetCol); // the return value (number) of the actionSelector call
 
         if (actionSelectorResult == 3) {    // if the object is moving into a tile that has an Air object
             this.set(targetRow, targetRow, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air); // set the tile the object used to occupy with a new Air object
         }
 
-        notifyMoveListeners();
+        this.notifyMoveListeners();
     }
 
     /**
     * Determines what Class a given object belongs to 
     * @param {object} object instance of object being checked
     */
-    let getClass = function (object) {
+    getClass (object) {
         switch (object.constructor.name) {
             case "Player":
                 return 0
@@ -123,26 +132,26 @@ export function Game(size) {
      * @param {number} row 
      * @param {number} col 
      */
-    let actionSelector = function (object, row, col) {
+    actionSelector (object, row, col) {
         let square = this.get(row, col);
         if (square == undefined || col < 0 || row < 0 || col >= size || row >= size) {//Empty Space
             return -1
         }
 
-        let currSquare = getClass(square);
+        let currSquare = this.getClass(square);
 
         switch (currSquare) {
             case 0: // Player
                 return 0;
             case 1://Enemy
-                enemyAhead();
+                this.enemyAhead();
                 return 1;
             case 2://Sushi
-                if (getClass(object) == 1) { // if the object encountering the sushi is an Enemy
+                if (this.getClass(object) == 1) { // if the object encountering the sushi is an Enemy
                     return 2;                   // then treat the sushi object as a Wall
                 }
                 else {                           // else the object encountering the sushi is a Player
-                    collectSushi(row, col); // then call collect sushi and treat it as Air
+                    this.collectSushi(row, col); // then call collect sushi and treat it as Air
                     return 3;
                 }
             case 3://Wall
@@ -163,9 +172,12 @@ export function Game(size) {
  * @param {number} col - The Column of the Object
  */
 
-    let collectSushi = function (row, col) {
+    collectSushi (row, col) {
         //Remove Sushi
-        this.set(row, col, new Air);
+        let sushiToBeRemoved = this.get(row, col);
+        let newAir = new Air(sushiToBeRemoved.neighborLeft, sushiToBeRemoved.neighborUp, sushiToBeRemoved.neighborRight, sushiToBeRemoved.neighborDown);
+
+        this.set(row, col, newAir);
 
         //Increase Score
         this.playerScore += 1;
@@ -175,13 +187,13 @@ export function Game(size) {
         //Update Callbacks
     }
 
-    let enemyAhead = function (row, col) {
+    enemyAhead (row, col) {
         //Get Total Game Time
         let endPlayerTime = new Date();
-        let totalTime = endPlayerTime - startPlayerTime;
+        let totalTime = endPlayerTime - this.startPlayerTime;
 
         //Set Dead
-        playerIsAlive = false;
+        this.playerIsAlive = false;
 
         //Kickback Callbacks
     }
@@ -190,15 +202,15 @@ export function Game(size) {
      * Registers move listeners with current instance of Game
      * @param {function} callback callback function of listener
      */
-    let onMove = function (callback) {
-        moveListeners.push(callback);
+    onMove (callback) {
+        this.moveListeners.push(callback);
     }
 
     /**
      * Notifies all registered move listeners that a move has taken place
      */
-    let notifyMoveListeners = function () {
-        moveListeners.forEach(callback => {
+    notifyMoveListeners () {
+        this.moveListeners.forEach(callback => {
             callback();
         })
     }
