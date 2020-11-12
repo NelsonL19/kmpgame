@@ -21,6 +21,43 @@ export class Game {
         this.moveListeners = new Array();
     }
 
+    /**
+     * Takes a string representation of a given board and converts it to the object representation using the subclasses of Element
+     * @param {Array} board 
+     * @returns {Array} Array containing the object representation of the board
+     */
+    convertFromStringToObjectRepresentation (board) {
+        let objectRepresentation = new Array(board.length); // Array to be returned
+        let boardSize = Math.sqrt(board) // gets dimension of board
+        for (let i = 0; i < board.length; i++) {
+            let leftNeighbor;
+            let upNeighbor;
+            let row = Math.floor(i / boardSize) // gets the row of the string representation being converted to an object
+            let col = (i % boardSize) // gets the column of the string representation being converted to an object
+            if (row > 0) { // if the string representation isn't located in the first row, then it will have an upNeighbor
+                upNeighbor = objectRepresentation[(row - 1) * boardSize + col]; // Element located above the string representation 
+            }
+            if (col > 0) { // if the string representation isn't located in the first column, then it will have a leftNeighbor
+                leftNeighbor = objectRepresentation[row * boardSize + (col - 1)] // Element located to the left of the string representation
+            }
+            switch(board[i]){
+                case "w": objectRepresentation[i] = new Wall(leftNeighbor, upNeighbor); break; // Wall object
+                case "a": objectRepresentation[i] = new Air(leftNeighbor, upNeighbor); break; // Air object
+                case "p": objectRepresentation[i] = new Player(leftNeighbor, upNeighbor); break; // Player object
+                case "n": objectRepresentation[i] = new Sushi(leftNeighbor, upNeighbor, undefined, undefined, "nigiri"); break; // Sushi object with type "nigiri"
+                case "sa": objectRepresentation[i] = new Sushi(leftNeighbor, upNeighbor, undefined, undefined, "sashimi"); break; // Sushi object with type "sashimi"
+                case "su": objectRepresentation[i] = new Sushi(leftNeighbor, upNeighbor, undefined, undefined, "sushi"); break; // Sushi object with type "sushi"
+                case "me": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "munsell"); break; // Enemy object with type "munsell"
+                case "je": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "jordan"); break; // Enemy object with type "jordan"
+                case "se": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "stotts"); break; // Enemy object with type "stotts"
+                case "mje": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "majikes"); break; // Enemy object with type "majikes"
+                case "sne": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "snoeyink");break; // Enemy object with type "snoeyink"
+                case "pe": objectRepresentation[i] = new Enemy(leftNeighbor, upNeighbor, undefined, undefined, "plaisted"); break; // Enemy object with type "plaisted"
+                default: throw `convertFromStringToObjectRepresentation Error: ${board[i]} not recognized as a string representation of an Element`;
+            }
+        }
+        return objectRepresentation;
+    }
 
     getGameState () {
         return {
