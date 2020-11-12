@@ -3,7 +3,7 @@
  */
 export class Element {
     /**
-     * 
+     * Constructs a new Element object
      * @param {Element} neighborLeft Instance of Element object located to the left
      * @param {Element} neighborUp Instance of Element object located above it
      * @param {Element} neighborRight Instance of Element object located to the right
@@ -23,6 +23,4 @@ export class Element {
             neighborUp.neighborDown = this; //tells it's up neighbor that it's there below it
         }
     }
-
-    
 }
