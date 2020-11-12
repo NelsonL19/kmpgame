@@ -4,14 +4,15 @@ import {Enemy} from "./elements/Enemy";
 import {Player} from "./elements/Player";
 import {Sushi} from "./elements/Sushi";
 import {Wall} from "./elements/Wall";
-
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+import {board0, board1} from "./Boards";
 
 // Class used for creating Model objects
 export class Game {
     
+    /**
+     * Creates a new instance of the Game object
+     * @param {number} size The size of the gameboard. For example, a 15x15 board has size 15
+     */
     constructor (size) {
         this.gameBoard = new Array(size ** 2);
         this.playerScore = 0;
@@ -19,6 +20,7 @@ export class Game {
         this.playerIsAlive = true;
         this.moveListeners = new Array();
     }
+
 
     getGameState () {
         return {
