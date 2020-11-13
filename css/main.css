@@ -53,8 +53,8 @@ td{
 .player{
     background-image: url(../Assets/kmp_player.png);
 }
-.kmp_enemy{
-    background-image:url(../Assets/kmp_enemy.png);
+.jordan_enemy{
+    background-image:url(../Assets/jordan_enemy.png);
 }
 .munsell_enemy{
     background-image: url(../Assets/munsell_enemy.png);
@@ -62,7 +62,35 @@ td{
 .stotts_enemy{
     background-image: url(../Assets/stotts_enemy.png);
 }
-td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy {
+.snoeyink_enemy{
+    background-image: url(../Assets/snoeyink_enemy.png);
+}
+.majikes_enemy{
+    background-image: url(../Assets/majikes_enemy.png);
+}
+.plaisted_enemy{
+    background-image: url(../Assets/plaisted_enemy.png);
+}
+.cynthia_enemy{
+    background-image: url(../Assets/cynthia_enemy.png);
+}
+.terrell_enemy{
+    background-image: url(../Assets/terrell_enemy.png);
+}
+.porter_enemy{
+    background-image: url(../Assets/porter_enemy.png);
+}
+.diane_enemy{
+    background-image: url(../Assets/diane_enemy.png);
+}
+.kevin_enemy{
+    background-image: url(../Assets/g_enemy.png);
+}
+.folt_enemy{
+    background-image: url(../Assets/folt_enemy.png);
+}
+
+td, .powerup, .wall, .player, .enemy {
     background-size: contain;
 }
 /* table end */
@@ -73,7 +101,4 @@ footer{
     position:relative;
     bottom: 0px;
 }
-/* As of this moment, the images and text font 
-are not working. Not sure if this is because of the
-live share. Will attempt to fix locally - AMJ
- */
+/* footer end */
