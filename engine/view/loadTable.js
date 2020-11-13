@@ -39,6 +39,43 @@ let board1 =
     "w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
 ];
 
+let board2 = 
+[
+"w","w","w","w","w","w","w","w","w","w","w","w","w","w","w",
+"w","poe","a","a","a","a","a","a","a","a","a","a","a","ce","w",
+"w","a","w","w","w","w","w","su","w","w","w","w","w","a","w",
+"w","a","w","sa","a","a","a","a","a","a","a","n","w","a","w",
+"w","a","w","a","w","w","w","a","w","w","w","a","w","a","w",
+"w","a","w","a","w","a","a","a","a","a","w","a","w","a","w",
+"w","a","w","a","w","a","w","a","w","a","w","a","w","a","w",
+"w","a","su","a","a","a","a","p","a","a","a","a","su","a","w",
+"w","a","w","a","w","a","w","a","w","a","w","a","w","a","w",
+"w","a","w","a","w","a","a","a","a","a","w","a","w","a","w",
+"w","a","w","a","w","w","w","a","w","w","w","a","w","a","w",
+"w","a","w","n","a","a","a","a","a","a","a","sa","w","a","w",
+"w","a","w","w","w","w","w","su","w","w","w","w","w","a","w",
+"w","te","a","a","a","a","a","a","a","a","a","a","a","a","w",
+"w","w","w","w","w","w","w","w","w","w","w","w","w","w","w"
+];
+
+let board3 = [
+    "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
+    "w", "p", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "ke", "w",
+    "w", "a", "a", "w", "w", "a", "w", "w", "w", "a", "w", "w", "a", "a", "w",
+    "w", "a", "w", "sa","w", "a", "w", "su","w", "a", "w", "sa","w", "a", "w",
+    "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w",
+    "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
+    "w", "a", "w", "a", "w", "w", "w", "a", "w", "w", "w", "a", "w", "a", "w",
+    "w", "a", "w", "a", "a", "n", "a", "a", "a", "n", "a", "a", "w", "a", "w",
+    "w", "a", "w", "a", "w", "w", "w", "a", "w", "w", "w", "a", "w", "a", "w",
+    "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
+    "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w", "a", "w",
+    "w", "a", "w", "su","w", "a", "w", "sa","w", "a", "w", "su","w", "a", "w",
+    "w", "a", "a", "w", "w", "a", "w", "w", "w", "a", "w", "w", "a", "a", "w",
+    "w", "fe", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "de", "w",
+    "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
+    ];
+
 function makeRandomBoard(size) {
     let board = new Array(size*size).fill("a");
 
@@ -86,32 +123,45 @@ function makeRandomBoard(size) {
 function loadTableDOM(board) {
     for (i = 0; i < 225; i++) {
         switch(board[i]){
-            case "w": $(`#c${i+1}`).addClass('wall');break;
-            case "a": $(`#c${i+1}`).addClass('air');break;
-            case "p": $(`#c${i+1}`).addClass('player');break;
-            case "n": $(`#c${i+1}`).addClass('nigiri');break;
-            case "sa": $(`#c${i+1}`).addClass('sashimi');break;
-            case "su": $(`#c${i+1}`).addClass('sushi');break;
-            case "me": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('munsell_enemy');break;
-            case "je": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('jordan_enemy');break;
-            case "se": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('stotts_enemy');break;
-            case "mje": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('majikes_enemy');break;
-            case "sne": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('snoeyink_enemy');break;
-            case "pe": $(`#c${i+1}`).addClass('enemy'); $(`#c${i+1}`).addClass('plaisted_enemy');break;
+            case "w": $(`#c${i}`).addClass('wall');break; 
+            case "a": $(`#c${i}`).addClass('air');break;
+            case "p": $(`#c${i}`).addClass('player');break;
+
+            case "n": $(`#c${i}`).addClass('nigiri');$(`#c${i}`).addClass('powerup');break;
+            case "sa": $(`#c${i}`).addClass('sashimi');$(`#c${i}`).addClass('powerup');break;
+            case "su": $(`#c${i}`).addClass('sushi');$(`#c${i}`).addClass('powerup');break;
+
+            case "me": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('munsell_enemy');break;
+            case "je": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('jordan_enemy');break;
+            case "se": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('stotts_enemy');break;
+
+            case "mje": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('majikes_enemy');break;
+            case "sne": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('snoeyink_enemy');break;
+            case "pe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('plaisted_enemy');break;
+
+            case "ce": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('cynthia_enemy');break;
+            case "poe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('porter_enemy');break;
+            case "te": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('terrell_enemy');break;
+            
+            case "de": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('diane_enemy');break;
+            case "ke": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('kevin_enemy');break;
+            case "fe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('folt_enemy');break;
+            
         }
     }
 }
 
 $(function() {
 
-    loadTableDOM(makeRandomBoard(15));
-    //let table = Math.floor(Math.random()*2);
-    //switch(table){
-    //    case 0:loadTableDOM(board0); break;
-    //    case 1:loadTableDOM(board1); break;
-    //     case 2:loadTableDOM(board2); break;
-    //    case 3:loadTableDOM(board3); break;
-   // }
+    //loadTableDOM(makeRandomBoard(15));
+    let table = Math.floor(Math.random()*4);
+    switch(table){
+       case 0:loadTableDOM(board0); break;
+       case 1:loadTableDOM(board1); break;
+       case 2:loadTableDOM(board2); break;
+       case 3:loadTableDOM(board3); break;
+   }
+   //loadTableDOM(board2)
     //loadTableDOM(board1);
 });
 

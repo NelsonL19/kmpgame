@@ -1,4 +1,4 @@
-import {Element} from "Element.js";
+import {Element} from "./Element.js";
 
 /**
  * Object representing Sushi on the gameboard. Extends the Element class
@@ -6,15 +6,12 @@ import {Element} from "Element.js";
 export class Sushi extends Element {
     /**
      * Constructs a new Sushi object
-     * @param {Element} neighborLeft Instance of Element object located to the left
-     * @param {Element} neighborUp Instance of Element object located above it
-     * @param {Element} neighborRight Instance of Element object located to the right
-     * @param {Element} neighborDown Instance of Element object located below it
      * @param {string} type Type of sushi represented by object ("nigiri", "sashimi", or "sushi")
      */
-    constructor (neighborLeft, neighborUp, neighborRight, neighborDown, type) {
-        super(neighborLeft, neighborUp, neighborRight, neighborDown);
-        
+    constructor (type) {
+        super();
+        this.isSushi = true;
+        this.type = type;
         switch (type) {
             case "nigiri": this.stringRepresentation = "n"; break;
             case "sashimi": this.stringRepresentation = "sa"; break;

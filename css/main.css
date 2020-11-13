@@ -71,7 +71,26 @@ td{
 .plaisted_enemy{
     background-image: url(../Assets/plaisted_enemy.png);
 }
-td, .sashimi, .nigiri, .sushi, .wall, .player, .enemy {
+.cynthia_enemy{
+    background-image: url(../Assets/cynthia_enemy.png);
+}
+.terrell_enemy{
+    background-image: url(../Assets/terrell_enemy.png);
+}
+.porter_enemy{
+    background-image: url(../Assets/porter_enemy.png);
+}
+.diane_enemy{
+    background-image: url(../Assets/diane_enemy.png);
+}
+.kevin_enemy{
+    background-image: url(../Assets/g_enemy.png);
+}
+.folt_enemy{
+    background-image: url(../Assets/folt_enemy.png);
+}
+
+td, .powerup, .wall, .player, .enemy {
     background-size: contain;
 }
 /* table end */
