@@ -69,7 +69,8 @@ prettyPrint(game.getGameState().board);
 
 
 process.stdin.on('keypress', function (ch, key) {
-    let obj = game.gameBoard.objectRepresentation;
+    let obj = game.player//game.gameBoard.objectRepresentation;
+    console.log(obj)
     switch (key.name) {
         case 'right':
             game.move(obj, 'right');
@@ -88,6 +89,7 @@ process.stdin.on('keypress', function (ch, key) {
     if (key && key.ctrl && key.name == 'c') {
         process.stdin.pause();
     }
+    prettyPrint(game.getGameState().board);
 });
 process.stdin.setRawMode(true);
 process.stdin.resume();

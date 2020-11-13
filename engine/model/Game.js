@@ -43,6 +43,7 @@ export class Game {
     convertFromStringToObjectRepresentation(board) {
         let objectRepresentation = new Array(board.length); // Array to be returned
         let boardSize = Math.sqrt(board) // gets dimension of board
+        let elementObj;
         for (let i = 0; i < board.length; i++) {
             switch (board[i]) {
                 case "w": elementObj = new Wall(); break; // Wall object
@@ -108,7 +109,7 @@ export class Game {
      * @param {number} c column number
      */
     get(r, c) {
-        return this.gameBoard.objectRepresentation[size * r + c]; // Only care about the Elements when getting so no need to return the string representation
+        return this.gameBoard.objectRepresentation[15 * r + c]; // Only care about the Elements when getting so no need to return the string representation
     }
 
     /**
@@ -118,8 +119,8 @@ export class Game {
      * @param {Element} object instance of an object being added to gameBoard
      */
     set(r, c, object) {
-        this.gameBoard.objectRepresentation[size * r + c] = object; // Updates data in the Array of objects
-        this.gameBoard.stringRepresentation[size * r + c] = object.stringRepresentation; // Updates the Array of strings to keep the two arrays identical
+        this.gameBoard.objectRepresentation[15 * r + c] = object; // Updates data in the Array of objects
+        this.gameBoard.stringRepresentation[15 * r + c] = object.stringRepresentation; // Updates the Array of strings to keep the two arrays identical
     }
 
     /**
@@ -127,7 +128,7 @@ export class Game {
      * @param {Element} object Instance of an object
      */
     getRowOf(object) {
-        return (this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object) / size);
+        return (this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object) / 15);
     }
 
     /**
@@ -135,7 +136,7 @@ export class Game {
      * @param {Object} object 
      */
     getColumnOf = function (object) {
-        return this.gameBoard.objectRepresentation.indexOf(object) % size;
+        return this.gameBoard.objectRepresentation.indexOf(object) % 15;
     }
 
     /**
@@ -210,7 +211,7 @@ export class Game {
      */
     actionSelector(object, row, col) {
         let square = this.get(row, col);
-        if (square == undefined || col < 0 || row < 0 || col >= size || row >= size) {//Empty Space
+        if (square == undefined || col < 0 || row < 0 || col >= 15 || row >= 15) {//Empty Space
             return -1
         }
 
@@ -278,23 +279,29 @@ export class Game {
 
                 let neighbors = new Array();
                 //GET STUFF AROUND IT
-                if (above != 0) { // if not in the first row, it'll have a neighbor above it
-                    let up = this.get(row - 1, col);
-                    if (!up.isWall && !up.isSushi) { // if the up neighbor isn't a Wall or Sushi
-                        neighbors.push(up);
+                if (row != 0) { // if not in the first row, it'll have a neighbor above it
+                    let above = this.get(row - 1, col);
+                    if (!above.isWall && !above.isSushi) { // if the above neighbor isn't a Wall or Sushi
+                        neighbors.push(above);
                     }
                 }
                 if (row != 14) { // if not in the last row, it'll have a neighbor below it
-                    let below = this.get(row - 1, col);
-                    if (!up.isWall && !up.isSushi) { // if the up neighbor isn't a Wall or Sushi
-                        neighbors.push(up);
+                    let below = this.get(row + 1, col);
+                    if (!below.isWall && !below.isSushi) { // if the below neighbor isn't a Wall or Sushi
+                        neighbors.push(below);
                     }
                 }
                 if (col != 0) { // if not in the first column, it'll have a neighbor to its left
-                    neighbors.push(this.get(row, col - 1));
+                    let left = this.get(row, col - 1);
+                    if (!left.isWall && !left.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
+                        neighbors.push(left);
+                    }
                 }
                 if (col != 14) { // if not in the first column, it'll have a neighbor to its right
-                    neighbors.push(this.get(row, col + 1));
+                    let right = this.get(row, col + 1);
+                    if (!right.isWall && !right.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
+                        neighbors.push(right);
+                    }
                 }
 
                 let randomNeighbor = neighbors[Math.floor(Math.random(neighbors.length))];
