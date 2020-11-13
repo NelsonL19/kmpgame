@@ -20,6 +20,11 @@ export class Game {
             stringRepresentation: randomBoard,
             objectRepresentation: this.convertFromStringToObjectRepresentation(randomBoard)
         }
+
+        this.gameBoard.objectRepresentation.forEach(element => {
+           // console.log(JSON.stringify(element));
+        });
+
         this.playerScore = 0;
         this.startPlayerTime = new Date();
         this.playerIsAlive = true;
@@ -128,7 +133,7 @@ export class Game {
      * @param {Element} object Instance of an object
      */
     getRowOf(object) {
-        return (this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object) / 15);
+        return (Math.floor((this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object)) / 15));
     }
 
     /**
@@ -145,7 +150,6 @@ export class Game {
      * @param {String} direction String representation of the direction the object is being moved in 
      */
     move(object, direction) {
-        console.log(direction)
         let objectRow = this.getRowOf(object);      // row the object occupies before the move
         let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
         let targetRow;  // row that the object is attempting to move into
@@ -172,35 +176,16 @@ export class Game {
                 break;
         }
 
-        let actionSelectorResult = this.actionSelector(targetRow, targetCol); // the return value (number) of the actionSelector call
+        console.log(`Row: ${targetRow}`);
+        console.log(`Column: ${targetCol}`);
 
-        if (actionSelectorResult == 3) {    // if the object is moving into a tile that has an Air object
-            this.set(targetRow, targetRow, object); // replace the Air object with the object being moved
-            this.set(objectRow, objectCol, new Air); // set the tile the object used to occupy with a new Air object
+        let actionSelectorResult = this.actionSelector(targetRow, targetCol); // the return value (number) of the actionSelector call
+        if (actionSelectorResult == 'Air') {    // if the object is moving into a tile that has an Air object
+            this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
+            this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
         }
 
         this.notifyMoveListeners();
-    }
-
-    /**
-    * Determines what Class a given object belongs to 
-    * @param {object} object instance of object being checked
-    */
-    getClass(object) {
-        switch (object.constructor.name) {
-            case "Player":
-                return 0
-            case "Enemy":
-                return 1;
-            case "Sushi":
-                return 2;
-            case "Wall":
-                return 3;
-            case "Air":
-                return 4;
-            default:
-                return -1;
-        }
     }
 
     /**
@@ -209,32 +194,35 @@ export class Game {
      * @param {number} row 
      * @param {number} col 
      */
-    actionSelector(object, row, col) {
+    actionSelector(row, col) {
+       //console.log(`Row: ${row}`);
+        //console.log(`Column: ${col}`);
         let square = this.get(row, col);
+        //console.log(square)
         if (square == undefined || col < 0 || row < 0 || col >= 15 || row >= 15) {//Empty Space
             return -1
         }
 
-        let currSquare = this.getClass(square);
+        let currSquare = square.constructor.name;
 
         switch (currSquare) {
-            case 0: // Player
+            case "Player": // Player
                 return 0;
-            case 1://Enemy
+            case "Enemy"://Enemy
                 this.enemyAhead();
                 return 1;
-            case 2://Sushi
-                if (this.getClass(object) == 1) { // if the object encountering the sushi is an Enemy
-                    return 2;                   // then treat the sushi object as a Wall
+            case "Sushi"://Sushi
+                if (currSquare == "Enemy") { // if the object encountering the sushi is an Enemy
+                    return "Wall";                   // then treat the sushi object as a Wall
                 }
                 else {                           // else the object encountering the sushi is a Player
                     this.collectSushi(row, col); // then call collect sushi and treat it as Air
-                    return 3;
+                    return "Air";
                 }
-            case 3://Wall
-                return 2;
-            case 4: //Air
-                return 3;
+            case "Wall"://Wall
+                return "Wall";
+            case "Air": //Air
+                return "Air";
             default:
                 console.log("AN ERROR HAS OCCURED")
                 return -1;
@@ -271,11 +259,11 @@ export class Game {
  */
 
     moveAi() {
-        for (let i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].isCPU) {
+        this.enemies.forEach(enemy => {
+            if (this.enemy.isCPU) {
                 //CHECK NEARBY BOARD
-                let row = this.getRowOf(this.enemies[i])
-                let col = this.getColumnOf(this.enemies[i])
+                let row = this.getRowOf(enemy);
+                let col = this.getColumnOf(enemy);
 
                 let neighbors = new Array();
                 //GET STUFF AROUND IT
@@ -297,34 +285,29 @@ export class Game {
                         neighbors.push(left);
                     }
                 }
-                if (col != 14) { // if not in the first column, it'll have a neighbor to its right
+                if (col != 14) { // if not in the last column, it'll have a neighbor to its right
                     let right = this.get(row, col + 1);
-                    if (!right.isWall && !right.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
+                    if (!right.isWall && !right.isSushi) { // if the neighbor to the right isn't a Wall or Sushi
                         neighbors.push(right);
                     }
                 }
 
-                let randomNeighbor = neighbors[Math.floor(Math.random(neighbors.length))];
-
-
-
-                switch (randomMove) {
-                    case 0:
-                        location = "up"
-                        break;
-                    case 1:
-                        location = "right"
-                        break;
-                    case 2:
-                        location = "down"
-                        break;
-                    case 3:
-                        location = "left"
-                        break;
+                let randomNeighbor = neighbors[Math.floor(Math.random(neighbors.length))]; // selects random neighbor
+                if (neighbors.indexOf(this.player) != -1) {
+                    randomNeighbor = neighbors[neighbors.indexOf(this.player)]; // if right next to a Player, will chose to move to it
                 }
+
+                let direction;
+                switch (randomNeighbor) { // Given the random choice of neighbor, this switch determines which direction the enemy should move in
+                    case above: direction = "up"; break;
+                    case below: direction = "down"; break;
+                    case left: direction = "left"; break;
+                    case right: direction = "right"; break;
+                }
+
+                this.move(enemy, direction);
             }
-            this.move(this.enemies[i], location)
-        }
+        });
     }
 
     enemyAhead(row, col) {

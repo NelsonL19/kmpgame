@@ -66,8 +66,6 @@ prettyPrint(game.getGameState().board);
 
 
 
-
-
 process.stdin.on('keypress', function (ch, key) {
     let obj = game.player//game.gameBoard.objectRepresentation;
     console.log(obj)
@@ -91,6 +89,8 @@ process.stdin.on('keypress', function (ch, key) {
     }
     prettyPrint(game.getGameState().board);
 });
+
+
 process.stdin.setRawMode(true);
 process.stdin.resume();
 
