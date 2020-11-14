@@ -30,12 +30,12 @@ h1{
 
 /* table start*/
 table{
-    margin-top: 40px;
+    margin-top: 20px;
     background-color: black;
 }
 td{
-    height:40px;
-    width:40px;
+    height:35px;
+    width:35px;
     background-image: url(../Assets/floor_vis.png);
 }
 .sashimi{
@@ -52,6 +52,9 @@ td{
 }
 .player{
     background-image: url(../Assets/kmp_player.png);
+}
+.dead_player{
+    background-image: url(../Assets/kmp_player_sad.png);
 }
 .jordan_enemy{
     background-image:url(../Assets/jordan_enemy.png);
@@ -90,8 +93,9 @@ td{
     background-image: url(../Assets/folt_enemy.png);
 }
 
-td, .powerup, .wall, .player, .enemy {
+td, .powerup, .wall, .player, .dead_player, .enemy {
     background-size: contain;
+    background-repeat: no-repeat;
 }
 /* table end */
 

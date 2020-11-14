@@ -11,7 +11,7 @@ export class View {
 
     /**
      * Function that tell's the client to render a board passed to it
-     * @param {Array} board string representation of the Game object's board
+     * @param {Array} board string representation of the Game object's board/
      */
     renderBoard(board) {
         socket.emit("render board", board);

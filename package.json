@@ -13,6 +13,7 @@
     "browser-sync": "^2.26.12",
     "bulma": "^0.9.1",
     "express": "^4.15.2",
+    "jquery": "^3.5.1",
     "keypress": "^0.2.1",
     "lance-gg": "^4.0.8"
   }
