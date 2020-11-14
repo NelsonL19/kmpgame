@@ -36,61 +36,61 @@ table{
 td{
     height:35px;
     width:35px;
-    background-image: url(../Assets/floor_vis.png);
+    background-image: url(../images/floor_vis.png);
 }
 .sashimi{
-    background-image: url(../Assets/sashimi_on_floor.png);
+    background-image: url(../images/sashimi_on_floor.png);
 }
 .nigiri{
-    background-image: url(../Assets/nigiri_on_floor.png);
+    background-image: url(../images/nigiri_on_floor.png);
 }
 .sushi{
-    background-image: url(../Assets/sushi_on_floor.png);
+    background-image: url(../images/sushi_on_floor.png);
 }
 .wall{
-    background-image:url(../Assets/wall_no_edge_frame0.png);
+    background-image:url(../images/wall_no_edge_frame0.png);
 }
 .player{
-    background-image: url(../Assets/kmp_player.png);
+    background-image: url(../images/kmp_player.png);
 }
 .dead_player{
-    background-image: url(../Assets/kmp_player_sad.png);
+    background-image: url(../images/kmp_player_sad.png);
 }
 .jordan_enemy{
-    background-image:url(../Assets/jordan_enemy.png);
+    background-image:url(../images/jordan_enemy.png);
 }
 .munsell_enemy{
-    background-image: url(../Assets/munsell_enemy.png);
+    background-image: url(../images/munsell_enemy.png);
 }
 .stotts_enemy{
-    background-image: url(../Assets/stotts_enemy.png);
+    background-image: url(../images/stotts_enemy.png);
 }
 .snoeyink_enemy{
-    background-image: url(../Assets/snoeyink_enemy.png);
+    background-image: url(../images/snoeyink_enemy.png);
 }
 .majikes_enemy{
-    background-image: url(../Assets/majikes_enemy.png);
+    background-image: url(../images/majikes_enemy.png);
 }
 .plaisted_enemy{
-    background-image: url(../Assets/plaisted_enemy.png);
+    background-image: url(../images/plaisted_enemy.png);
 }
 .cynthia_enemy{
-    background-image: url(../Assets/cynthia_enemy.png);
+    background-image: url(../images/cynthia_enemy.png);
 }
 .terrell_enemy{
-    background-image: url(../Assets/terrell_enemy.png);
+    background-image: url(../images/terrell_enemy.png);
 }
 .porter_enemy{
-    background-image: url(../Assets/porter_enemy.png);
+    background-image: url(../images/porter_enemy.png);
 }
 .diane_enemy{
-    background-image: url(../Assets/diane_enemy.png);
+    background-image: url(../images/diane_enemy.png);
 }
 .kevin_enemy{
-    background-image: url(../Assets/g_enemy.png);
+    background-image: url(../images/g_enemy.png);
 }
 .folt_enemy{
-    background-image: url(../Assets/folt_enemy.png);
+    background-image: url(../images/folt_enemy.png);
 }
 
 td, .powerup, .wall, .player, .dead_player, .enemy {
