@@ -27,7 +27,7 @@ export class Game {
 
         this.playerScore = 0;
         this.startPlayerTime = new Date();
-        this.playerIsAlive = true;
+        this.isOver = false;
         this.moveListeners = new Array();
 
     }
@@ -104,7 +104,7 @@ export class Game {
         return {
             board: this.gameBoard.stringRepresentation,
             score: this.playerScore,
-            isAlive: this.playerIsAlive
+            isOver: this.isOver
         }
     }
 
@@ -316,7 +316,7 @@ export class Game {
         let totalTime = endPlayerTime - this.startPlayerTime;
 
         //Set Dead
-        this.playerIsAlive = false;
+        this.isOver = true;
 
         //Kickback Callbacks
     }

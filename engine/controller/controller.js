@@ -15,22 +15,38 @@ const socket = io();
  * Controller object
  * @param {Object} game an instance of the Game class to be used as the model
  */
-export function Controller (game, view1, view2) {
-    this.model = game;
-    this.view1 = view1; // View for player 1
-    this.view2 = view2; // View for player 2
-
-    game.onMove(function () {
-        this.updateViews();
-    });
-
-    this.updateViews = function () {
-        let gameState = game.getGameState();
-        
+class Controller {
+    constructor (game, view1, view2) {
+        this.model = game;
+        this.view1 = view1; // View for player 1
+        this.view2 = view2; // View for player 2
     }
 
+    /**
+     * Function that gets called every game tick. Called to execute a single round of gameplay
+     */
+    playRound () {
+        game.moveAI() // Has the enemies controlled by the CPU make their moves
+        this.notifyViews();
+    }
 
-    
-    
+    /**
+     * Function called to start the game. Main game loop happens in here
+     */
+    startGame () {
+        while(!game.isOver) { // Loops until either the player is killed or the player collects all the sushi
+            setTimeout(this.playRound(), 1000) // game tick is 1 second
+        }
+    }
+
+    /**
+     * Notifies the Views of the current state of the board
+     */
+    notifyViews() {
+        let gameState = game.getGameState();
+        let board = gameState.board;
+        this.view1.renderBoard(board);
+        this.view2.renderBoard(board);
+    }
 }
 
