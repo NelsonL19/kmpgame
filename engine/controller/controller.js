@@ -32,7 +32,7 @@ class Controller {
      * Function that gets called every game tick. Called to execute a single round of gameplay
      */
     playRound () {
-        game.moveAI() // Has the enemies controlled by the CPU make their moves
+        this.game.moveAI() // Has the enemies controlled by the CPU make their moves
         this.notifyViews();
     }
 
@@ -40,7 +40,7 @@ class Controller {
      * Function called to start the game. Main game loop happens in here
      */
     startGame () {
-        while(!game.isOver) { // Loops until either the player is killed or the player collects all the sushi
+        while(!this.game.isOver) { // Loops until either the player is killed or the player collects all the sushi
             setTimeout(this.playRound(), 1000) // game tick is 1 second
         }
     }

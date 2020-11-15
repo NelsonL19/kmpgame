@@ -1,8 +1,9 @@
 //import {Controller} from "../engine/model/Game.js";
 //import {Game} from "../engine/model/Game/js";
-
 //let game = new Game();
 //let controller = new Controller(game, )
+
+
 
 /**
 * Generates new table on page load.
