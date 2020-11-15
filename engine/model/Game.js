@@ -1,13 +1,13 @@
-import { Element } from "./elements/Element.js";
-import { Air } from "./elements/Air.js";
-import { Enemy } from "./elements/Enemy.js";
-import { Player } from "./elements/Player.js";
-import { Sushi } from "./elements/Sushi.js";
-import { Wall } from "./elements/Wall.js";
-import { board0, board1 } from "./Boards.js";
+const Element = require('./elements/Element').elementClass;
+const Air = require('./elements/Air').airClass;
+const Enemy = require('./elements/Enemy').enemyClass;
+const Player = require('./elements/Player').playerClass;
+const Sushi = require('./elements/Sushi').sushiClass;
+const Wall = require('./elements/Wall').wallClass;
+const boards = require('./Boards');
 
 // Class used for creating Model objects
-export class Game {
+class Game {
 
     /**
      * Creates a new instance of the Game object
@@ -37,8 +37,8 @@ export class Game {
     getRandomPremadeBoard() {
         let random = Math.floor(Math.random() * 2);
         switch (random) {
-            case 0: return board0;
-            case 1: return board1;
+            case 0: return boards.board0;
+            case 1: return boards.board1;
         }
     }
 
@@ -384,4 +384,8 @@ export class Game {
             })
         }
     }
+}
+
+module.exports = {
+    gameClass: Game
 }

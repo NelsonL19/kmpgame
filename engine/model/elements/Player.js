@@ -1,9 +1,9 @@
-import {Element} from "./Element.js";
+const Element = require('./Element').elementClass; // Imports Element 
 
 /**
  * Object representing the Player on the gameboard. Extends the Element class
  */
-export class Player extends Element {
+class Player extends Element {
     /**
      * Constructs a new Player object
      */
@@ -11,4 +11,8 @@ export class Player extends Element {
         super();
         this.stringRepresentation = "p";
     }
+}
+
+module.exports = {
+    playerClass: Player
 }

@@ -10,7 +10,6 @@
  */
 
 //const socket = io();
-
 /**
  * Controller object
  * @param {Object} game an instance of the Game class to be used as the model
@@ -56,3 +55,6 @@ class Controller {
     }
 }
 
+module.exports = {
+    controllerClass: Controller
+}

@@ -1,8 +1,8 @@
-import { Game } from "../model/Game.js";
-import { View } from "../view/View.js";
-import { Controller } from "./Controller.js";
+const Game = require('../model/Game').gameClass;
+const View = require('../view/View').viewClass;
+const Controller = require('./Controller').controllerClass;
 
-export class Match {
+class Match {
     constructor (player1Socket, player2Socket) {
         this.player1Socket = player1Socket;
         this.player2Socket = player2Socket;
@@ -13,4 +13,8 @@ export class Match {
         this.controller = new Controller(this.game, this.view1, this.view2);
     }
 
+}
+
+module.exports = {
+    matchClass: Match
 }

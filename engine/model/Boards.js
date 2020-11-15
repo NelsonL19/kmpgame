@@ -1,7 +1,7 @@
 /**
  * This file stores constants that are Arrays representing the string from of different prebuilt boards
  */
-export const board0 = 
+const board0 = 
 [
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
     "w","je", "a", "a", "a", "a", "a", "w", "a", "a", "a", "a", "a","me", "w",
@@ -20,7 +20,7 @@ export const board0 =
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
 ];
 
-export const board1 = 
+const board1 = 
 [
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
     "w","mje","a", "a", "a", "a", "a","su", "a", "a", "a", "a", "a","sne","w",
@@ -38,7 +38,7 @@ export const board1 =
     "w", "a", "a", "a", "a", "a", "a","pe", "a", "a", "a", "a", "a", "a", "w",
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
 ];
-export const board2 = 
+const board2 = 
 [
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
     "w", "poe", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "ce", "w",
@@ -56,7 +56,7 @@ export const board2 =
     "w", "te", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w",
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
     ];
-export const board3 = 
+const board3 = 
 [
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
     "w", "p", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a","ke", "w",
@@ -74,3 +74,10 @@ export const board3 =
     "w","fe", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a", "a","de", "w",
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
     ];
+
+module.exports = {
+    board0: board0,
+    board1: board1,
+    board2: board2,
+    board3: board3
+}

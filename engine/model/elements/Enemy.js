@@ -1,10 +1,9 @@
-import e from "express";
-import {Element} from "./Element.js";
+const Element = require('./Element').elementClass; // Imports Element 
 
 /**
  * Object representing Enemies on the gameboard. Extends the Element class
  */
-export class Enemy extends Element {
+class Enemy extends Element {
     /**
      * Constructs a new Enemy object
      * @param {string} type Type of Enemy represented by object ("munsell", "jordan", "stotts", "majikes", "snoeyink", "plaisted")
@@ -23,4 +22,8 @@ export class Enemy extends Element {
             default: throw `Enemy Constructor Error: ${type} is not recognized as a type of Enemy`;
         }
     }
+}
+
+module.exports = {
+    enemyClass: Enemy
 }

@@ -1,4 +1,4 @@
-export class View {
+class View {
     /**
      * creates a new View object
      * @param {Socket} socket instance of socket object that represents the connection made by gameview.js running client-side
@@ -27,4 +27,8 @@ export class View {
             
         });
     }
+}
+
+module.exports = {
+    viewClass: View
 }
