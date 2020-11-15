@@ -22,14 +22,16 @@ export class Game {
         }
 
         this.gameBoard.objectRepresentation.forEach(element => {
-           // console.log(JSON.stringify(element));
+            // console.log(JSON.stringify(element));
         });
 
         this.playerScore = 0;
         this.startPlayerTime = new Date();
+        this.isWin = false;
         this.isOver = false;
         this.moveListeners = new Array();
-
+        this.deathListeners = new Array();
+        this.winListeners = new Array();
     }
 
     getRandomPremadeBoard() {
@@ -183,6 +185,7 @@ export class Game {
         if (actionSelectorResult == 'Air') {    // if the object is moving into a tile that has an Air object
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
+            this.countPowerups(this.gameBoard.objectRepresentation);
         }
 
         this.notifyMoveListeners();
@@ -195,7 +198,7 @@ export class Game {
      * @param {number} col 
      */
     actionSelector(row, col) {
-       //console.log(`Row: ${row}`);
+        //console.log(`Row: ${row}`);
         //console.log(`Column: ${col}`);
         let square = this.get(row, col);
         //console.log(square)
@@ -297,6 +300,7 @@ export class Game {
                     randomNeighbor = neighbors[neighbors.indexOf(this.player)]; // if right next to a Player, will chose to move to it
                 }
 
+
                 let direction;
                 switch (randomNeighbor) { // Given the random choice of neighbor, this switch determines which direction the enemy should move in
                     case above: direction = "up"; break;
@@ -310,15 +314,38 @@ export class Game {
         });
     }
 
-    enemyAhead(row, col) {
+    /**
+     * Function that is called whenever a player runs into an enemy, which ends the game with a victory for the opponent
+     */
+
+    enemyAhead() {
         //Get Total Game Time
         let endPlayerTime = new Date();
         let totalTime = endPlayerTime - this.startPlayerTime;
-
-        //Set Dead
+        this.totalTime = totalTime;
+        //Set Dead//
         this.isOver = true;
 
         //Kickback Callbacks
+        this.deathListeners.forEach(callback => {
+            callback();
+        })
+    }
+
+    /**
+* Registers move listeners with current instance of Game
+* @param {function} callback callback function of listener
+*/
+    onDeath(callback) {
+        this.deathListeners.push(callback);
+    }
+
+    /**
+ * Registers move listeners with current instance of Game
+ * @param {function} callback callback function of listener
+ */
+    onWin(callback) {
+        this.winListeners.push(callback);
     }
 
     /**
@@ -336,5 +363,25 @@ export class Game {
         this.moveListeners.forEach(callback => {
             callback();
         })
+    }
+
+
+    countPowerups(objboard) {
+        let currPowerups = 0;
+        for (let i = 0; i < 225; i++) {
+            if (typeOf(objboard[i]) === 'Sushi') {
+                currPowerups++;
+            }
+        }
+
+        if (currPowerups == 0) {
+            let totalTime = endPlayerTime - this.startPlayerTime;
+            this.totalTime = totalTime;
+            this.isWin = true;
+
+            this.winListeners.forEach(callback => {
+                callback();
+            })
+        }
     }
 }

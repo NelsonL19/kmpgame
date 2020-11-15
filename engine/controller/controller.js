@@ -9,7 +9,7 @@
  * 
  */
 
-const socket = io();
+//const socket = io();
 
 /**
  * Controller object

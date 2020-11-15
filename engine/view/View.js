@@ -14,7 +14,7 @@ export class View {
      * @param {Array} board string representation of the Game object's board/
      */
     renderBoard(board) {
-        socket.emit("render board", board);
+        this.socket.emit("render board", board);
     }
 
 
@@ -25,8 +25,8 @@ export class View {
      */
 
     clientPushed() {
-        socket.on('board', function(data){
-        
+        this.socket.on('board', function(data){
+            
         });
     }
 }

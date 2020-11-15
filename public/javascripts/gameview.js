@@ -1,4 +1,8 @@
-//import {Controller} from "../controller/Controller.js"
+//import {Controller} from "../engine/model/Game.js";
+//import {Game} from "../engine/model/Game/js";
+
+//let game = new Game();
+//let controller = new Controller(game, )
 
 /**
 * Generates new table on page load.
@@ -52,6 +56,7 @@ function updatePlayerPosition(currPosition, direction){
     let currScore = parseInt($('.score').text(),10);
     let move = 0;
     let newScore = `<h3 class = "score">${currScore+1}</h3>`;
+    let newTime = `<h3 class = "score">${currScore+1}</h3>`;
     switch(direction){
         case 'up': move=-15;break;
         case 'down': move=15;break;
