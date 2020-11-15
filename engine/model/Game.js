@@ -270,25 +270,25 @@ export class Game {
 
                 let neighbors = new Array();
                 //GET STUFF AROUND IT
-                if (row != 0) { // if not in the first row, it'll have a neighbor above it
+                if (row != 1) { // if not in the first row, it'll have a neighbor above it
                     let above = this.get(row - 1, col);
                     if (!above.isWall && !above.isSushi) { // if the above neighbor isn't a Wall or Sushi
                         neighbors.push(above);
                     }
                 }
-                if (row != 14) { // if not in the last row, it'll have a neighbor below it
+                if (row != 13) { // if not in the last row, it'll have a neighbor below it
                     let below = this.get(row + 1, col);
                     if (!below.isWall && !below.isSushi) { // if the below neighbor isn't a Wall or Sushi
                         neighbors.push(below);
                     }
                 }
-                if (col != 0) { // if not in the first column, it'll have a neighbor to its left
+                if (col != 1) { // if not in the first column, it'll have a neighbor to its left
                     let left = this.get(row, col - 1);
                     if (!left.isWall && !left.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
                         neighbors.push(left);
                     }
                 }
-                if (col != 14) { // if not in the last column, it'll have a neighbor to its right
+                if (col != 13) { // if not in the last column, it'll have a neighbor to its right
                     let right = this.get(row, col + 1);
                     if (!right.isWall && !right.isSushi) { // if the neighbor to the right isn't a Wall or Sushi
                         neighbors.push(right);

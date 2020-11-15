@@ -1,11 +1,9 @@
 export class View {
     /**
      * creates a new View object
-     * @param {Controller} controller instance of the Controller class that View interacts with
      * @param {Socket} socket instance of socket object that represents the connection made by gameview.js running client-side
      */
-    constructor(controller, socket) {
-        this.controller = controller
+    constructor(socket) {
         this.socket = socket;
     }
 

@@ -16,6 +16,12 @@
  * @param {Object} game an instance of the Game class to be used as the model
  */
 class Controller {
+    /**
+     * Creates a new instance of the controller object
+     * @param {Game} game Instance of the game object 
+     * @param {View} view1 View object for Player 1
+     * @param {View} view2 View object for Player 2
+     */
     constructor (game, view1, view2) {
         this.model = game;
         this.view1 = view1; // View for player 1
