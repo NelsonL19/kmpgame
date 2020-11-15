@@ -42,6 +42,10 @@ io.on('connection', (socket) => { // Listens for a new user (represented by sock
             waitingRoom.pop() // Removes Player 2 from the waiting room
             let newMatch = new Match(player1Socket, player2Socket) // Creates a new Match object
             matches.push(newMatch); // Adds the new Match to the list of matches
+
+            // Notifies the client-facing code that the game is starting and what role their player has
+            player1Socket.emit('game starting', 'player1');
+            player2Socket.emit('game starting', 'player2');
         }
         socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
     });
