@@ -35,10 +35,12 @@ class Game {
     }
 
     getRandomPremadeBoard() {
-        let random = Math.floor(Math.random() * 2);
+        let random = Math.floor(Math.random() * 4);
         switch (random) {
             case 0: return boards.board0;
             case 1: return boards.board1;
+            case 2: return boards.board2;
+            case 3: return boards.board3;
         }
     }
 
