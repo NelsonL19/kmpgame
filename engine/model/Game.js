@@ -228,12 +228,31 @@ class Game {
                 break;
         }
 
-        console.log(`Row: ${targetRow}`);
-        console.log(`Column: ${targetCol}`);
+        let currentSquare = object.constructor.name;
+        let targetSquare = this.get(targetRow, targetCol).constructor.name;
 
-        let actionSelectorResult = this.actionSelector(objectRow, objectCol, targetRow, targetCol); // the return value (number) of the actionSelector call
+        let moveValid = true;
 
-        if (actionSelectorResult == 'Air') {    // if the object is moving into a tile that has an Air object
+        switch (targetSquare) {
+            case "Player": this.killPlayer(); break; // The only way the targetSquare can encounter a Player is if it is an Enemy
+            case "Enemy"://Enemy
+                if (currentSquare == "Enemy") {
+                    moveValid = false; // Can't move an Enemy into an Enemy
+                } else {
+                    this.killPlayer();
+                }
+                break;
+            case "Sushi"://Sushi
+                if (currentSquare == "Enemy") { 
+                    moveValid = false; // An Enemy shouldn't be able to move into a Suhsi             
+                } else { // A Player should collect Sushi
+                    this.collectSushi(targetRow, targetCol); // then call collect sushi and treat it as Air
+                }
+                break;
+            case "Wall": moveValid = false; break;
+            case "Air": break;
+
+        if (moveValid) {
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
             this.countPowerups(this.gameBoard.objectRepresentation);
@@ -241,46 +260,6 @@ class Game {
 
 
         this.notifyMoveListeners();
-    }
-
-    /**
-     * Before a move has been performed, determine the correct response in the game's logic
-     * Returns -1 if Exception, or values 0-3 depending on the obstacle
-     * @param {number} currentRow
-     * @param {number} currentCol
-     * @param {number} targetRow
-     * @param {number} targetCol
-     */
-    actionSelector(currentRow, currentCol, targetRow, targetCol) {
-        let currentSquare = this.get(currentRow, currentCol).constructor.name;
-        let targetSquare = this.get(targetRow, targetCol).constructor.name;
-
-        switch (targetSquare) {
-            case "Player": // Player
-                return "Player";
-            case "Enemy"://Enemy
-                if (currentSquare == "Enemy") {
-                    return "Wall";
-                }
-                else {
-                    this.enemyAhead();
-                    return "Enemy";
-                }
-            case "Sushi"://Sushi
-                if (currentSquare == "Enemy") { // if the object encountering the sushi is an Enemy
-                    return "Wall";                   // then treat the sushi object as a Wall
-                }
-                else {                           // else the object encountering the sushi is a Player
-                    this.collectSushi(targetRow, targetCol); // then call collect sushi and treat it as Air
-                    return "Air";
-                }
-            case "Wall"://Wall
-                return "Wall";
-            case "Air": //Air
-                return "Air";
-            default:
-                console.log("AN ERROR HAS OCCURED")
-        }
     }
 
     /**
@@ -375,7 +354,7 @@ class Game {
      * Function that is called whenever a player runs into an enemy, which ends the game with a victory for the opponent
      */
 
-    enemyAhead() {
+    killPlayer() {
         //Get Total Game Time
         let endPlayerTime = new Date();
         let totalTime = endPlayerTime - this.startPlayerTime;
