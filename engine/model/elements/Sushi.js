@@ -1,9 +1,9 @@
-import {Element} from "./Element.js";
+const Element = require('./Element').elementClass; // Imports Element 
 
 /**
  * Object representing Sushi on the gameboard. Extends the Element class
  */
-export class Sushi extends Element {
+class Sushi extends Element {
     /**
      * Constructs a new Sushi object
      * @param {string} type Type of sushi represented by object ("nigiri", "sashimi", or "sushi")
@@ -19,4 +19,8 @@ export class Sushi extends Element {
             default: throw `Sushi Constructor Error: ${type} is not recognized as a type of Sushi`;
         }
     }
+}
+
+module.exports = {
+    sushiClass: Sushi
 }

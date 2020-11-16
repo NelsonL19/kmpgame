@@ -1,9 +1,9 @@
-import {Element} from "./Element.js";
+const Element = require('./Element').elementClass; // Imports Element 
 
 /**
  * Object representing the Walls on the gameboard. Extends the Element class
  */
-export class Wall extends Element {
+class Wall extends Element {
     /**
      * Constructs a new Wall object
      */
@@ -12,4 +12,8 @@ export class Wall extends Element {
         this.isWall = true;
         this.stringRepresentation = "w";
     }
+}
+
+module.exports = {
+    wallClass: Wall
 }

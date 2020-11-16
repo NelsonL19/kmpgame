@@ -1,7 +1,7 @@
 /**
  * Parent class for all Objects that appear in the gameboard
  */
-export class Element {
+class Element {
     /**
      * Constructs a new Element object
      */
@@ -9,4 +9,8 @@ export class Element {
         this.isSushi = false;
         this.isWall = false;
     }
+}
+
+module.exports = {
+    elementClass: Element
 }

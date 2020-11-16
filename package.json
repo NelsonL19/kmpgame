@@ -1,20 +1,20 @@
 {
   "name": "kmpgame",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "browser-sync": "^2.26.12",
     "bulma": "^0.9.1",
-    "express": "^4.15.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "^4.16.4",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
     "jquery": "^3.5.1",
-    "keypress": "^0.2.1",
-    "lance-gg": "^4.0.8"
+    "morgan": "~1.9.1",
+    "serve-static": "^1.14.1",
+    "socket.io": "^3.0.1"
   }
 }

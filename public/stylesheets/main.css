@@ -1,0 +1,69 @@
+/* table start*/
+table{
+    background-color: black;
+}
+td{
+    height:47px;
+    width:47px;
+    background-image: url(../images/floor_vis.png);
+}
+.sashimi{
+    background-image: url(../images/sashimi_on_floor.png);
+}
+.nigiri{
+    background-image: url(../images/nigiri_on_floor.png);
+}
+.sushi{
+    background-image: url(../images/sushi_on_floor.png);
+}
+.wall{
+    background-image:url(../images/inner_wall.png);
+}
+.player{
+    background-image: url(../images/kmp_player.png);
+}
+.dead_player{
+    background-image: url(../images/kmp_player_sad.png);
+}
+.jordan_enemy{
+    background-image:url(../images/jordan_enemy.png);
+}
+.munsell_enemy{
+    background-image: url(../images/munsell_enemy.png);
+}
+.stotts_enemy{
+    background-image: url(../images/stotts_enemy.png);
+}
+.snoeyink_enemy{
+    background-image: url(../images/snoeyink_enemy.png);
+}
+.majikes_enemy{
+    background-image: url(../images/majikes_enemy.png);
+}
+.plaisted_enemy{
+    background-image: url(../images/plaisted_enemy.png);
+}
+.cynthia_enemy{
+    background-image: url(../images/cynthia_enemy.png);
+}
+.terrell_enemy{
+    background-image: url(../images/terrell_enemy.png);
+}
+.porter_enemy{
+    background-image: url(../images/porter_enemy.png);
+}
+.diane_enemy{
+    background-image: url(../images/diane_enemy.png);
+}
+.kevin_enemy{
+    background-image: url(../images/g_enemy.png);
+}
+.folt_enemy{
+    background-image: url(../images/folt_enemy.png);
+}
+
+td, .powerup, .wall, .player, .dead_player, .enemy {
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+/* table end */

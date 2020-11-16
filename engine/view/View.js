@@ -1,11 +1,9 @@
-export class View {
+class View {
     /**
      * creates a new View object
-     * @param {Controller} controller instance of the Controller class that View interacts with
      * @param {Socket} socket instance of socket object that represents the connection made by gameview.js running client-side
      */
-    constructor(controller, socket) {
-        this.controller = controller
+    constructor(socket) {
         this.socket = socket;
     }
 
@@ -14,7 +12,7 @@ export class View {
      * @param {Array} board string representation of the Game object's board/
      */
     renderBoard(board) {
-        socket.emit("render board", board);
+        this.socket.emit("render board", board);
     }
 
 
@@ -25,8 +23,12 @@ export class View {
      */
 
     clientPushed() {
-        socket.on('board', function(data){
-        
+        this.socket.on('board', function(data){
+            
         });
     }
+}
+
+module.exports = {
+    viewClass: View
 }
