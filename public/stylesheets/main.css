@@ -1,41 +1,10 @@
-@font-face {
-    font-family: pixel;
-    src: url(./BACKTO1982.TTF);
-  }
-  /* the text is not working as of this moment */
-  /* This font is copyright (c) Jakob Fischer at www.pizzadude.dk,  all rights reserved. Do not distribute without the author's permission.
-
-Use this font for non-commercial use only! If you plan to use it for commercial purposes, contact me before doing so!
-
-For more original fonts take a look at www.pizzadude.dk
-
-Have fun and enjoy!
-
-Jakob Fischer
-jakob@pizzadude.dk
-www.pizzadude.dk
-*/
-
-header{
-    text-align:center;
-    /* I hope this works I cannot really test this */
-    background-image: linear-gradient(#80CED7 55%, white);
-    height: 50px;
-}
-h1{
-    font-family:pixel;
-    color: black;
-}
-/* TOP end */
-
 /* table start*/
 table{
-    margin-top: 20px;
     background-color: black;
 }
 td{
-    height:35px;
-    width:35px;
+    height:47px;
+    width:47px;
     background-image: url(../images/floor_vis.png);
 }
 .sashimi{
@@ -98,11 +67,3 @@ td, .powerup, .wall, .player, .dead_player, .enemy {
     background-repeat: no-repeat;
 }
 /* table end */
-
-/* footer start */
-footer{
-    text-align:center;
-    position:relative;
-    bottom: 0px;
-}
-/* footer end */

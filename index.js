@@ -50,6 +50,15 @@ io.on('connection', (socket) => { // Listens for a new user (represented by sock
         socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
     });
 
+    /**
+     * When server is told a player made a move
+     */
+    socket.on('move', direction => {
+        let match = matches.filter(function (value, index) {return (value.player1Socket == socket || value.player2Socket == socket)}); // get match Socket belongs to
+        let isEnemy = match.player2Socket == socket; // get whether or not the socket is the player or the enemy
+        match.controller.move(isEnemy, direction); // tells Controller to make move
+    })
+
     socket.on('disconnect', () => {
         console.log(`${screenNames[id]} has disconnected`);
         screenNames[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names

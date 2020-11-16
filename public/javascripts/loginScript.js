@@ -19,4 +19,6 @@ $(function () {
             $loginBox.append('<h1>Connect succesfully! Waiting for an opponent...</h1>');
         }
     });
+
+
 });

@@ -25,6 +25,23 @@ class Controller {
         this.model = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
+        game.onMove(this.notifyViews());
+    }
+
+    /**
+     * Moves either the Player or Enemy controlled by Player 2 in a given direction
+     * @param {boolean} isEnemy false if is Player, true if is Enemy 
+     * @param {*} direction "up", "down", "left", or "right"
+     */
+    move (isEnemy, direction) {
+        let element // To be defined. The Element object being moved
+        if (isEnemy) { // if moving the enemy controlled by Player 2
+            element = game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
+        }
+        else {
+            element = game.player;
+        }
+        game.move(element, direction);
     }
 
     /**
@@ -32,7 +49,6 @@ class Controller {
      */
     playRound () {
         this.game.moveAI() // Has the enemies controlled by the CPU make their moves
-        this.notifyViews();
     }
 
     /**
@@ -53,6 +69,8 @@ class Controller {
         this.view1.renderBoard(board);
         this.view2.renderBoard(board);
     }
+
+
 }
 
 module.exports = {

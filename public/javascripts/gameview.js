@@ -6,6 +6,26 @@
 /**
 * Generates new table on page load.
 */
+
+function generatePage(){
+    const $page = $('page');
+    let page = `<section class="hero is-fullheight is-link is-bold">
+                    <div class="hero-body">
+                    <div class="container">
+                    <h1 class="title">Current Opponent</h1>
+                    <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                    <h1 class="title">Current Score</h1>
+                    <h1 class="subtitle" id="score">0</h1>
+
+                    <p class="title">Current Time</p>
+                    <h1 class="subtitle" id="time">00:00:00</h1>
+                    <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                        <table name="game" id='game' style="margin-left: auto; margin-right: auto; background: rgb(50,116,220)">
+                    </div>
+                    </table>
+        </div>
+</section>`
+}
 function generateStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
@@ -87,7 +107,7 @@ function getPowerupPositions() {
 function updatePlayerPosition(currPosition, direction){
     let currScore = parseInt($('.score').text(),10);
     let move = 0;
-    let newScore = `<h3 class = "score">${currScore+1}</h3>`;
+    let newScore = `<h1 class="subtitle" id="score">Current Score: ${currScore+1}</h1>`;
     //let obj = game.player
     //made a time place holder, will replace with real time later
     //let newTime = `<h3 class = "score">${currScore+1}</h3>`;
@@ -157,4 +177,7 @@ window.addEventListener('keydown', (event) => {
 $(function () {
     generateStartTable();
     //loadTableDOM(game.getGameState().board);
+    setTimeout(function(){
+        window.location.reload(1);
+     }, 10000);
 });

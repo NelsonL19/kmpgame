@@ -123,6 +123,7 @@ function makeRandomBoard(size) {
 function loadTableDOM(board) {
     for (i = 0; i < 225; i++) {
         switch(board[i]){
+            //.css({'background-color': 'black'})
             case "w": $(`#c${i}`).addClass('wall');break; 
             case "a": $(`#c${i}`).addClass('air');break;
             case "p": $(`#c${i}`).addClass('player');break;
@@ -161,6 +162,7 @@ $(function() {
        case 2:loadTableDOM(board2); break;
        case 3:loadTableDOM(board3); break;
    }
+   
    //loadTableDOM(board2)
     //loadTableDOM(board1);
 });
