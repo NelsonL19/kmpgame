@@ -251,16 +251,16 @@ class Game {
                 break;
             case "Wall": moveValid = false; break;
             case "Air": break;
+        }
 
         if (moveValid) {
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
             this.countPowerups(this.gameBoard.objectRepresentation);
         }
-
-
         this.notifyMoveListeners();
     }
+    
 
     /**
      * CollectSushi(), enemyAhead() both take in the Row, Col and update the game engine based on if the KMP runs into an enemy or a sushi
