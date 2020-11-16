@@ -17,7 +17,7 @@ td{
     background-image: url(../images/sushi_on_floor.png);
 }
 .wall{
-    background-image:url(../images/wall_no_edge_frame0.png);
+    background-image:url(../images/inner_wall.png);
 }
 .player{
     background-image: url(../images/kmp_player.png);

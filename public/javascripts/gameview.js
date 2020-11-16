@@ -8,23 +8,23 @@
 */
 
 function generatePage(){
-    const $page = $('page');
-    let page = `<section class="hero is-fullheight is-link is-bold">
+    const $page = $('body');
+    let page =`
+                <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
-                    <div class="container">
-                    <h1 class="title">Current Opponent</h1>
-                    <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
-                    <h1 class="title">Current Score</h1>
-                    <h1 class="subtitle" id="score">0</h1>
-
-                    <p class="title">Current Time</p>
-                    <h1 class="subtitle" id="time">00:00:00</h1>
-                    <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                        <table name="game" id='game' style="margin-left: auto; margin-right: auto; background: rgb(50,116,220)">
-                    </div>
-                    </table>
-        </div>
-</section>`
+                        <div class="container">
+                            <h1 class="title">Current Opponent</h1>
+                            <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                            <h1 class="title">Current Score</h1>
+                            <h1 class="subtitle" id="score">0</h1>
+                            <p class="title">Current Time</p>
+                            <h1 class="subtitle" id="time">00:00:00</h1>
+                            <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
+                            </div>
+                        </div>
+                </section>`
+    $(page).appendTo($page);
 }
 function generateStartTable() {
     const $table = $(`#game`);
@@ -85,6 +85,17 @@ function getPlayer() {
         }
     }
 }
+function getEnemy() {
+    for (let i = 0; i < 15; i++) {
+        for (let j = i * 15; j < (i + 1) * 15; j++) {
+            if ($(`#c${j}`).hasClass(`munsell_enemy`)) {
+                return j
+            }
+        }
+    }
+}
+
+
 /**
 * Returns current positions of the powerups. These will be the indexes in our string representaion.
 */
@@ -131,6 +142,30 @@ function updatePlayerPosition(currPosition, direction){
         }
     } else if($(`#c${currPosition+move}`).hasClass('enemy')){
         $(`#c${currPosition}`).removeClass('player').addClass('dead_player');
+        //$('body').empty();
+        $('table').replaceWith(`<h3 class = "score">GAME OVER</h3>`);
+    }
+}
+
+function updateEnemyPosition(currPosition, direction){
+    let currScore = parseInt($('.score').text(),10);
+    let move = 0;
+    let newScore = `<h1 class="subtitle" id="score">Current Score: ${currScore+1}</h1>`;
+    //let obj = game.player
+    //made a time place holder, will replace with real time later
+    //let newTime = `<h3 class = "score">${currScore+1}</h3>`;
+    switch(direction){
+        case 'up': move=-15;break;
+        case 'down': move=15;break;
+        case 'left': move=-1;break;
+        case 'right': move=1; break;
+    }
+    if($(`#c${currPosition+move}`).attr(`class`) === 'air'){
+        $(`#c${currPosition}`).removeClass('munsell_enemy').removeClass('enemy').addClass('air');
+        $(`#c${currPosition+move}`).removeClass('air').addClass('munsell_enemy').addClass('enemy');
+        //game.move(obj, direction);
+    } else if($(`#c${currPosition+move}`).hasClass('player')){
+        $(`#c${currPosition+move}`).removeClass('player').addClass('dead_player');
         $('.score').replaceWith(`<h3 class = "score">GAME OVER</h3>`);
     }
 }
@@ -163,11 +198,18 @@ function updatePowerupPositionStringRepresentation(table, position, displacement
 
 window.addEventListener('keydown', (event) => {
     let position = getPlayer();
+    let eposition = getEnemy();
     switch(event.key){
         case 'ArrowUp': updatePlayerPosition(position, 'up'); break;
         case 'ArrowDown': updatePlayerPosition(position, 'down') ;break;
         case 'ArrowLeft': updatePlayerPosition(position, 'left');break;
         case 'ArrowRight': updatePlayerPosition(position, 'right');break;
+
+
+        case 'w': updateEnemyPosition(eposition, 'up'); break;
+        case 'a': updateEnemyPosition(eposition, 'left');break;
+        case 's': updateEnemyPosition(eposition, 'down') ;break;
+        case 'd': updateEnemyPosition(eposition, 'right');break;
     }
     //let newPosition = getPlayer();
     //updatePlayerPositionStringRepresentation([],position,newPosition);
@@ -175,9 +217,8 @@ window.addEventListener('keydown', (event) => {
 });
 
 $(function () {
+    generatePage();
     generateStartTable();
     //loadTableDOM(game.getGameState().board);
-    setTimeout(function(){
-        window.location.reload(1);
-     }, 10000);
+
 });

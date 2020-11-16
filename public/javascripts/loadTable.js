@@ -132,8 +132,8 @@ function loadTableDOM(board) {
             case "sa": $(`#c${i}`).addClass('sashimi');$(`#c${i}`).addClass('powerup');break;
             case "su": $(`#c${i}`).addClass('sushi');$(`#c${i}`).addClass('powerup');break;
 
-            case "me": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('munsell_enemy');break;
-            case "je": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('jordan_enemy');break;
+            case "me": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('jordan_enemy');break;
+            case "je": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('munsell_enemy');break;
             case "se": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('stotts_enemy');break;
 
             case "mje": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('majikes_enemy');break;
@@ -155,14 +155,14 @@ function loadTableDOM(board) {
 $(function() {
 
     //loadTableDOM(makeRandomBoard(15));
-    let table = Math.floor(Math.random()*4);
-    switch(table){
-       case 0:loadTableDOM(board0); break;
-       case 1:loadTableDOM(board1); break;
-       case 2:loadTableDOM(board2); break;
-       case 3:loadTableDOM(board3); break;
-   }
-   
+//     let table = Math.floor(Math.random()*4);
+//     switch(table){
+//        case 0:loadTableDOM(board0); break;
+//        case 1:loadTableDOM(board1); break;
+//        case 2:loadTableDOM(board2); break;
+//        case 3:loadTableDOM(board3); break;
+//    }
+   loadTableDOM(board0)
    //loadTableDOM(board2)
     //loadTableDOM(board1);
 });
