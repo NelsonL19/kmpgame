@@ -68,15 +68,30 @@ class Controller {
     }
     
 
-    async startGame () {
-        this.notifyViews();
-        //this.game.onMove(this.notifyViews());
-
-        //while(!this.game.isOver) { // Loops until either the player is killed or the player collects all the sushi
-        //    await setTimeout(function () {}, 1000) // game tick is 1 second
-        //    console.log("Played round");
-        //}
+    startGame () {
+        this.gameClock(this.game, this);
     }
+
+    /**
+     * Returns True if the game is over, False if not
+     */
+    isOver () {
+        return this.game.isOver;
+    }
+
+    /**
+     * Main clock that drives game refresh
+     * @param {Game} game instance of the Game class
+     * @param {Controller} controller instance of the Controller object 
+     */
+    gameClock (game, controller) {
+        game.moveAI();
+        controller.notifyViews();
+        if (!game.isOver) { // if the game isn't over yet
+            setTimeout(controller.gameClock, 250, game, controller);
+        }
+    }
+
 
 
 }

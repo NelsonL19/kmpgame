@@ -36,7 +36,8 @@ $(function () {
         generatePage();
         generateStartTable();
         socket.on('render board', function(board) {
-           loadTableDOM(board); // reloads the board
+            $('td').removeClass();
+            loadTableDOM(board); // reloads the board
         });
     });
 

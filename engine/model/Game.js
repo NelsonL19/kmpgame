@@ -231,12 +231,14 @@ class Game {
         console.log(`Row: ${targetRow}`);
         console.log(`Column: ${targetCol}`);
 
-        let actionSelectorResult = this.actionSelector(targetRow, targetCol); // the return value (number) of the actionSelector call
+        let actionSelectorResult = this.actionSelector(objectRow, objectCol, targetRow, targetCol); // the return value (number) of the actionSelector call
+
         if (actionSelectorResult == 'Air') {    // if the object is moving into a tile that has an Air object
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
             this.countPowerups(this.gameBoard.objectRepresentation);
         }
+
 
         this.notifyMoveListeners();
     }
@@ -244,32 +246,32 @@ class Game {
     /**
      * Before a move has been performed, determine the correct response in the game's logic
      * Returns -1 if Exception, or values 0-3 depending on the obstacle
-     * @param {number} row 
-     * @param {number} col 
+     * @param {number} currentRow
+     * @param {number} currentCol
+     * @param {number} targetRow
+     * @param {number} targetCol
      */
-    actionSelector(row, col) {
-        //console.log(`Row: ${row}`);
-        //console.log(`Column: ${col}`);
-        let square = this.get(row, col);
-        //console.log(square)
-        if (square == undefined || col < 0 || row < 0 || col >= 15 || row >= 15) {//Empty Space
-            return -1
-        }
+    actionSelector(currentRow, currentCol, targetRow, targetCol) {
+        let currentSquare = this.get(currentRow, currentCol).constructor.name;
+        let targetSquare = this.get(targetRow, targetCol).constructor.name;
 
-        let currSquare = square.constructor.name;
-
-        switch (currSquare) {
+        switch (targetSquare) {
             case "Player": // Player
-                return 0;
+                return "Player";
             case "Enemy"://Enemy
-                this.enemyAhead();
-                return 1;
+                if (currentSquare == "Enemy") {
+                    return "Wall";
+                }
+                else {
+                    this.enemyAhead();
+                    return "Enemy";
+                }
             case "Sushi"://Sushi
-                if (currSquare == "Enemy") { // if the object encountering the sushi is an Enemy
+                if (currentSquare == "Enemy") { // if the object encountering the sushi is an Enemy
                     return "Wall";                   // then treat the sushi object as a Wall
                 }
                 else {                           // else the object encountering the sushi is a Player
-                    this.collectSushi(row, col); // then call collect sushi and treat it as Air
+                    this.collectSushi(targetRow, targetCol); // then call collect sushi and treat it as Air
                     return "Air";
                 }
             case "Wall"://Wall
@@ -278,7 +280,6 @@ class Game {
                 return "Air";
             default:
                 console.log("AN ERROR HAS OCCURED")
-                return -1;
         }
     }
 
@@ -313,50 +314,56 @@ class Game {
 
     moveAI() {
         this.enemies.forEach(enemy => {
-            if (this.enemy.isCPU) {
+            if (enemy.isCPU) {
                 //CHECK NEARBY BOARD
                 let row = this.getRowOf(enemy);
                 let col = this.getColumnOf(enemy);
 
-                let neighbors = new Array();
+                /* let neighbors = new Array();
+
+                let above;
+                let below;
+                let left;
+                let right; 
+
                 //GET STUFF AROUND IT
                 if (row != 1) { // if not in the first row, it'll have a neighbor above it
-                    let above = this.get(row - 1, col);
+                    above = this.get(row - 1, col);
                     if (!above.isWall && !above.isSushi) { // if the above neighbor isn't a Wall or Sushi
                         neighbors.push(above);
                     }
                 }
                 if (row != 13) { // if not in the last row, it'll have a neighbor below it
-                    let below = this.get(row + 1, col);
+                    below = this.get(row + 1, col);
                     if (!below.isWall && !below.isSushi) { // if the below neighbor isn't a Wall or Sushi
                         neighbors.push(below);
                     }
                 }
                 if (col != 1) { // if not in the first column, it'll have a neighbor to its left
-                    let left = this.get(row, col - 1);
+                    left = this.get(row, col - 1);
                     if (!left.isWall && !left.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
                         neighbors.push(left);
                     }
                 }
                 if (col != 13) { // if not in the last column, it'll have a neighbor to its right
-                    let right = this.get(row, col + 1);
+                    right = this.get(row, col + 1);
                     if (!right.isWall && !right.isSushi) { // if the neighbor to the right isn't a Wall or Sushi
                         neighbors.push(right);
                     }
                 }
 
-                let randomNeighbor = neighbors[Math.floor(Math.random(neighbors.length))]; // selects random neighbor
+                let randomNeighbor = neighbors[Math.floor(Math.random)*(neighbors.length)]; // selects random neighbor
                 if (neighbors.indexOf(this.player) != -1) {
                     randomNeighbor = neighbors[neighbors.indexOf(this.player)]; // if right next to a Player, will chose to move to it
-                }
+                } */
 
-
+                let randomNeighbor = Math.floor(Math.random() * 4);
                 let direction;
                 switch (randomNeighbor) { // Given the random choice of neighbor, this switch determines which direction the enemy should move in
-                    case above: direction = "up"; break;
-                    case below: direction = "down"; break;
-                    case left: direction = "left"; break;
-                    case right: direction = "right"; break;
+                    case 0: direction = "up"; break;
+                    case 1: direction = "down"; break;
+                    case 2: direction = "left"; break;
+                    case 3: direction = "right"; break;
                 }
 
                 this.move(enemy, direction);
