@@ -88,7 +88,7 @@ class Controller {
         game.moveAI();
         controller.notifyViews();
         if (!game.isOver) { // if the game isn't over yet
-            setTimeout(controller.gameClock, 250, game, controller);
+            setTimeout(controller.gameClock, 500, game, controller);
         }
     }
 

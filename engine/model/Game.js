@@ -22,7 +22,6 @@ class Game {
         }
 
         this.gameBoard.objectRepresentation.forEach(element => {
-            // console.log(JSON.stringify(element));
         });
 
         this.playerScore = 0;
@@ -202,6 +201,8 @@ class Game {
      * @param {String} direction String representation of the direction the object is being moved in 
      */
     move(object, direction) {
+
+        
         let objectRow = this.getRowOf(object);      // row the object occupies before the move
         let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
         let targetRow;  // row that the object is attempting to move into
@@ -227,15 +228,13 @@ class Game {
                 targetCol = objectCol + 1;
                 break;
         }
-
         let currentSquare = object.constructor.name;
         let targetSquare = this.get(targetRow, targetCol).constructor.name;
-
         let moveValid = true;
 
         switch (targetSquare) {
             case "Player": this.killPlayer(); break; // The only way the targetSquare can encounter a Player is if it is an Enemy
-            case "Enemy"://Enemy
+            case "Enemy": //Enemy
                 if (currentSquare == "Enemy") {
                     moveValid = false; // Can't move an Enemy into an Enemy
                 } else {
@@ -252,7 +251,6 @@ class Game {
             case "Wall": moveValid = false; break;
             case "Air": break;
         }
-
         if (moveValid) {
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
             this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
@@ -294,58 +292,26 @@ class Game {
     moveAI() {
         this.enemies.forEach(enemy => {
             if (enemy.isCPU) {
-                //CHECK NEARBY BOARD
-                let row = this.getRowOf(enemy);
-                let col = this.getColumnOf(enemy);
+                let row = this.getRowOf(enemy); // Row Enemy occupies
+                let col = this.getColumnOf(enemy); // Column Enemy occupies
 
-                /* let neighbors = new Array();
-
-                let above;
-                let below;
-                let left;
-                let right; 
-
-                //GET STUFF AROUND IT
-                if (row != 1) { // if not in the first row, it'll have a neighbor above it
-                    above = this.get(row - 1, col);
-                    if (!above.isWall && !above.isSushi) { // if the above neighbor isn't a Wall or Sushi
-                        neighbors.push(above);
-                    }
+                let validDirections = new Array(); // Array storing all the possible directions the Enemy could move in 
+                if (this.get(row-1, col).constructor.name == "Air") {
+                    validDirections.push("up");
                 }
-                if (row != 13) { // if not in the last row, it'll have a neighbor below it
-                    below = this.get(row + 1, col);
-                    if (!below.isWall && !below.isSushi) { // if the below neighbor isn't a Wall or Sushi
-                        neighbors.push(below);
-                    }
+                if (this.get(row+1, col).constructor.name == "Air") {
+                    validDirections.push("down");
                 }
-                if (col != 1) { // if not in the first column, it'll have a neighbor to its left
-                    left = this.get(row, col - 1);
-                    if (!left.isWall && !left.isSushi) { // if the neighbor to the left isn't a Wall or Sushi
-                        neighbors.push(left);
-                    }
+                if (this.get(row, col-1).constructor.name == "Air") {
+                    validDirections.push("left");
                 }
-                if (col != 13) { // if not in the last column, it'll have a neighbor to its right
-                    right = this.get(row, col + 1);
-                    if (!right.isWall && !right.isSushi) { // if the neighbor to the right isn't a Wall or Sushi
-                        neighbors.push(right);
-                    }
+                if (this.get(row, col+1).constructor.name == "Air") {
+                    validDirections.push("right");
                 }
-
-                let randomNeighbor = neighbors[Math.floor(Math.random)*(neighbors.length)]; // selects random neighbor
-                if (neighbors.indexOf(this.player) != -1) {
-                    randomNeighbor = neighbors[neighbors.indexOf(this.player)]; // if right next to a Player, will chose to move to it
-                } */
-
-                let randomNeighbor = Math.floor(Math.random() * 4);
-                let direction;
-                switch (randomNeighbor) { // Given the random choice of neighbor, this switch determines which direction the enemy should move in
-                    case 0: direction = "up"; break;
-                    case 1: direction = "down"; break;
-                    case 2: direction = "left"; break;
-                    case 3: direction = "right"; break;
+                if (validDirections.length > 0) { // if there's at least 1 direction the Enemy can move in
+                    let randomIndex = Math.floor(Math.random() * validDirections.length); // Chooses a random index from validDirections
+                    this.move(enemy, validDirections[randomIndex]);
                 }
-
-                this.move(enemy, direction);
             }
         });
     }
