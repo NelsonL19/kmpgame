@@ -20,10 +20,12 @@ app.get('/', function(req, res) {
 /**
  * When a new user connects to the server
  */
+
+
 io.on('connection', async (socket) => { // Listens for a new user (represented by socket) has connected to server
     let id = socket.id;
     sockets[id] = socket; // adds socket to the list of sockets
-    socket.emit('test', undefined);
+    socket.emit('testing here', undefined);
     console.log(`User: ${id} has connected!`);
 
     socket.on('set screen name', (name) => { // When the User submits the screen name to be associated with their ID
@@ -46,25 +48,27 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             matches.push(newMatch); // Adds the new Match to the list of matches
 
             // Notifies the client-facing code that the game is starting and what role their player has
-            console.log(`player1Socket == socket: ${player1Socket == socket}`)
-            console.log(`player2Socket == socket: ${player2Socket == socket}`)
-            console.log(`Socket: ${socket}`)
+            
             player1Socket.emit('game starting', 'player1');
             player2Socket.emit('game starting', 'player2');
-            socket.emit('test', undefined);
+
+            newMatch.controller.notifyViews();
+            newMatch.controller.startGame();
+
+            socket.on('move', direction => {
+                let isEnemy = newMatch.player2Socket == socket; // get whether or not the socket is the player or the enemy
+                newMatch.controller.move(isEnemy, direction); // tells Controller to make move
+            })
+        
         }
         socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
     });
 
+
     /**
      * When server is told a player made a move
      */
-    socket.on('move', direction => {
-        let match = matches.filter(function (value, index) {return (value.player1Socket == socket || value.player2Socket == socket)}); // get match Socket belongs to
-        let isEnemy = match.player2Socket == socket; // get whether or not the socket is the player or the enemy
-        match.controller.move(isEnemy, direction); // tells Controller to make move
-    })
-
+   
     socket.on('disconnect', () => {
         console.log(`${screenNames[id]} has disconnected`);
         screenNames[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names

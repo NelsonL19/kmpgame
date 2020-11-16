@@ -311,7 +311,7 @@ class Game {
  * 
  */
 
-    moveAi() {
+    moveAI() {
         this.enemies.forEach(enemy => {
             if (this.enemy.isCPU) {
                 //CHECK NEARBY BOARD
@@ -419,7 +419,7 @@ class Game {
     countPowerups(objboard) {
         let currPowerups = 0;
         for (let i = 0; i < 225; i++) {
-            if (typeOf(objboard[i]) === 'Sushi') {
+            if (objboard[i].constructor.name == 'Sushi') {
                 currPowerups++;
             }
         }

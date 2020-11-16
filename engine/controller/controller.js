@@ -25,7 +25,6 @@ class Controller {
         this.game = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
-        game.onMove(this.notifyViews());
     }
 
     /**
@@ -34,31 +33,29 @@ class Controller {
      * @param {*} direction "up", "down", "left", or "right"
      */
     move (isEnemy, direction) {
+        console.log(`Move ${direction}`);
         let element // To be defined. The Element object being moved
         if (isEnemy) { // if moving the enemy controlled by Player 2
-            element = game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
+            element = this.game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
         }
         else {
             element = this.game.player;
         }
         this.game.move(element, direction);
+        this.notifyViews();
     }
 
     /**
      * Function that gets called every game tick. Called to execute a single round of gameplay
      */
     playRound () {
-        this.game.moveAI() // Has the enemies controlled by the CPU make their moves
+        //this.game.moveAI() // Has the enemies controlled by the CPU make their moves
     }
 
     /**
      * Function called to start the game. Main game loop happens in here
      */
-    startGame () {
-        while(!this.game.isOver) { // Loops until either the player is killed or the player collects all the sushi
-            setTimeout(this.playRound(), 1000) // game tick is 1 second
-        }
-    }
+
 
     /**
      * Notifies the Views of the current state of the board
@@ -68,6 +65,17 @@ class Controller {
         let board = gameState.board;
         this.view1.renderBoard(board);
         this.view2.renderBoard(board);
+    }
+    
+
+    async startGame () {
+        this.notifyViews();
+        //this.game.onMove(this.notifyViews());
+
+        //while(!this.game.isOver) { // Loops until either the player is killed or the player collects all the sushi
+        //    await setTimeout(function () {}, 1000) // game tick is 1 second
+        //    console.log("Played round");
+        //}
     }
 
 

@@ -18,7 +18,7 @@ $(function () {
         socket.emit('set screen name', $username.val()); // Sends the server code what the user has entered 
     });
 
-    socket.on('test', function () { 
+    socket.on('test', function (x) { 
         console.log("Testing");
     });
 
@@ -44,7 +44,7 @@ $(function () {
 });
 
 function loadTableDOM(board) {
-    for (i = 0; i < 225; i++) {
+    for (let i = 0; i < 225; i++) {
         switch(board[i]){
             case "w": $(`#c${i}`).addClass('wall');break; 
             case "a": $(`#c${i}`).addClass('air');break;
