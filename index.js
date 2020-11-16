@@ -8,7 +8,7 @@ const io = require('socket.io')(http);
 
 let screenNames = {} // Key, Value pairs where the Key is the Socket ID and the value is the screen name
 let sockets = {} // Key, Value pairs where the Key is the Socket ID and the value is the associated socket object
-let waitingRoom = new Array() // Purgatory
+let waitingRoom = new Array() // Purgatory, stores Socket IDs
 let matches = new Array() // Array containing all the Match objects that are currently running 
 
 app.use(express.static(__dirname + '/public'));
@@ -20,15 +20,17 @@ app.get('/', function(req, res) {
 /**
  * When a new user connects to the server
  */
-io.on('connection', (socket) => { // Listens for a new user (represented by socket) has connected to server
+io.on('connection', async (socket) => { // Listens for a new user (represented by socket) has connected to server
     let id = socket.id;
-    sockets[id] = socket // adds socket to the list of sockets
-
+    sockets[id] = socket; // adds socket to the list of sockets
+    socket.emit('test', undefined);
     console.log(`User: ${id} has connected!`);
 
     socket.on('set screen name', (name) => { // When the User submits the screen name to be associated with their ID
         screenNames[id] = name;
         waitingRoom.push(id); // Adds user to the waiting room
+
+
 
         console.log(JSON.stringify(screenNames));
         
@@ -44,8 +46,12 @@ io.on('connection', (socket) => { // Listens for a new user (represented by sock
             matches.push(newMatch); // Adds the new Match to the list of matches
 
             // Notifies the client-facing code that the game is starting and what role their player has
+            console.log(`player1Socket == socket: ${player1Socket == socket}`)
+            console.log(`player2Socket == socket: ${player2Socket == socket}`)
+            console.log(`Socket: ${socket}`)
             player1Socket.emit('game starting', 'player1');
             player2Socket.emit('game starting', 'player2');
+            socket.emit('test', undefined);
         }
         socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
     });

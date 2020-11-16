@@ -15,8 +15,11 @@ $(function () {
 
     $submit.on('click', function (e) {
         e.preventDefault(); // Prevents the page from reloading
-        console.log("click");
         socket.emit('set screen name', $username.val()); // Sends the server code what the user has entered 
+    });
+
+    socket.on('test', function () { 
+        console.log("Testing");
     });
 
     socket.on('screen name set', function (isWaiting) { // When it recieves word the the screen name is set
@@ -27,15 +30,17 @@ $(function () {
         }
     });
 
-    socket.on('game starting', role => { // Backend informs client that game is starting 
+    socket.on('game starting', function (role) { // Backend informs client that game is starting 
         console.log("Game starting!");
         $page.empty(); // Erases the page
-        //generatePage();
-        //generateStartTable();
-        //socket.on('render board', function(board) {
-        //    loadTableDOM(board); // reloads the board
-        //})
+        generatePage();
+        generateStartTable();
+        socket.on('render board', function(board) {
+           loadTableDOM(board); // reloads the board
+        });
     });
+
+
 });
 
 function loadTableDOM(board) {
