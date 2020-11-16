@@ -19,6 +19,12 @@ class Enemy extends Element {
             case "majikes": this.stringRepresentation = "mje"; break;
             case "snoeyink": this.stringRepresentation = "sne"; break;
             case "plaisted": this.stringRepresentation = "pe"; break;
+            case "cynthia": this.stringRepresentation = "ce"; break;
+            case "porter": this.stringRepresentation = "poe"; break;
+            case "terrell": this.stringRepresentation = "te"; break;
+            case "diane": this.stringRepresentation = "de"; break;
+            case "kevin": this.stringRepresentation = "ke"; break;
+            case "folt": this.stringRepresentation = "fe"; break;
             default: throw `Enemy Constructor Error: ${type} is not recognized as a type of Enemy`;
         }
     }

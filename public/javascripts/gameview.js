@@ -222,3 +222,4 @@ $(function () {
     //loadTableDOM(game.getGameState().board);
 
 });
+

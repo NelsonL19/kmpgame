@@ -6,6 +6,7 @@
 
 const socket = io();
 
+const $page = $('body');
 const $loginBox = $('#login_box');
 
 $(function () {
@@ -27,9 +28,13 @@ $(function () {
     });
 
     socket.on('game starting', role => { // Backend informs client that game is starting 
-        socket.on('render board', function(board) {
-            loadTableDOM(board); // reloads the board
-        })
+        console.log("Game starting!");
+        $page.empty(); // Erases the page
+        //generatePage();
+        //generateStartTable();
+        //socket.on('render board', function(board) {
+        //    loadTableDOM(board); // reloads the board
+        //})
     });
 });
 
@@ -75,3 +80,34 @@ window.addEventListener('keydown', (event) => {
         case 'ArrowRight': socket.emit('move', 'right');break;
     }
 });
+
+function generatePage(){
+    let page =`
+                <section class="hero is-fullheight is-link is-bold">
+                    <div class="hero-body">
+                        <div class="container">
+                            <h1 class="title">Current Opponent</h1>
+                            <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                            <h1 class="title">Current Score</h1>
+                            <h1 class="subtitle" id="score">0</h1>
+                            <p class="title">Current Time</p>
+                            <h1 class="subtitle" id="time">00:00:00</h1>
+                            <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
+                            </div>
+                        </div>
+                </section>`
+    $(page).appendTo($page);
+}
+function generateStartTable() {
+    const $table = $(`#game`);
+    for (let i = 0; i < 15; i++) {
+        let row = `<tr id = r${i}></tr>`
+        $(row).appendTo($table);
+        for (let j = i * 15; j < (i + 1) * 15; j++) {
+            let cell = `<td id = c${j}></td>`;
+            const $row = $(`#r${i}`);
+            $(cell).appendTo($row);
+        }
+    }
+}

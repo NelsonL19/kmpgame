@@ -22,7 +22,7 @@ class Controller {
      * @param {View} view2 View object for Player 2
      */
     constructor (game, view1, view2) {
-        this.model = game;
+        this.game = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
         game.onMove(this.notifyViews());
@@ -39,9 +39,9 @@ class Controller {
             element = game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
         }
         else {
-            element = game.player;
+            element = this.game.player;
         }
-        game.move(element, direction);
+        this.game.move(element, direction);
     }
 
     /**
@@ -64,7 +64,7 @@ class Controller {
      * Notifies the Views of the current state of the board
      */
     notifyViews() {
-        let gameState = game.getGameState();
+        let gameState = this.game.getGameState();
         let board = gameState.board;
         this.view1.renderBoard(board);
         this.view2.renderBoard(board);
