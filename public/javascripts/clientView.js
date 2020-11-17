@@ -22,17 +22,19 @@ $(function () {
         console.log("Testing");
     });
 
-    // Upon logging in
     socket.on('screen name set', function (isWaiting) { // When it recieves word the the screen name is set
         console.log("Name set!");
-        renderLobby(); // Loads in the HTML for the lobby
-        socket.on('message', function (message) { // Loads in messages
-            $('#chat').append(`<p>${message}</p>`);
-        })
+        if (isWaiting) {    
+            $loginBox.empty();
+            $loginBox.append('<h1>Connect succesfully! Waiting for an opponent...</h1>');
+        }
     });
 
     socket.on('game starting', function (role) { // Backend informs client that game is starting 
-        renderGameRoom();
+        console.log("Game starting!");
+        $page.empty(); // Erases the page
+        generatePage();
+        generateStartTable();
         socket.on('render board', function(board) {
             $('td').removeClass();
             loadTableDOM(board); // reloads the board
@@ -45,44 +47,6 @@ $(function () {
 
 
 });
-
-/**
- * Clears out the body and loads in the HTML for the lobby
- */
-function renderLobby() {
-    $page.empty();
-    let html = `
-        <section class="hero is-fullheight is-link is-bold>
-            <div class="hero-body">
-                <div class="box">
-                    <div class="container" id="chat">
-                        
-                    </div>
-                </div>
-                <footer>
-                    <input class="input" type="text" id="messageEditor">
-                    <button class="button" id="sendMessage">Send</button>
-                </footer>
-            </div>
-        </section>
-    `;
-    $page.append(html);
-    $('#sendMessage').on('Click', function () {
-        let message = $('#messageEditor').val();
-        socket.emit('new message', message);
-    });
-}
-
-/**
- * Clears out the body and loads in the correct HTML for starting
- * the game
- */
-function renderGameRoom() {
-    console.log("Game starting!");
-    $page.empty(); // Erases the page
-    generatePage();
-    generateStartTable();
-}
 
 function loadTableDOM(board) {
     for (let i = 0; i < 225; i++) {
