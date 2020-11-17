@@ -155,7 +155,8 @@ class Game {
         return {
             board: this.gameBoard.stringRepresentation,
             score: this.playerScore,
-            isOver: this.isOver
+            isOver: this.isOver,
+            startTime: this.startPlayerTime
         }
     }
 

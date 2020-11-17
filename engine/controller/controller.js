@@ -62,8 +62,12 @@ class Controller {
     notifyViews() {
         let gameState = this.game.getGameState();
         let board = gameState.board;
+        let time = Math.floor((new Date() - gameState.startTime) / 1000);
+        console.log(time);
         this.view1.renderBoard(board);
         this.view2.renderBoard(board);
+        this.view1.updateTime(time);
+        this.view2.updateTime(time);
     }
     
 
