@@ -14,7 +14,7 @@ let matches = new Array() // Array containing all the Match objects that are cur
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) { 
-    res.sendFile(path.join(__dirname + '/public/html/index.html'));
+    res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 /**
