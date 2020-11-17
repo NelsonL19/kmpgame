@@ -1,4 +1,4 @@
-const Match = require('./engine/controller/Match').matchClass;
+const Match = require('../engine/controller/Match').matchClass;
 const express = require('express');
 const app = express()
 const http = require('http').createServer(app);
