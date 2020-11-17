@@ -54,14 +54,13 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
             newMatch.controller.notifyViews();
             newMatch.controller.startGame();
-
-            socket.on('move', direction => {
-                let isEnemy = newMatch.player2Socket == socket; // get whether or not the socket is the player or the enemy
-                newMatch.controller.move(isEnemy, direction); // tells Controller to make move
-            })
-        
         }
         socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
+        socket.on('move', direction => {
+            let currentMatch = matches.filter(value => {return (value.player1Socket == socket) || (value.player2Socket == socket);})[0]; // Gets the Match object the Socket belongs too
+            let isEnemy = currentMatch.player2Socket == socket; // get whether or not the socket is the player or the enemy
+            currentMatch.controller.move(isEnemy, direction); // tells Controller to make move
+        })
     });
 
 
