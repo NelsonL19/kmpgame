@@ -33,7 +33,6 @@ class Controller {
      * @param {*} direction "up", "down", "left", or "right"
      */
     move (isEnemy, direction) {
-        console.log(`Move ${direction}`);
         let element // To be defined. The Element object being moved
         if (isEnemy) { // if moving the enemy controlled by Player 2
             element = this.game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2

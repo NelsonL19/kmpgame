@@ -27,6 +27,7 @@ class Enemy extends Element {
             case "folt": this.stringRepresentation = "fe"; break;
             default: throw `Enemy Constructor Error: ${type} is not recognized as a type of Enemy`;
         }
+        this.direction = undefined; // Stores the direction the Enemy was moving in
     }
 }
 
