@@ -32,7 +32,9 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         screenNames[id] = name;
         waitingRoom.push(id); // Adds user to the waiting room
 
-
+        socket.on('new message', function(message) {
+            io.emit('message', message);
+        });
 
         console.log(JSON.stringify(screenNames));
         
