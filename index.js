@@ -6,7 +6,7 @@ const path = require('path');
 const io = require('socket.io')(http);
 
 
-let screenNames = {} // Key, Value pairs where the Key is the Socket ID and the value is the screen name
+let users = {} // Key, Value pairs where the Key is the Socket ID and the value is the screen name
 let sockets = {} // Key, Value pairs where the Key is the Socket ID and the value is the associated socket object
 let waitingRoom = new Array() // Purgatory, stores Socket IDs
 let matches = new Array() // Array containing all the Match objects that are currently running 
@@ -28,13 +28,14 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     socket.emit('testing here', undefined);
     console.log(`User: ${id} has connected!`);
 
-    socket.on('set screen name', (name) => { // When the User submits the screen name to be associated with their ID
-        screenNames[id] = name;
+    socket.on('user logged in', (name) => { // When the User submits the screen name to be associated with their ID
+        users[id] = name;
+        socket.join("lobby"); // Puts the user in the room "lobby"
         waitingRoom.push(id); // Adds user to the waiting room
 
 
 
-        console.log(JSON.stringify(screenNames));
+        console.log(JSON.stringify(users));
         
         let isWaiting = true // Indicates whether or not the user is in the waiting room. True by default
         
@@ -55,7 +56,9 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             newMatch.controller.notifyViews();
             newMatch.controller.startGame();
         }
-        socket.emit('screen name set', isWaiting); // Tells the client that the username has been set and whether or not they're in the waiting room
+    /**
+     * When server is told a player made a move
+     */
         socket.on('move', direction => {
             let currentMatch = matches.filter(value => {return (value.player1Socket == socket) || (value.player2Socket == socket);})[0]; // Gets the Match object the Socket belongs too
             let isEnemy = currentMatch.player2Socket == socket; // get whether or not the socket is the player or the enemy
@@ -63,14 +66,19 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         })
     });
 
-
     /**
-     * When server is told a player made a move
+     * When server is told a user sent a message in chat
      */
-   
+    socket.on('message sent', function(message) {
+        let name = users[socket.id] // Gets the username associated with the socket
+        let messageBody = `${name}: ${message}`;
+        io.to('lobby').emit('new message', messageBody); // Emits ONLY to sockets in the lobby that a new message was sent
+    });
+
+
     socket.on('disconnect', () => {
-        console.log(`${screenNames[id]} has disconnected`);
-        screenNames[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
+        console.log(`${users[id]} has disconnected`);
+        users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
         socket[id] = undefined; // Removes socket from list of sockets
         removeFromWaitingRoom(id);
     })

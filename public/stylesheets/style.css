@@ -67,3 +67,11 @@ td, .powerup, .wall, .player, .dead_player, .enemy {
     background-repeat: no-repeat;
 }
 /* table end */
+
+.scrollBox {
+    height: 1000px;
+    width: 500px;
+    border: 1px solid #ccc;
+    font: 16px/26px Georgia, Garamond, Serif;
+    overflow: auto;
+}

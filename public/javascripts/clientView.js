@@ -15,19 +15,16 @@ $(function () {
 
     $submit.on('click', function (e) {
         e.preventDefault(); // Prevents the page from reloading
-        socket.emit('set screen name', $username.val()); // Sends the server code what the user has entered 
+        socket.emit('user logged in', $username.val()); // Sends the server code what the user has entered 
+        generateLobby();
     });
 
-    socket.on('test', function (x) { 
-        console.log("Testing");
-    });
-
-    socket.on('screen name set', function (isWaiting) { // When it recieves word the the screen name is set
-        console.log("Name set!");
-        if (isWaiting) {    
-            $loginBox.empty();
-            $loginBox.append('<h1>Connect succesfully! Waiting for an opponent...</h1>');
-        }
+    /**
+     * When the server tells clientView that a new message was sent to chat
+     */
+    socket.on('new message', function(message) {
+        let messageHTML = `<p>${message}</p>`;
+        $('#chat_window').append(messageHTML); // Writes message to chat window
     });
 
     socket.on('game starting', function (role) { // Backend informs client that game is starting 
@@ -90,6 +87,35 @@ window.addEventListener('keydown', (event) => {
         case 'ArrowRight': socket.emit('move', 'right');break;
     }
 });
+
+/**
+ * Clears out all the content under #hero_body and replaces it with
+ * the HTML for the chat window in the lobby
+ */
+function generateLobby(){
+    $('#hero_body').empty(); // Clears out the Hero Body
+    let chatHTML = `
+    <div class="container" id="chat_container">
+        <div class="scrollBox" id="chat_window">
+
+        </div>
+        <footer>
+            <div class="field">
+                <label class="label">Message:</label>
+                <input class="input" type="text" id="message">
+            </div>
+            <div class="field">
+                <button class="button" id="send_button">Send</button>
+            </div>
+        </footer>
+    </div>
+    `;
+    $('#hero_body').append(chatHTML);
+    $('#send_button').on('click', function () {
+        socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
+        $('#message').val(""); // Emptys the text input
+    });
+}
 
 function generatePage(){
     let page =`
