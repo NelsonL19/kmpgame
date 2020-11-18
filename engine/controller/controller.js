@@ -33,7 +33,6 @@ class Controller {
      * @param {*} direction "up", "down", "left", or "right"
      */
     move (isEnemy, direction) {
-        console.log(`Move ${direction}`);
         let element // To be defined. The Element object being moved
         if (isEnemy) { // if moving the enemy controlled by Player 2
             element = this.game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
@@ -63,8 +62,12 @@ class Controller {
     notifyViews() {
         let gameState = this.game.getGameState();
         let board = gameState.board;
+        let time = Math.floor((new Date() - gameState.startTime) / 1000);
+        console.log(time);
         this.view1.renderBoard(board);
         this.view2.renderBoard(board);
+        this.view1.updateTime(time);
+        this.view2.updateTime(time);
     }
     
 

@@ -15,7 +15,9 @@ class View {
         this.socket.emit("render board", board);
     }
 
-
+    updateTime(time) {
+        this.socket.emit("update time", time);
+    }
 
     /**
      * Function that will get an updated board from a client

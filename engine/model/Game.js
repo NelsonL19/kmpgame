@@ -155,7 +155,8 @@ class Game {
         return {
             board: this.gameBoard.stringRepresentation,
             score: this.playerScore,
-            isOver: this.isOver
+            isOver: this.isOver,
+            startTime: this.startPlayerTime
         }
     }
 
@@ -290,30 +291,89 @@ class Game {
  */
 
     moveAI() {
-        this.enemies.forEach(enemy => {
+        for (let enemy of this.enemies) {
             if (enemy.isCPU) {
-                let row = this.getRowOf(enemy); // Row Enemy occupies
-                let col = this.getColumnOf(enemy); // Column Enemy occupies
-
-                let validDirections = new Array(); // Array storing all the possible directions the Enemy could move in 
-                if (this.get(row-1, col).constructor.name == "Air") {
-                    validDirections.push("up");
+                let playerDirection = this.findPlayer(enemy);
+                if (playerDirection == false) {
+                    let row = this.getRowOf(enemy); // Row Enemy occupies
+                    let col = this.getColumnOf(enemy); // Column Enemy occupies
+                    let validDirections = new Array(); // Array storing all the possible directions the Enemy could move in 
+                    switch (this.get(row-1, col).constructor.name) {
+                        case "Air": validDirections.push("up"); break;
+                        case "Player": this.move(enemy, "up"); continue;
+                    }
+                    switch (this.get(row+1, col).constructor.name) {
+                        case "Air": validDirections.push("down"); break;
+                        case "Player": this.move(enemy, "down"); continue;
+                    }
+                    switch (this.get(row, col-1).constructor.name) {
+                        case "Air": validDirections.push("left"); break;
+                        case "Player": this.move(enemy, "left"); continue;
+                    }
+                    switch (this.get(row, col+1).constructor.name) {
+                        case "Air": validDirections.push("right"); break;
+                        case "Player": this.move(enemy, "right"); continue;
+                    }
+                    if (validDirections.length > 0) { // if there's at least 1 direction the Enemy can move in
+                        let switcharoo = Math.floor(Math.random() * 4);
+                        if ((validDirections.indexOf(enemy.direction) == -1) || switcharoo == 0) { // If it can't keep going in the current direction or randomy decides to switch directions
+                            let randomIndex = Math.floor(Math.random() * validDirections.length); // Chooses a random index from validDirections
+                            enemy.direction = validDirections[randomIndex]; // picks a new direction to move in
+                        } 
+                        this.move(enemy, enemy.direction);
+                    }
                 }
-                if (this.get(row+1, col).constructor.name == "Air") {
-                    validDirections.push("down");
-                }
-                if (this.get(row, col-1).constructor.name == "Air") {
-                    validDirections.push("left");
-                }
-                if (this.get(row, col+1).constructor.name == "Air") {
-                    validDirections.push("right");
-                }
-                if (validDirections.length > 0) { // if there's at least 1 direction the Enemy can move in
-                    let randomIndex = Math.floor(Math.random() * validDirections.length); // Chooses a random index from validDirections
-                    this.move(enemy, validDirections[randomIndex]);
+                else { // Else, playerDirection is known
+                    enemy.direction = playerDirection;
+                    this.move(enemy, enemy.direction);
                 }
             }
-        });
+        }
+    }
+    /**
+     * Returns direction Player is in
+     * If Player not in line of sight, returns False
+     */
+    findPlayer(enemy) {
+        let currentRow = this.getRowOf(enemy);
+        let currentCol = this.getColumnOf(enemy);
+        // Look up
+        for (let row = currentRow - 1; row >= 0; row--) {
+            let target = this.get(row, currentCol).constructor.name;
+            if (target == "Player") { // Found Player
+                return "up";
+            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
+                break;
+            }
+        }
+        // Look down
+        for (let row = currentRow + 1; row <= 15; row++) {
+            let target = this.get(row, currentCol).constructor.name;
+            if (target == "Player") { // Found Player
+                return "down";
+            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
+                break;
+            }
+        }
+        // Look left
+        for (let col = currentCol - 1; col >= 0; col--) {
+            let target = this.get(currentRow, col).constructor.name;
+            if (target == "Player") { // Found Player
+                return "left";
+            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
+                break;
+            }
+        }
+        // Look right
+        for (let col = currentCol + 1; col <= 15; col++) {
+            let target = this.get(currentRow, col).constructor.name;
+            if (target == "Player") { // Found Player
+                return "right";
+            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
+                break;
+            }
+        }
+        return false // Didn't see the Player
     }
 
     /**

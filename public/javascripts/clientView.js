@@ -39,6 +39,10 @@ $(function () {
             $('td').removeClass();
             loadTableDOM(board); // reloads the board
         });
+        socket.on('update time', function(time) {
+            $('#time').text(time);
+            console.log(time);
+        });
     });
 
 

@@ -1,6 +1,6 @@
 const Game = require('../model/Game').gameClass;
 const View = require('../view/View').viewClass;
-const Controller = require('./Controller').controllerClass;
+const Controller = require('./controller').controllerClass;
 
 class Match {
     constructor (player1Socket, player2Socket) {
