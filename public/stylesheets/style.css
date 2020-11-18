@@ -69,9 +69,9 @@ td, .powerup, .wall, .player, .dead_player, .enemy {
 /* table end */
 
 .scrollBox {
-    height: 1000px;
-    width: 500px;
-    border: 1px solid #ccc;
+    height: 500px;
+    width: auto;
+    border: 2px solid #ccc;
     font: 16px/26px Georgia, Garamond, Serif;
     overflow: auto;
 }

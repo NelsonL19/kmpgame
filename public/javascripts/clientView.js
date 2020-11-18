@@ -7,17 +7,10 @@
 const socket = io();
 
 const $page = $('body');
-const $loginBox = $('#login_box');
+const $mainContainer = $('#main_container');
 
 $(function () {
-    let $username = $('#username');
-    let $submit = $('#submit');
-
-    $submit.on('click', function (e) {
-        e.preventDefault(); // Prevents the page from reloading
-        socket.emit('user logged in', $username.val()); // Sends the server code what the user has entered 
-        generateLobby();
-    });
+    loadLogIn();
 
     /**
      * When the server tells clientView that a new message was sent to chat
@@ -25,13 +18,14 @@ $(function () {
     socket.on('new message', function(message) {
         let messageHTML = `<p>${message}</p>`;
         $('#chat_window').append(messageHTML); // Writes message to chat window
+        $('#chat_window').animate({scrollTop: $('#chat_window').height()}, "slow"); // Automatically scrolls to new chat
     });
 
     socket.on('game starting', function (role) { // Backend informs client that game is starting 
         console.log("Game starting!");
         $page.empty(); // Erases the page
-        generatePage();
-        generateStartTable();
+        loadGamePage();
+        loadStartTable();
         socket.on('render board', function(board) {
             $('td').removeClass();
             loadTableDOM(board); // reloads the board
@@ -76,6 +70,7 @@ function loadTableDOM(board) {
     }
 }
 
+
 /**
  * Takes user input and depending on input, tells controller how to move the player
  */
@@ -88,42 +83,44 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-/**
- * Clears out all the content under #hero_body and replaces it with
- * the HTML for the chat window in the lobby
- */
-function generateLobby(){
-    $('#hero_body').empty(); // Clears out the Hero Body
-    let chatHTML = `
-    <div class="container" id="chat_container">
-        <div class="scrollBox" id="chat_window">
-
+function loadLogIn() {
+    $mainContainer.empty();
+    let logInHTML = `
+    <div class="box" id="login_box">
+        <div class="field">
+            <label class="label">Username:</label>
+            <input class="input" type="text" id="username">
         </div>
-        <footer>
-            <div class="field">
-                <label class="label">Message:</label>
-                <input class="input" type="text" id="message">
-            </div>
-            <div class="field">
-                <button class="button" id="send_button">Send</button>
-            </div>
-        </footer>
+        <div class="field">
+            <label class="label">Password</label>
+            <input class="input" type="password" id="password">
+        </div>
+        <div class="field">
+            <button class="button is-link" id="submit">Enter</button>
+            <button class="button is-info" id="create_new_account">Create New Account</button>
+        </div>
     </div>
     `;
-    $('#hero_body').append(chatHTML);
-    $('#send_button').on('click', function () {
-        socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
-        $('#message').val(""); // Emptys the text input
+    $mainContainer.append(logInHTML);
+    // Listener for submit button
+    $('#submit').on('click', function (e) {
+        socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
+        loadLobby();
     });
+    // Listener for create account button
+    $('#create_new_account').on('click', function () {
+        loadAccountCreator();
+    });
+
 }
 
 /**
- * Replaces the fields in the login box with fields to create a new account
+ * Loads in the account creator into $heroBody
  */
-function accountCreator() {
-    $loginBox.empty();
-    let html = `
-    <form>
+function loadAccountCreator() {
+    $mainContainer.empty();
+    let accountCreatorHTML = `
+    <div class="box" id="account_creation_box">
         <div class="field">
             <label class="label">New Username:</label>
             <input class="input" type="text" id="new_username">
@@ -131,16 +128,45 @@ function accountCreator() {
         <div class="field">
             <label class="label">New Password</label>
             <input class="input" type="password" id="new_password">
-        </div>
+            </div>
         <div class="field">
-            <button class="button" type="submit" id="submit" value="Enter">Enter</button>
-            <button class="button" id="create_new_account">Create New Account</button>
+            <button class="button is-link" id="create_account">Create Account</button>
+            <button class="button is-danger" id="cancel">Cancel</button>
         </div>
-    </form>
+    </div>
     `
+    $mainContainer.append(accountCreatorHTML);
+
 }
 
-function generatePage(){
+/**
+ * Clears out all the content under #hero_body and replaces it with
+ * the HTML for the chat window in the lobby
+ */
+function loadLobby(){
+    $mainContainer.empty(); // Clears out the Hero Body
+    let chatHTML = `
+    <div class="scrollBox" id="chat_window">
+
+    </div>
+    <footer>
+        <div class="field">
+            <label class="label">Message:</label>
+            <input class="input" type="text" id="message">
+        </div>
+        <div class="field">
+            <button class="button" id="send_button">Send</button>
+        </div>
+    </footer>
+    `;
+    $mainContainer.append(chatHTML);
+    $('#send_button').on('click', function () {
+        socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
+        $('#message').val(""); // Emptys the text input
+    });
+}
+
+function loadGamePage(){
     let page =`
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
@@ -158,7 +184,7 @@ function generatePage(){
                 </section>`
     $(page).appendTo($page);
 }
-function generateStartTable() {
+function loadStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
