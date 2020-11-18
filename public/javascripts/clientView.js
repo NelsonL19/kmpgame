@@ -117,6 +117,29 @@ function generateLobby(){
     });
 }
 
+/**
+ * Replaces the fields in the login box with fields to create a new account
+ */
+function accountCreator() {
+    $loginBox.empty();
+    let html = `
+    <form>
+        <div class="field">
+            <label class="label">New Username:</label>
+            <input class="input" type="text" id="new_username">
+        </div>
+        <div class="field">
+            <label class="label">New Password</label>
+            <input class="input" type="password" id="new_password">
+        </div>
+        <div class="field">
+            <button class="button" type="submit" id="submit" value="Enter">Enter</button>
+            <button class="button" id="create_new_account">Create New Account</button>
+        </div>
+    </form>
+    `
+}
+
 function generatePage(){
     let page =`
                 <section class="hero is-fullheight is-link is-bold">
