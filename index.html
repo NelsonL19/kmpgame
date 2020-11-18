@@ -5,8 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/bulma.css">
-    <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bulma.css">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/main.css">
     <title>Toastipher 0: Log In</title>
 </head>
 
@@ -16,23 +16,27 @@
             <div class="container" id="login">
                 <div class="box" id="login_box">
                     <form>
-                        <label>Please enter in a screen name:</label>
-                        <input type="text" id="username">
-                        <button type="submit" id="submit" value="Enter">Enter</button>
+                        <div class="field">
+                            <label class="label">Username:</label>
+                            <input class="input" type="text" id="username">
+                        </div>
+                        <div class="field">
+                            <label class="label">Password</label>
+                            <input class="input" type="password" id="password">
+                        </div>
+                        <div class="field">
+                            <button class="button" type="submit" id="submit" value="Enter">Enter</button>
+                        </div>
                     </form>
                 </div>
             </div>
-
-            <button class="button is-danger" type="button" >
-                <a href = "html/gameplay.html">Debug Button</a>
-            </button>
             
         </div>
     </section>
 
-    <script src="../javascripts/jquery.js"></script>
+    <script src="javascripts/jquery.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="../javascripts/clientView.js"></script>
+    <script type="module" src="javascripts/clientView.js"></script>
 </body>
 
 </html>
