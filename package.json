@@ -1,6 +1,8 @@
 {
   "name": "kmpgame",
   "version": "0.0.0",
+  "description": "UNC Comp 426 Final Project",
+  "main": "index.js",
   "private": true,
   "scripts": {
     "start": "node index.js"
