@@ -11,7 +11,6 @@ const $mainContainer = $('#main_container');
 
 $(function () {
     loadLogIn();
-
     /**
      * When the server tells clientView that a new message was sent to chat
      */
@@ -149,7 +148,7 @@ function loadAccountCreator() {
 function loadLobby(){
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
-    <div class="container" id="game_creation_container">
+    <div class="box" id="game_creation_box">
         
     </div>
     <div class="scrollBox" id="chat_window">
@@ -174,41 +173,72 @@ function loadLobby(){
 }
 
 function loadNewGameButton() {
-    $('#game_creation_container').empty();
-    $('#game_creation_container').append('<button class="button is-success" id="new_game">New Game</button>');
+    $('#game_creation_box').empty();
+    $('#game_creation_box').append('<button class="button is-success" id="new_game">New Game</button>');
     $('#new_game').on('click', function () {
         loadGameOptions();
     });
 }
 
 function loadGameOptions() {
-    $('#game_creation_container').empty();
+    $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
     <button class="button" id="invite_a_friend">Invite a Friend</button>
     <button class="button is-danger" id="cancel">Cancel</button>
     `
-    $('#game_creation_container').append(gameOptionsHTML);
+    $('#game_creation_box').append(gameOptionsHTML);
 
     $('#join_random_match').on('click', function () {
         socket.emit('join waiting room');
         loadWaitingRoomMessage();
     });
 
+    $('#invite_a_friend').on('click', function () {
+        loadInvitationCreator();
+    })
+
     $('#cancel').on('click', function () {
         loadNewGameButton();
     });
 }
 
+function loadInvitationCreator() {
+    $('#game_creation_box').empty(); // Empties the top bar above chat
+    let invitationHTML = `
+    <label>Recipient of invitation:</label>
+    <select class="select" name="users" id="users">
+        <option value="default">Select a Player</option>
+    </select>
+    <button class="button is-success" id="send">Send</button>
+    <button class="button is-danger" id="cancel">Cancel</button>
+    `;
+    $('#game_creation_box').append(invitationHTML); // Adds in the dropdown selector
+    socket.emit('request users in lobby'); // Sends request to server with a list of users in the lobby
+    socket.on('users in lobby', (usersInLobby, users) => { // Processes server response
+        for (let user of usersInLobby) {
+            if (user == socket.id) { // Want to skip over the entry if it's the current client (client should be able to invite themselves)
+                continue;
+            }
+            let userName = users[user]; // gets name associated with user's ID
+            $('#users').append(`<option value="${user}">${userName}</option>`);
+        }
+    });
+    $('#users').on('change', function () {
+        console.log($('#users').val());
+    });
+    $('#cancel').on('click', function () {
+        loadGameOptions();
+    });
+}
+
 function loadWaitingRoomMessage() {
-    $('#game_creation_container').empty();
+    $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
-    <div class="box">
         <p>Waiting for another player to join, please wait...</p>
         <button class="button is-danger" id="cancel">Cancel</button>
-    </div>
     `
-    $('#game_creation_container').append(waitingRoomMessageHTML);
+    $('#game_creation_box').append(waitingRoomMessageHTML);
     $('#cancel').on('click', function () {
         socket.emit('leave waiting room');
         loadGameOptions();
