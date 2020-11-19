@@ -136,6 +136,9 @@ function loadAccountCreator() {
     </div>
     `
     $mainContainer.append(accountCreatorHTML);
+    $('#cancel').on('click', function () {
+        loadLogIn();
+    });
 
 }
 
@@ -146,6 +149,9 @@ function loadAccountCreator() {
 function loadLobby(){
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
+    <div class="container" id="game_creation_container">
+        
+    </div>
     <div class="scrollBox" id="chat_window">
 
     </div>
@@ -160,9 +166,52 @@ function loadLobby(){
     </footer>
     `;
     $mainContainer.append(chatHTML);
+    loadNewGameButton();
     $('#send_button').on('click', function () {
         socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
         $('#message').val(""); // Emptys the text input
+    });
+}
+
+function loadNewGameButton() {
+    $('#game_creation_container').empty();
+    $('#game_creation_container').append('<button class="button is-success" id="new_game">New Game</button>');
+    $('#new_game').on('click', function () {
+        loadGameOptions();
+    });
+}
+
+function loadGameOptions() {
+    $('#game_creation_container').empty();
+    let gameOptionsHTML = `
+    <button class="button" id="join_random_match">Join a Random Match</button>
+    <button class="button" id="invite_a_friend">Invite a Friend</button>
+    <button class="button is-danger" id="cancel">Cancel</button>
+    `
+    $('#game_creation_container').append(gameOptionsHTML);
+
+    $('#join_random_match').on('click', function () {
+        socket.emit('join waiting room');
+        loadWaitingRoomMessage();
+    });
+
+    $('#cancel').on('click', function () {
+        loadNewGameButton();
+    });
+}
+
+function loadWaitingRoomMessage() {
+    $('#game_creation_container').empty();
+    let waitingRoomMessageHTML = `
+    <div class="box">
+        <p>Waiting for another player to join, please wait...</p>
+        <button class="button is-danger" id="cancel">Cancel</button>
+    </div>
+    `
+    $('#game_creation_container').append(waitingRoomMessageHTML);
+    $('#cancel').on('click', function () {
+        socket.emit('leave waiting room');
+        loadGameOptions();
     });
 }
 
