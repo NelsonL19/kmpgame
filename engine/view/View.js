@@ -7,6 +7,10 @@ class View {
         this.socket = socket;
     }
 
+    gameWon(winner, totalTime) {
+        this.socket.emit("game won", winner, totalTime);
+    }
+
     /**
      * Function that tell's the client to render a board passed to it
      * @param {Array} board string representation of the Game object's board/

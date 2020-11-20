@@ -9,62 +9,88 @@ const socket = io();
 const $page = $('body');
 const $mainContainer = $('#main_container');
 
+let usernameIsTaken;
+
 $(function () {
     loadLogIn();
-    /**
-     * When the server tells clientView that a new message was sent to chat
-     */
-    socket.on('new message', function(message) {
-        let messageHTML = `<p>${message}</p>`;
-        $('#chat_window').append(messageHTML); // Writes message to chat window
-        $('#chat_window').animate({scrollTop: $('#chat_window').height()}, "slow"); // Automatically scrolls to new chat
-    });
+});
 
-    socket.on('game starting', function (role) { // Backend informs client that game is starting 
-        console.log("Game starting!");
-        $page.empty(); // Erases the page
-        loadGamePage();
-        loadStartTable();
-        socket.on('render board', function(board) {
-            $('td').removeClass();
-            loadTableDOM(board); // reloads the board
-        });
-        socket.on('update time', function(time) {
-            $('#time').text(time);
-            console.log(time);
-        });
-    });
+socket.on("game won", (winner, totalTime) => {
+    loadGameWon(winner, totalTime);
+});
 
+socket.on('game starting', function (role) { // Backend informs client that game is starting 
+    console.log("Game starting!");
+    $page.empty(); // Erases the page
+    loadGamePage();
+    loadStartTable();
+});
+
+socket.on('render board', function (board) {
+    $('td').removeClass();
+    loadTableDOM(board); // reloads the board
+});
+
+socket.on('update time', function (time) {
+    $('#time').text(time);
+    console.log(time);
+});
+
+socket.on('new message', function (message) {
+    let $message = $('<p>');
+    $message.text(message); // Sanitizes message, parsing string as text and not HTML
+    $('#chat_window').append($message); // Writes message to chat window
+    $('#chat_window').animate({ scrollTop: $('#chat_window').height() }, "slow"); // Automatically scrolls to new chat
+});
+
+socket.on('users in lobby', (usersInLobby, users) => { // Processes server response
+    console.log(`Users in lobby: ${usersInLobby}`);
+    for (let user of usersInLobby) {
+        if (user == socket.id) { // Want to skip over the entry if it's the current client (client should be able to invite themselves)
+            continue;
+        }
+        let userName = users[user]; // gets name associated with user's ID
+        console.log(`Apending ${userName}`);
+        $('#users').append(`<option value="${user}">${userName}</option>`);
+    }
+});
+
+//TODO
+socket.on('username is taken', () => {
+
+});
+
+socket.on('username is not taken', () => {
 
 });
 
 function loadTableDOM(board) {
     for (let i = 0; i < 225; i++) {
-        switch(board[i]){
-            case "w": $(`#c${i}`).addClass('wall');break; 
-            case "a": $(`#c${i}`).addClass('air');break;
-            case "p": $(`#c${i}`).addClass('player');break;
+        switch (board[i]) {
+            case "w": $(`#c${i}`).addClass('wall'); break;
+            case "a": $(`#c${i}`).addClass('air'); break;
+            case "p": $(`#c${i}`).addClass('player'); break;
 
-            case "n": $(`#c${i}`).addClass('nigiri');$(`#c${i}`).addClass('powerup');break;
-            case "sa": $(`#c${i}`).addClass('sashimi');$(`#c${i}`).addClass('powerup');break;
-            case "su": $(`#c${i}`).addClass('sushi');$(`#c${i}`).addClass('powerup');break;
+            case "n": $(`#c${i}`).addClass('nigiri'); $(`#c${i}`).addClass('powerup'); break;
+            case "sa": $(`#c${i}`).addClass('sashimi'); $(`#c${i}`).addClass('powerup'); break;
+            case "su": $(`#c${i}`).addClass('sushi'); $(`#c${i}`).addClass('powerup'); break;
 
-            case "me": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('munsell_enemy');break;
-            case "je": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('jordan_enemy');break;
-            case "se": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('stotts_enemy');break;
+            case "me": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('munsell_enemy'); break;
+            case "je": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('jordan_enemy'); break;
+            case "se": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('stotts_enemy'); break;
 
-            case "mje": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('majikes_enemy');break;
-            case "sne": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('snoeyink_enemy');break;
-            case "pe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('plaisted_enemy');break;
+            case "mje": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('majikes_enemy'); break;
+            case "sne": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('snoeyink_enemy'); break;
+            case "pe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('plaisted_enemy'); break;
 
-            case "ce": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('cynthia_enemy');break;
-            case "poe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('porter_enemy');break;
-            case "te": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('terrell_enemy');break;
-            
-            case "de": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('diane_enemy');break;
-            case "ke": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('kevin_enemy');break;
-            case "fe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('folt_enemy');break;
-            
+            case "ce": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('cynthia_enemy'); break;
+            case "poe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('porter_enemy'); break;
+            case "te": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('terrell_enemy'); break;
+
+            case "de": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('diane_enemy'); break;
+            case "ke": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('kevin_enemy'); break;
+            case "fe": $(`#c${i}`).addClass('enemy'); $(`#c${i}`).addClass('folt_enemy'); break;
+
         }
     }
 }
@@ -74,11 +100,11 @@ function loadTableDOM(board) {
  * Takes user input and depending on input, tells controller how to move the player
  */
 window.addEventListener('keydown', (event) => {
-    switch(event.key){
+    switch (event.key) {
         case 'ArrowUp': socket.emit('move', 'up'); break;
-        case 'ArrowDown': socket.emit('move', 'down') ;break;
-        case 'ArrowLeft': socket.emit('move', 'left');break;
-        case 'ArrowRight': socket.emit('move', 'right');break;
+        case 'ArrowDown': socket.emit('move', 'down'); break;
+        case 'ArrowLeft': socket.emit('move', 'left'); break;
+        case 'ArrowRight': socket.emit('move', 'right'); break;
     }
 });
 
@@ -139,13 +165,51 @@ function loadAccountCreator() {
         loadLogIn();
     });
 
+    $('#create_account').on('click', function () {
+        let username = $('#new_username').val();
+        let password = $('#new_password').val();
+
+
+
+        let alreadyMade = checkAccounts(username, password); // Boolean Return Type
+
+        if (!alreadyMade) {
+            //No Username Found
+            //createAccount(username, password);
+            $('#account_creation_box').append(`<h1 class="title has-text-sucess">Username Registered! Logging you In...</h1>`)
+            //socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
+            //loadLobby();
+        } else {
+            //Username Found
+            $('#account_creation_box').append(`<h1 class="title has-text-danger">This Username is Already Registered! Please Select a New One!</h1>`)
+        }
+    });
+
+
 }
+
+function checkAccounts(username) {
+    let retval;
+
+    socket.emit("check if username taken", username); // Checks to see if username is taken
+    
+    
+
+    return true
+    //Add Async Later
+}
+
+// async function createAccount(username, password) {
+//     fs.writeFile(loginDB, )
+// }
+
+
 
 /**
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby(){
+function loadLobby() {
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
@@ -215,15 +279,8 @@ function loadInvitationCreator() {
     `;
     $('#game_creation_box').append(invitationHTML); // Adds in the dropdown selector
     socket.emit('request users in lobby'); // Sends request to server with a list of users in the lobby
-    socket.on('users in lobby', (usersInLobby, users) => { // Processes server response
-        for (let user of usersInLobby) {
-            if (user == socket.id) { // Want to skip over the entry if it's the current client (client should be able to invite themselves)
-                continue;
-            }
-            let userName = users[user]; // gets name associated with user's ID
-            $('#users').append(`<option value="${user}">${userName}</option>`);
-        }
-    });
+    console.log("requesting users");
+
     $('#users').on('change', function () {
         console.log($('#users').val());
     });
@@ -245,8 +302,8 @@ function loadWaitingRoomMessage() {
     });
 }
 
-function loadGamePage(){
-    let page =`
+function loadGamePage() {
+    let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
                         <div class="container">
@@ -263,6 +320,7 @@ function loadGamePage(){
                 </section>`
     $(page).appendTo($page);
 }
+
 function loadStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
@@ -275,3 +333,11 @@ function loadStartTable() {
         }
     }
 }
+
+function loadGameWon(winner, totalTime) {
+    $page.empty();
+    let gameWonHTML = ``;
+    $page.append(gameWonHTML);
+}
+
+

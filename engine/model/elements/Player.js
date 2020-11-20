@@ -10,6 +10,7 @@ class Player extends Element {
     constructor () {
         super();
         this.stringRepresentation = "p";
+        this.isDead = false;
     }
 }
 

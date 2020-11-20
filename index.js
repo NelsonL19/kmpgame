@@ -28,7 +28,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     sockets[id] = socket; // adds socket to the list of sockets
     console.log(`User: ${id} has connected!`);
 
-
     socket.on('user logged in', (name) => { // When the User submits the screen name to be associated with their ID
         users[id] = name;
         socket.join("lobby"); // Puts the user in the room "lobby"
@@ -67,7 +66,25 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('request users in lobby', () => {
+        console.log("recieving request for users");
+        console.log(`Users in lobby: ${lobby}`);
         socket.emit('users in lobby', lobby, users); // Sends requesting socket an array of IDs in the lobby and the users Map to decode the IDs
+    });
+
+    socket.on("check if username taken", username => {
+        // Callback
+        let isTaken = false;
+
+
+
+
+
+
+        if (isTaken) {
+            socket.emit("username is taken");
+        } else {
+            socket.emit("username is not taken");
+        }
     });
 
     socket.on('disconnect', () => {
@@ -90,6 +107,8 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket2 ID of the second socket
  */
 function createGame (socket1, socket2) {
+    socket1.leave("lobby");
+    socket2.leave("lobby");
     removeFromWaitingRoom(socket1); // Removes Player 1 from the waiting room
     removeFromLobby(socket1)
     removeFromWaitingRoom(socket2) // Removes Player 2 from the waiting room

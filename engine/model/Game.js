@@ -1,4 +1,3 @@
-const Element = require('./elements/Element').elementClass;
 const Air = require('./elements/Air').airClass;
 const Enemy = require('./elements/Enemy').enemyClass;
 const Player = require('./elements/Player').playerClass;
@@ -8,7 +7,6 @@ const boards = require('./Boards');
 
 // Class used for creating Model objects
 class Game {
-
     /**
      * Creates a new instance of the Game object
      */
@@ -20,16 +18,11 @@ class Game {
             stringRepresentation: randomBoard,
             objectRepresentation: this.convertFromStringToObjectRepresentation(randomBoard)
         }
-
-        this.gameBoard.objectRepresentation.forEach(element => {
-        });
-
         this.playerScore = 0;
-        this.startPlayerTime = new Date();
-        this.isWin = false;
+        this.startTime = new Date();
+        this.totalTime; // To be defined later when calling endGame()
         this.isOver = false;
         this.moveListeners = new Array();
-        this.deathListeners = new Array();
         this.winListeners = new Array();
     }
 
@@ -50,7 +43,6 @@ class Game {
      */
     convertFromStringToObjectRepresentation(board) {
         let objectRepresentation = new Array(board.length); // Array to be returned
-        let boardSize = Math.sqrt(board) // gets dimension of board
         let elementObj;
         for (let i = 0; i < board.length; i++) {
             switch (board[i]) {
@@ -156,7 +148,7 @@ class Game {
             board: this.gameBoard.stringRepresentation,
             score: this.playerScore,
             isOver: this.isOver,
-            startTime: this.startPlayerTime
+            startTime: this.startTime
         }
     }
 
@@ -202,13 +194,10 @@ class Game {
      * @param {String} direction String representation of the direction the object is being moved in 
      */
     move(object, direction) {
-
-        
         let objectRow = this.getRowOf(object);      // row the object occupies before the move
         let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
         let targetRow;  // row that the object is attempting to move into
         let targetCol;  // column that the object is attempting to move into
-
         //Switch to distinguish different function calls of actionSelector based on given direction
         //Left is -1 to objectCol, Right is +1 to objectCol, Up is -1 to objectRow, Down is +1 to objectRow
         switch (direction) {
@@ -232,7 +221,6 @@ class Game {
         let currentSquare = object.constructor.name;
         let targetSquare = this.get(targetRow, targetCol).constructor.name;
         let moveValid = true;
-
         switch (targetSquare) {
             case "Player": this.killPlayer(); break; // The only way the targetSquare can encounter a Player is if it is an Enemy
             case "Enemy": //Enemy
@@ -254,42 +242,30 @@ class Game {
         }
         if (moveValid) {
             this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
-            this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object
-            this.countPowerups(this.gameBoard.objectRepresentation);
+            this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object 
         }
         this.notifyMoveListeners();
     }
     
 
     /**
-     * CollectSushi(), enemyAhead() both take in the Row, Col and update the game engine based on if the KMP runs into an enemy or a sushi
-     * 
-     * 
+     * take in the Row, Col and update the game engine based on if the KMP runs into an enemy or a sushi
      * @param {number} row - The Row of the Object
      * @param {number} col - The Column of the Object
      */
     collectSushi(row, col) {
         //Remove Sushi
-        let sushiToBeRemoved = this.get(row, col);
         let newAir = new Air();
-
         this.set(row, col, newAir);
-
         //Increase Score
         this.playerScore += 1;
-
-        //Update Player Position
-
-        //Update Callbacks
+        //Checks to see if all the sushi has been collected
+        this.countSushi(this.gameBoard.objectRepresentation); 
     }
 
     /**
- * Moves the Ai after the Enemy Player has selected one to move manually
- * 
- * 
- * 
- */
-
+     * Moves all Enemy elements that aren't controlled by the other player
+     */
     moveAI() {
         for (let enemy of this.enemies) {
             if (enemy.isCPU) {
@@ -340,72 +316,55 @@ class Game {
         // Look up
         for (let row = currentRow - 1; row >= 0; row--) {
             let target = this.get(row, currentCol).constructor.name;
-            if (target == "Player") { // Found Player
-                return "up";
-            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
-                break;
-            }
+            if (target == "Player") { return "up"; } // Found Player
+            else if (target == "Sushi" || target == "Wall" || target == "enemy") { break; }// Cant see any further, stop looking    
         }
         // Look down
         for (let row = currentRow + 1; row <= 15; row++) {
             let target = this.get(row, currentCol).constructor.name;
-            if (target == "Player") { // Found Player
-                return "down";
-            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
-                break;
-            }
+            if (target == "Player") { return "down"; } // Found Player
+            else if (target == "Sushi" || target == "Wall" || target == "enemy") { break; } // Cant see any further, stop looking
         }
         // Look left
         for (let col = currentCol - 1; col >= 0; col--) {
             let target = this.get(currentRow, col).constructor.name;
-            if (target == "Player") { // Found Player
-                return "left";
-            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
-                break;
-            }
+            if (target == "Player") { return "left"; } // Found Player  
+            else if (target == "Sushi" || target == "Wall" || target == "enemy") { break; } // Cant see any further, stop looking
         }
         // Look right
         for (let col = currentCol + 1; col <= 15; col++) {
             let target = this.get(currentRow, col).constructor.name;
-            if (target == "Player") { // Found Player
-                return "right";
-            } else if (target == "Sushi" || target == "Wall" || target == "enemy") { // Cant see any further, stop looking
-                break;
-            }
+            if (target == "Player") { return "right"; }// Found Player   
+            else if (target == "Sushi" || target == "Wall" || target == "enemy") { break; } // Cant see any further, stop looking
         }
         return false // Didn't see the Player
     }
 
     /**
-     * Function that is called whenever a player runs into an enemy, which ends the game with a victory for the opponent
+     * Called when Player comes in contact with an Enemy element. Sets Player's status to dead and calls endGame()
      */
-
     killPlayer() {
+        this.player.isDead = true; // Kills Player
         //Get Total Game Time
-        let endPlayerTime = new Date();
-        let totalTime = endPlayerTime - this.startPlayerTime;
-        this.totalTime = totalTime;
-        //Set Dead//
+        this.endGame();
+    }
+
+    /**
+     * Called when either all Sushi is collected or when Player comes in contact with an Enemy
+     * Sets isOver to True and calculates the value of totalTime
+     * Calls notifyWinListeners()
+     */
+    endGame() {
         this.isOver = true;
-
-        //Kickback Callbacks
-        this.deathListeners.forEach(callback => {
-            callback();
-        })
+        let endPlayerTime = new Date();
+        this.totalTime = endPlayerTime - this.startTime;
+        this.notifyWinListeners();
     }
 
     /**
-* Registers move listeners with current instance of Game
-* @param {function} callback callback function of listener
-*/
-    onDeath(callback) {
-        this.deathListeners.push(callback);
-    }
-
-    /**
- * Registers move listeners with current instance of Game
- * @param {function} callback callback function of listener
- */
+     * Registers move listeners with current instance of Game
+     * @param {function} callback callback function of listener
+     */
     onWin(callback) {
         this.winListeners.push(callback);
     }
@@ -419,6 +378,18 @@ class Game {
     }
 
     /**
+     * Determines who won the game and then calls all the functions in winListeners, passing who the winner is and the total time the game took
+     */
+    notifyWinListeners() {
+        let winner;
+            if (this.player.isDead) { winner = "enemy"; } // If a win has occurred and the player is dead, then it means the enemy won
+            else { winner = "player"; }
+        this.winListeners.forEach(callback => {
+            callback(winner, this.totalTime);
+        });
+    }
+
+    /**
      * Notifies all registered move listeners that a move has taken place
      */
     notifyMoveListeners() {
@@ -427,24 +398,14 @@ class Game {
         })
     }
 
-
-    countPowerups(objboard) {
-        let currPowerups = 0;
+    countSushi(objboard) {
+        let sushiCount = 0;
         for (let i = 0; i < 225; i++) {
             if (objboard[i].constructor.name == 'Sushi') {
-                currPowerups++;
+                sushiCount++;
             }
         }
-
-        if (currPowerups == 0) {
-            let totalTime = endPlayerTime - this.startPlayerTime;
-            this.totalTime = totalTime;
-            this.isWin = true;
-
-            this.winListeners.forEach(callback => {
-                callback();
-            })
-        }
+        if (sushiCount == 0) { this.endGame(); } // If no Sushi is left, end game
     }
 }
 
