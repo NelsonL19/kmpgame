@@ -26,7 +26,7 @@ class Controller {
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
 
-        this.game.onDeath(function (winner, totalTime) {
+        this.game.onWin(function (winner, totalTime) {
             this.view1.gameWon(winner, totalTime);
             this.view2.gameWon(winner, totalTime);
         });
