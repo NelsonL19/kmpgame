@@ -15,7 +15,7 @@ let matches = new Array(); // Array containing all the Match objects that are cu
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res) { 
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -52,7 +52,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
      * When server is told a player made a move
      */
     socket.on('move', direction => {
-        let currentMatch = matches.filter(value => {return (value.player1Socket == socket) || (value.player2Socket == socket);})[0]; // Gets the Match object the Socket belongs too
+        let currentMatch = matches.filter(value => { return (value.player1Socket == socket) || (value.player2Socket == socket); })[0]; // Gets the Match object the Socket belongs too
         let isEnemy = currentMatch.player2Socket == socket; // get whether or not the socket is the player or the enemy
         currentMatch.controller.move(isEnemy, direction); // tells Controller to make move
     })
@@ -60,7 +60,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     /**
      * When server is told a user sent a message in chat
      */
-    socket.on('message sent', function(message) {
+    socket.on('message sent', function (message) {
         let name = users[socket.id] // Gets the username associated with the socket
         let messageBody = `${name}: ${message}`;
         io.to('lobby').emit('new message', messageBody); // Emits ONLY to sockets in the lobby that a new message was sent
@@ -74,18 +74,28 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on("check if username taken", username => {
         // Callback
-        let isTaken = false;
+        //console.log("username passed in: " + username);
 
-
-
-
-
-
-        if (isTaken) {
-            socket.emit("username is taken");
-        } else {
-            socket.emit("username is not taken");
-        }
+        fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
+            if (err) throw err
+            let db = JSON.parse(data)
+            let found = false;
+            for (let i = 0; i < db.accounts.length; i++) {
+                if (username === Object.keys(db.accounts[i])[0]) {
+                    //console.log("name passed in: " + username);
+                    //console.log("name in DB: " + (Object.keys(db.accounts[i])[0]))
+                    found = true;
+                }
+            }
+            
+            if (found) {
+                console.log("found");
+                socket.emit("username is taken", true);
+            } else {
+                console.log("not found");
+                socket.emit("username is not taken", false);
+            }
+        })
     });
 
     socket.on("account made", accountObj => {
@@ -95,14 +105,14 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on('disconnect', () => {
         console.log(`${users[id]} has disconnected`);
-        
+
         users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
         socket[id] = undefined; // Removes socket from list of sockets
         removeFromWaitingRoom(id);
         removeFromLobby(id);
     })
 });
- 
+
 server.listen(process.env.PORT || 3000, () => {
     console.log("Listening");
 });
@@ -133,10 +143,13 @@ function createGame (socket1, socket2) {
  * @param {string} userID the ID of a given socket
  */
 function removeFromWaitingRoom (userID) {
-    waitingRoom = waitingRoom.filter(function (value, index) {return value != userID});
+    waitingRoom = waitingRoom.filter(function (value, index) { return value != userID });
     console.log(`Removed ${users[userID]} from the waiting room`);
 }
 
 function removeFromLobby (userID) {
-    lobby = lobby.filter(function (value, index) {return value != userID});
+    lobby = lobby.filter(function (value, index) { return value != userID });
 }
+
+
+

@@ -9,6 +9,7 @@ const socket = io();
 const $page = $('body');
 const $mainContainer = $('#main_container');
 
+let response = false;
 let usernameIsTaken;
 
 $(function () {
@@ -57,14 +58,16 @@ socket.on('users in lobby', (usersInLobby, users) => { // Processes server respo
 
 //TODO
 socket.on('username is taken', () => {
-
+    response = true;
+    usernameIsTaken = true;
 });
 
 socket.on('username is not taken', () => {
-
+    response = true;
+    usernameIsTaken = false;
 });
 
-function loadTableDOM(board) {
+function loadTableDOM (board) {
     for (let i = 0; i < 225; i++) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
@@ -108,7 +111,7 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function loadLogIn() {
+function loadLogIn () {
     $mainContainer.empty();
     let logInHTML = `
     <div class="box" id="login_box">
@@ -142,7 +145,7 @@ function loadLogIn() {
 /**
  * Loads in the account creator into $heroBody
  */
-function loadAccountCreator() {
+function loadAccountCreator () {
     $mainContainer.empty();
     let accountCreatorHTML = `
     <div class="box" id="account_creation_box">
@@ -172,11 +175,10 @@ function loadAccountCreator() {
 
 
         let alreadyMade = checkAccounts(username, password); // Boolean Return Type
-
         if (!alreadyMade) {
             //No Username Found
             //createAccount(username, password);
-            $('#account_creation_box').append(`<h1 class="title has-text-sucess">Username Registered! Logging you In...</h1>`)
+            $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
             //socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
             //loadLobby();
         } else {
@@ -188,19 +190,20 @@ function loadAccountCreator() {
 
 }
 
-function checkAccounts(username) {
-    let retval;
-
+function checkAccounts (username) {
     socket.emit("check if username taken", username); // Checks to see if username is taken
-    
-    
+    // while (!response) {
+    //     console.log("waiting")
+    // }
+    //We need to find some way to make this async
 
-    return true
+    response = false;
+    return usernameIsTaken
     //Add Async Later
 }
 
-    function createAccount(username, password) {
-    let account = {username, password}
+function createAccount (username, password) {
+    let account = { username, password }
     socket.emit("account made", account);
 }
 
@@ -210,7 +213,7 @@ function checkAccounts(username) {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby() {
+function loadLobby () {
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
@@ -237,7 +240,7 @@ function loadLobby() {
     });
 }
 
-function loadNewGameButton() {
+function loadNewGameButton () {
     $('#game_creation_box').empty();
     $('#game_creation_box').append('<button class="button is-success" id="new_game">New Game</button>');
     $('#new_game').on('click', function () {
@@ -245,7 +248,7 @@ function loadNewGameButton() {
     });
 }
 
-function loadGameOptions() {
+function loadGameOptions () {
     $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
@@ -268,7 +271,7 @@ function loadGameOptions() {
     });
 }
 
-function loadInvitationCreator() {
+function loadInvitationCreator () {
     $('#game_creation_box').empty(); // Empties the top bar above chat
     let invitationHTML = `
     <label>Recipient of invitation:</label>
@@ -290,7 +293,7 @@ function loadInvitationCreator() {
     });
 }
 
-function loadWaitingRoomMessage() {
+function loadWaitingRoomMessage () {
     $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
         <p>Waiting for another player to join, please wait...</p>
@@ -303,7 +306,7 @@ function loadWaitingRoomMessage() {
     });
 }
 
-function loadGamePage() {
+function loadGamePage () {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
@@ -322,7 +325,7 @@ function loadGamePage() {
     $(page).appendTo($page);
 }
 
-function loadStartTable() {
+function loadStartTable () {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
@@ -335,7 +338,7 @@ function loadStartTable() {
     }
 }
 
-function loadGameWon(winner, totalTime) {
+function loadGameWon (winner, totalTime) {
     $page.empty();
     let gameWonHTML = ``;
     $page.append(gameWonHTML);
