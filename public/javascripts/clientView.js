@@ -174,16 +174,22 @@ function loadAccountCreator () {
 
 
 
-        let alreadyMade = checkAccounts(username, password); // Boolean Return Type
+        let alreadyMade = checkAccounts(username); // Boolean Return Type
         if (!alreadyMade) {
             //No Username Found
             //createAccount(username, password);
             $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
-            //socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
-            //loadLobby();
+            setTimeout(function () {
+                //socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
+                //loadLobby();
+            }, 4000);
+
         } else {
             //Username Found
-            $('#account_creation_box').append(`<h1 class="title has-text-danger">This Username is Already Registered! Please Select a New One!</h1>`)
+            $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
+            setTimeout(function () {
+                $(`#alred`).replaceWith(``)
+            }, 4000);
         }
     });
 
@@ -191,15 +197,12 @@ function loadAccountCreator () {
 }
 
 function checkAccounts (username) {
-    socket.emit("check if username taken", username); // Checks to see if username is taken
-    // while (!response) {
-    //     console.log("waiting")
-    // }
-    //We need to find some way to make this async
-
-    response = false;
-    return usernameIsTaken
-    //Add Async Later
+    socket.emit("check if username taken", username, function(retval) {
+        console.log("test");
+        return retval
+    });
+    console.log("end of check");
+    return retval
 }
 
 function createAccount (username, password) {
