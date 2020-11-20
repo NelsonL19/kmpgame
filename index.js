@@ -72,7 +72,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         socket.emit('users in lobby', lobby, users); // Sends requesting socket an array of IDs in the lobby and the users Map to decode the IDs
     });
 
-    socket.on("check if username taken", function(username, callback) {
+    socket.on("check if username taken", function(username) {
         // Callback
         console.log("username passed in: " + username);
 
@@ -87,14 +87,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                     found = true;
                 }
             }
-            
-            if (found) {
-                console.log("found");
-                callback(null, true);
-            } else {
-                console.log("not found");
-                callback(null, false);
-            }
+            socket.emit("check if username taken result", found); // Emits the result of whether the username was taken or not to client
         })
     });
 

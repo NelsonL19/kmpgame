@@ -55,13 +55,27 @@ socket.on('users in lobby', (usersInLobby, users) => { // Processes server respo
     }
 });
 
-//TODO
-socket.on('username is taken', () => {
-    usernameIsTaken = true;
-});
+/**
+ * Only used after the create_account button is clicked
+ */
+socket.on("check if username taken result", found => {
+    console.log("Result of checking if username was taken: " + found);
+    if (!found) {
+        //No Username Found
+        //createAccount(username, password);
+        $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
+        setTimeout(function () {
+            //socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
+            //loadLobby();
+        }, 4000);
 
-socket.on('username is not taken', () => {
-    usernameIsTaken = false;
+    } else {
+        //Username Found
+        $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
+        setTimeout(function () {
+            $(`#alred`).replaceWith(``)
+        }, 4000);
+    }
 });
 
 function loadTableDOM (board) {
@@ -168,38 +182,13 @@ function loadAccountCreator () {
     $('#create_account').on('click', function () {
         let username = $('#new_username').val();
         let password = $('#new_password').val();
-
-
-
-        let alreadyMade = checkAccounts(username); // Boolean Return Type
-        if (!alreadyMade) {
-            //No Username Found
-            //createAccount(username, password);
-            $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
-            setTimeout(function () {
-                //socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
-                //loadLobby();
-            }, 4000);
-
-        } else {
-            //Username Found
-            $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
-            setTimeout(function () {
-                $(`#alred`).replaceWith(``)
-            }, 4000);
-        }
+        socket.emit("check if username taken", username);
+        // Code continues under the socket.on("check if username taken result") listener
     });
 
 
 }
 
-function checkAccounts (username) {
-    socket.emit("check if username taken", username, function(retval) {
-        console.log("test");
-        return retval
-    });
-    console.log("end of check");
-    }
 
 function createAccount (username, password) {
     let account = { username, password }
