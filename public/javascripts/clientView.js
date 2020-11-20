@@ -9,7 +9,6 @@ const socket = io();
 const $page = $('body');
 const $mainContainer = $('#main_container');
 
-let response = false;
 let usernameIsTaken;
 
 $(function () {
@@ -58,12 +57,10 @@ socket.on('users in lobby', (usersInLobby, users) => { // Processes server respo
 
 //TODO
 socket.on('username is taken', () => {
-    response = true;
     usernameIsTaken = true;
 });
 
 socket.on('username is not taken', () => {
-    response = true;
     usernameIsTaken = false;
 });
 
@@ -202,8 +199,7 @@ function checkAccounts (username) {
         return retval
     });
     console.log("end of check");
-    return retval
-}
+    }
 
 function createAccount (username, password) {
     let account = { username, password }

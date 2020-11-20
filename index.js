@@ -90,10 +90,10 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             
             if (found) {
                 console.log("found");
-                callback(true);
+                callback(null, true);
             } else {
                 console.log("not found");
-                callback(false);
+                callback(null, false);
             }
         })
     });
