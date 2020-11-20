@@ -199,9 +199,10 @@ function checkAccounts(username) {
     //Add Async Later
 }
 
-// async function createAccount(username, password) {
-//     fs.writeFile(loginDB, )
-// }
+    function createAccount(username, password) {
+    let account = {username, password}
+    socket.emit("account made", account);
+}
 
 
 
