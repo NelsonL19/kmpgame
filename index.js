@@ -5,6 +5,7 @@ const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
 const fs = require('fs');
+const { waitForDebugger } = require('inspector');
 
 let users = {}; // Key, Value pairs where the Key is the Socket ID and the value is the screen name
 let sockets = {}; // Key, Value pairs where the Key is the Socket ID and the value is the associated socket object
@@ -118,14 +119,26 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on("return to lobby", function () {
-        //let currentUser = users[socket.id]
         socket.join("lobby"); // Puts the user in the room "lobby"
         lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
         io.to("lobby").emit('new message', `${users[id]} has completed their game`);
         socket.emit('new message', "Welcome Back! We hope you enjoyed your game!");
-    })
+    });
 
+    socket.on('game ended', () => {
+        let expiredMatch = matches.filter(value => {
+            return value.player1Socket == socket // Only look at the player1Socket b/c both player1 and player2 will be calling this code, but only
+        })[0];                                      // need to remove the Match object once, not twice
 
+        if (expiredMatch != undefined) {
+            console.log("Removing expired Match")
+            console.log("matches array before removal: " + matches);
+            matches = matches.filter(value => { // Removes the expiredMatch
+                return value != expiredMatch;
+            });
+            console.log("matches array after removal: " + matches);
+        }
+    });
 
     socket.on("check if username taken", function (username, password) {
         // Callback
@@ -223,10 +236,13 @@ server.listen(process.env.PORT || 3000, () => {
 function createGame (socket1, socket2) {
     socket1.leave("lobby");
     socket2.leave("lobby");
-    removeFromWaitingRoom(socket1); // Removes Player 1 from the waiting room
-    removeFromLobby(socket1)
-    removeFromWaitingRoom(socket2) // Removes Player 2 from the waiting room
-    removeFromLobby(socket2);
+    console.log("Creating game. Removing sockets from waiting room")
+    console.log("Waiting room before removal: " + waitingRoom);
+    removeFromWaitingRoom(socket1.id); // Removes Player 1 from the waiting room
+    removeFromLobby(socket1.id)
+    removeFromWaitingRoom(socket2.id) // Removes Player 2 from the waiting room
+    removeFromLobby(socket2.id);
+    console.log("Waiting room after removal: " + waitingRoom);
     let newMatch = new Match(socket1, socket2);
     matches.push(newMatch); // Adds the new Match to the list of matches
     // Notifies the client-facing code that the game is starting and what role their player has
@@ -241,8 +257,10 @@ function createGame (socket1, socket2) {
  * @param {string} userID the ID of a given socket
  */
 function removeFromWaitingRoom (userID) {
+    console.log("Waiting room before removal: " + waitingRoom);
     waitingRoom = waitingRoom.filter(function (value, index) { return value != userID });
     console.log(`Removed ${users[userID]} from the waiting room`);
+    console.log("Waiting Room: " + waitingRoom);
 }
 
 function removeFromLobby (userID) {

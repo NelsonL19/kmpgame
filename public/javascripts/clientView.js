@@ -364,20 +364,21 @@ function loadWaitingRoomMessage () {
 
 function loadGamePage () {
     let page = `
-        <section class="hero is-fullheight is-link is-bold">
-            <div class="hero-body" id="hero_body">
-                <h1 class="title">Current Opponent</h1>
-                <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
-                <h1 class="title">Current Score</h1>
-                <h1 class="subtitle" id="score">0</h1>
-                <p class="title">Current Time</p>
-                <h1 class="subtitle" id="time">00:00:00</h1>
-                <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220); opacity: 1;">
-            </div>
-        </section>
-        `
-    $page.append(page);
+                <section class="hero is-fullheight is-link is-bold">
+                    <div class="hero-body">
+                        <div class="container">
+                            <h1 class="title">Current Opponent</h1>
+                            <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                            <h1 class="title">Current Score</h1>
+                            <h1 class="subtitle" id="score">0</h1>
+                            <p class="title">Current Time</p>
+                            <h1 class="subtitle" id="time">00:00:00</h1>
+                            <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
+                            </div>
+                        </div>
+                </section>`
+    $(page).appendTo($page);
 }
 
 function loadGameInvite (invitingUserName, invitingUserID) {
@@ -411,6 +412,9 @@ function loadStartTable () {
 }
 
 function loadGameWon (hasWon, totalTime, score) {
+
+    socket.emit('game ended');
+
     let time = (totalTime / 1000).toString();
     gameOver = true;
     lockControls = true;
@@ -430,40 +434,45 @@ function loadGameWon (hasWon, totalTime, score) {
         winLose = "You lost!";
         color = "#ff0000";
     }
-    $mainContainer.empty();
+    $page.empty();
     let gameWonHTML = `
-            <div class="box">
-                <div class="box" style="margin-left: 50px; margin-right: 50px;">
-                    <h1 style = "color: rgb(200, 200, 200);
-                    text-align: center;
-                    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-                    text-shadow: 2px 2px 5px ${color}; font-size: 50px;"
-                    >Game Over</h1>
+    <section class="hero is-fullheight is-link is-bold">
+        <div class="hero-body">
+            <div class="container">
+                <div class="box">
+                    <div class="box" style="margin-left: 50px; margin-right: 50px;">
+                        <h1 style = "color: rgb(200, 200, 200);
+                        text-align: center;
+                        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                        text-shadow: 2px 2px 5px ${color}; font-size: 50px;"
+                        >Game Over</h1>
+
+                        <h2 style="color: rgb(130, 130, 130);
+                        text-align: center;
+                        font-family: verdana;
+                        font-size: 20px;
+                        text-shadow: 1px 1px 2px rgb(100, 128, 153)"
+                        >${winLose}</h2>
+                    </div>
 
                     <h2 style="color: rgb(130, 130, 130);
                     text-align: center;
                     font-family: verdana;
                     font-size: 20px;
-                    text-shadow: 1px 1px 2px rgb(100, 128, 153)"
-                    >${winLose}</h2>
+                    text-shadow: 1px 1px 1px rgb(100, 128, 153)"
+                    >Sushi Eaten: ${score}<br>
+                    Time: ${time}</h2>
+                    <br>
+                    <div id="wonLead">
+                    <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
+                    </div>
+                    <br>
+                    </div>
                 </div>
-
-                <h2 style="color: rgb(130, 130, 130);
-                text-align: center;
-                font-family: verdana;
-                font-size: 20px;
-                text-shadow: 1px 1px 1px rgb(100, 128, 153)"
-                >Sushi Eaten: ${score}<br>
-                Time: ${time}</h2>
-                <br>
-                <div id="wonLead">
-                <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
-                </div>
-                <br>
-                </div>
-            </div>`
-        ;
-    $mainContainer.append(gameWonHTML);
+            </div>
+        </div>
+    </section>`;
+    $page.append(gameWonHTML);
 
     if (!hasWon) {
         $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
@@ -473,6 +482,7 @@ function loadGameWon (hasWon, totalTime, score) {
     $('#goBack').on('click', function () {
         console.log("loading the lobby")
         socket.emit('return to lobby');
+        loadHeroAndBackground(); // Needs to load in this HTML before it can load the lobby
         loadLobby();
     })
 
