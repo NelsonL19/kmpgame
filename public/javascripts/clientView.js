@@ -409,15 +409,8 @@ function loadGameWon(hasWon, totalTime, score) {
         color = "#ff0000";
         kmpFace = "dead_player";
     }
-
-    $page.empty(); // clears body
-
+    $mainContainer.empty(); // clears body
     let gameWonHTML = `
-
-    <section class="hero is-fullheight is-link is-bold">
-    <div class="hero-body">
-
-        <div class="container" id="main_container">
             <div class="box">
                 <div class="box" style="margin-left: 50px; margin-right: 50px;">
                     <h1 style = "color: rgb(200, 200, 200);
@@ -451,37 +444,9 @@ function loadGameWon(hasWon, totalTime, score) {
                 </table>
 
                 <br>
-                <div class="columns" style="margin-left: auto; margin-right: auto;">
-                    <div class="column jordan_enemy" style="display:inline"></div>
-                    <div class="munsell_enemy" style="display:inline"></div>
-                    <div class="stotts_enemy" style="display:inline"></div>
-                    <div class="snoeyink_enemy" style="display:inline"></div>
-                    <div class="majikes_enemy" style="display:inline"></div>
-                    <div class="plaisted_enemy" style="display:inline"></div>
-                    <div class="cynthia_enemy" style="display:inline"></div>
-                    <div class="terrell_enemy" style="display:inline"></div>
-                    <div class="porter_enemy" style="display:inline"></div>
-                    <div class="diane_enemy" style="display:inline"></div>
-                    <div class="kevin_enemy" style="display:inline"></div>
-                    <div class="folt_enemy" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class="${kmpFace}" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class="sashimi" style="display:inline"></div>
-                    <div class="nigiri" style="display:inline"></div>
-                    <div class="sushi" style="display:inline"></div>
                 </div>
-            </div>
-        </div>
-        
-        </div>
-        </section>`;
-    $page.append(gameWonHTML);
+            </div>`;
+    $mainContainer.append(gameWonHTML);
 
     $('.jordan_enemy').on('click', function () {
         window.open(

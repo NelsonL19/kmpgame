@@ -9,6 +9,8 @@
  * 
  */
 
+const { stringify } = require("querystring");
+
 //const socket = io();
 /**
  * Controller object
@@ -76,7 +78,21 @@ class Controller {
         let gameState = this.game.getGameState();
         let board = gameState.board;
         let score = gameState.score;
-        let time = Math.floor((new Date() - gameState.startTime) / 1000);
+        let elapsedTime = new Date() - gameState.startTime;
+        let elapsedSeconds = Math.floor(elapsedTime / 1000);
+        let elapsedTenthsOfSeconds = Math.floor(elapsedTime / 100);
+        let minutes = Math.floor(elapsedSeconds / 60);
+        if (minutes.toString().length == 1) {
+            minutes = '0' + minutes;
+        }
+        let seconds = elapsedSeconds % 60;
+        if (seconds.toString().length == 1) {
+            seconds = '0' + seconds;
+        }
+        let tenthsOfSeconds = elapsedTenthsOfSeconds - elapsedSeconds*10;
+
+        let time = `${minutes}:${seconds}.${tenthsOfSeconds}`;
+
         console.log(time);
         this.view1.renderBoard(board, time, score);
         this.view2.renderBoard(board, time, score);
