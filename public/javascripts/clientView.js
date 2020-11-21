@@ -67,14 +67,14 @@ socket.on("check if username taken result", found => {
         setTimeout(function () {
             //socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
             //loadLobby();
-        }, 4000);
+        }, 3500);
 
     } else {
         //Username Found
         $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
         setTimeout(function () {
             $(`#alred`).replaceWith(``)
-        }, 4000);
+        }, 3500);
     }
 });
 
