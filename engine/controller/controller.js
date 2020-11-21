@@ -75,17 +75,16 @@ class Controller {
     notifyViews() {
         let gameState = this.game.getGameState();
         let board = gameState.board;
+        let score = gameState.score;
         let time = Math.floor((new Date() - gameState.startTime) / 1000);
         console.log(time);
-        this.view1.renderBoard(board);
-        this.view2.renderBoard(board);
-        this.view1.updateTime(time);
-        this.view2.updateTime(time);
+        this.view1.renderBoard(board, time, score);
+        this.view2.renderBoard(board, time, score);
     }
     
 
     startGame () {
-        this.gameClock(this.game, this);
+        this.gameClock(this.game, this, 0);
     }
 
     /**
@@ -100,11 +99,19 @@ class Controller {
      * @param {Game} game instance of the Game class
      * @param {Controller} controller instance of the Controller object 
      */
-    gameClock (game, controller) {
-        game.moveAI();
+    gameClock (game, controller, totalTicks) {
+        if (totalTicks%4 == 0) { // Only call move AI every 4 ticks
+            game.moveAI();
+        }
+        controller.view1.socket.emit('unlock controls');
+        controller.view2.socket.emit('unlock controls');
+
+
         controller.notifyViews();
+        totalTicks++;
+        
         if (!game.isOver) { // if the game isn't over yet
-            setTimeout(controller.gameClock, 500, game, controller);
+            setTimeout(controller.gameClock, 125, game, controller, totalTicks);
         }
     }
 

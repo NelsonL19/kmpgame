@@ -15,12 +15,8 @@ class View {
      * Function that tell's the client to render a board passed to it
      * @param {Array} board string representation of the Game object's board/
      */
-    renderBoard(board) {
-        this.socket.emit("render board", board);
-    }
-
-    updateTime(time) {
-        this.socket.emit("update time", time);
+    renderBoard(board, time, score) {
+        this.socket.emit("render board", board, time, score); // Passes the board to render, current time, and score
     }
 
     /**

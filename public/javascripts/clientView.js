@@ -10,6 +10,9 @@ const $page = $('body');
 const $mainContainer = $('#main_container');
 let globalUsername;
 
+let lockControls = false // Set true to keep from spamming emits to the server by holding down arrow keys
+let gameOver = true;
+
 let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
 $(function () {
@@ -25,16 +28,18 @@ socket.on('game starting', function (role) { // Backend informs client that game
     $page.empty(); // Erases the page
     loadGamePage();
     loadStartTable();
+    gameOver = false;
+    lockControls = false;
 });
 
-socket.on('render board', function (board) {
+socket.on('unlock controls', function () {
+    lockControls = false;
+});
+
+socket.on('render board', function (board, time, score) {
     $('td').removeClass();
     loadTableDOM(board); // reloads the board
-});
-
-socket.on('update time', function (time) {
     $('#time').text(time);
-    console.log(time);
 });
 
 socket.on('new message', function (message) {
@@ -147,11 +152,14 @@ function loadTableDOM(board) {
  * Takes user input and depending on input, tells controller how to move the player
  */
 window.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'ArrowUp': socket.emit('move', 'up'); break;
-        case 'ArrowDown': socket.emit('move', 'down'); break;
-        case 'ArrowLeft': socket.emit('move', 'left'); break;
-        case 'ArrowRight': socket.emit('move', 'right'); break;
+    if (!lockControls && !gameOver) {
+        switch (event.key) {
+            case 'ArrowUp': socket.emit('move', 'up'); break;
+            case 'ArrowDown': socket.emit('move', 'down'); break;
+            case 'ArrowLeft': socket.emit('move', 'left'); break;
+            case 'ArrowRight': socket.emit('move', 'right'); break;
+        }
+        lockControls = true; // Locks controls until the next game tick
     }
 });
 
@@ -334,7 +342,7 @@ function loadGamePage() {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
-                        <div class="container">
+                        <div class="container" id="main_container">
                             <h1 class="title">Current Opponent</h1>
                             <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
                             <h1 class="title">Current Score</h1>
@@ -357,8 +365,8 @@ function loadGameInvite(invitingUserName, invitingUserID) {
     </p>`
     $('#chat_window').append(inviteHTML); // Writes invite to chat window
     $('#chat_window').animate({ scrollTop: $('#chat_window').height() }, "slow"); // Automatically scrolls to new chat
-    
-    $(`#decline_${invitingUserID}`).on('click', function (){
+
+    $(`#decline_${invitingUserID}`).on('click', function () {
         declineInvitation(invitingUserID);
     })
     $(`#accept_${invitingUserID}`).on('click', function () {
@@ -380,6 +388,8 @@ function loadStartTable() {
 }
 
 function loadGameWon(hasWon, totalTime, score) {
+    gameOver = true;
+    lockControls = true;
     // "player"
     // "enemy"
 
@@ -390,21 +400,24 @@ function loadGameWon(hasWon, totalTime, score) {
     let color = "";
     let kmpFace = "";
 
-    if (hasWon) {
+    if (!hasWon) {
         winLose = "You Win!";
         color = "#00ff00";
         kmpFace = "player";
     } else {
-        winLose = "Congratulations, you lost!";
+        winLose = "You lost!";
         color = "#ff0000";
         kmpFace = "dead_player";
     }
 
     $page.empty(); // clears body
-    let gameWonHTML = `<section class="hero is-fullheight is-link is-bold" id="gameOverContainer">
-    <div class="hero-body">
-        <div class="container">
 
+    let gameWonHTML = `
+
+    <section class="hero is-fullheight is-link is-bold">
+    <div class="hero-body">
+
+        <div class="container" id="main_container">
             <div class="box">
                 <div class="box" style="margin-left: 50px; margin-right: 50px;">
                     <h1 style = "color: rgb(200, 200, 200);
@@ -438,44 +451,42 @@ function loadGameWon(hasWon, totalTime, score) {
                 </table>
 
                 <br>
-                <table style="margin-left: auto; margin-right: auto;">
-                    <tr>
-                        <td class="jordan_enemy"></td>
-                        <td class="munsell_enemy"></td>
-                        <td class="stotts_enemy"></td>
-                        <td class="snoeyink_enemy"></td>
-                        <td class="majikes_enemy"></td>
-                        <td class="plaisted_enemy"></td>
-                        <td class="cynthia_enemy"></td>
-                        <td class="terrell_enemy"></td>
-                        <td class="porter_enemy"></td>
-                        <td class="diane_enemy"></td>
-                        <td class="kevin_enemy"></td>
-                        <td class="folt_enemy"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="${kmpFace}"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="sashimi"></td>
-                        <td class="nigiri"></td>
-                        <td class="sushi"></td>
-                    </tr>
-                </table>
+                <div class="columns" style="margin-left: auto; margin-right: auto;">
+                    <div class="column jordan_enemy" style="display:inline"></div>
+                    <div class="munsell_enemy" style="display:inline"></div>
+                    <div class="stotts_enemy" style="display:inline"></div>
+                    <div class="snoeyink_enemy" style="display:inline"></div>
+                    <div class="majikes_enemy" style="display:inline"></div>
+                    <div class="plaisted_enemy" style="display:inline"></div>
+                    <div class="cynthia_enemy" style="display:inline"></div>
+                    <div class="terrell_enemy" style="display:inline"></div>
+                    <div class="porter_enemy" style="display:inline"></div>
+                    <div class="diane_enemy" style="display:inline"></div>
+                    <div class="kevin_enemy" style="display:inline"></div>
+                    <div class="folt_enemy" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class="${kmpFace}" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class ="air" style="display:inline"></div>
+                    <div class="sashimi" style="display:inline"></div>
+                    <div class="nigiri" style="display:inline"></div>
+                    <div class="sushi" style="display:inline"></div>
+                </div>
             </div>
-
         </div>
-    </div>
-</section>`;
+        
+        </div>
+        </section>`;
     $page.append(gameWonHTML);
-    
-    // $('.jordan_enemy').on('click', function () {
-    //     window.open( 
-    //         "https://krisjordan.com/", "_blank"); 
-    // })
+
+    $('.jordan_enemy').on('click', function () {
+        window.open(
+            "https://krisjordan.com/", "_blank");
+    })
 
     $('#goBack').on('click', function () {
         loadLobby();
@@ -488,6 +499,30 @@ function loadGameWon(hasWon, totalTime, score) {
     })
 }
 
+function loadLeaderboard() {
+
+
+    $mainContainer.empty(); // clears body
+    let leaderboardHTML = `
+    <div class="hero-body">
+        <div class="container">
+
+            <h1 style = "color: rgb(200, 200, 200);
+                text-align: center;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                text-shadow: 2px 2px 5px rgb(120, 120, 200); font-size: 50px;"
+                >Leaderboards</h1>
+            <div class="scrollBox" id="leaderboard_window">
+        
+            </div>
+
+        </div>
+    </div>`;
+    $page.append(leaderboardHTML);
+
+
+    //stuff to append leaders
+}
 
 /**
  * Called to accept a particular invitation
@@ -511,7 +546,7 @@ function declineInvitation(invitingUserID) {
  * Removes invitation from given user ID from array pendingInvites
  * @param {string} invitingUserID 
  */
-function deleteInvitation (invitingUserID) { 
+function deleteInvitation(invitingUserID) {
     pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
         return value != invitingUserID;
     });
