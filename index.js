@@ -4,9 +4,7 @@ const app = express()
 const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
-const sha256 = require('js-sha256');
 const fs = require('fs')
-
 
 let users = {}; // Key, Value pairs where the Key is the Socket ID and the value is the screen name
 let sockets = {}; // Key, Value pairs where the Key is the Socket ID and the value is the associated socket object
@@ -73,28 +71,38 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         socket.emit('users in lobby', lobby, users); // Sends requesting socket an array of IDs in the lobby and the users Map to decode the IDs
     });
 
-    socket.on("check if username taken", function(username) {
+    socket.on("check if username taken", function(username, password) {
         // Callback
         console.log("username passed in: " + username);
+        console.log("password passed in: " + password);
 
         fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
             if (err) throw err
             let db = JSON.parse(data)
             let found = false;
             for (let i = 0; i < db.accounts.length; i++) {
-                if (username === Object.keys(db.accounts[i])[0]) {
+                //console.log("name in DB: " + (Object.values(db.accounts[i])[0]))
+                if (username === Object.values(db.accounts[i])[0]) {
                     //console.log("name passed in: " + username);
-                    //console.log("name in DB: " + (Object.keys(db.accounts[i])[0]))
                     found = true;
                 }
             }
-            socket.emit("check if username taken result", found); // Emits the result of whether the username was taken or not to client
+            if (!found) {
+                let account = {
+                    username: username,
+                    password: password
+                }
+
+
+                db.accounts.push(account);
+                fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
+                    if (err) throw err;
+                    console.log("Account created");
+                })
+
+            }
+            socket.emit("check if username tak-/en result", found); // Emits the result of whether the username was taken or not to client
         })
-    });
-
-    socket.on("account made", accountObj => {
-        // Callback
-
     });
 
     socket.on('disconnect', () => {

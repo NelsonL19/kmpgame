@@ -1,17 +1,13 @@
 /**
- * Because of how Socket.io works, we can't do page redirrects without disconnecting the socket and connecting on an new one
+ * Because of how Socket.i works, we can't do page redirrects without disconnecting the socket and connecting on an new one
  * This would screw up how the index.js keeps track of users so we're going to just dynamically load a single HTML page
  * This is the javascript file to be used on that one HTML page
  */
-
-import { sha256 } from 'js-sha256';
 
 const socket = io();
 
 const $page = $('body');
 const $mainContainer = $('#main_container');
-
-let usernameIsTaken;
 
 $(function () {
     loadLogIn();
@@ -64,7 +60,7 @@ socket.on("check if username taken result", found => {
     console.log("Result of checking if username was taken: " + found);
     if (!found) {
         //No Username Found
-        createAccount(username, password);
+        // Account already being created in back end
         socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered
         $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
         setTimeout(function () {
@@ -183,21 +179,13 @@ function loadAccountCreator () {
 
     $('#create_account').on('click', function () {
         let username = $('#new_username').val();
-        let password = sha256($('#new_password').val());
-        socket.emit("check if username taken", username);
+        let password = $('#new_password').val(); // Hashes the passwords
+        socket.emit("check if username taken", username, password);
         // Code continues under the socket.on("check if username taken result") listener
     });
 
 
 }
-
-
-function createAccount (username, password) {
-    let account = { username, password }
-    socket.emit("account made", account);
-}
-
-
 
 /**
  * Clears out all the content under #hero_body and replaces it with
