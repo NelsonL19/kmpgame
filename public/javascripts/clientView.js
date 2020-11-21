@@ -9,6 +9,7 @@ let matchMusic = new Audio('../music/Boss_Fight.mp3');
 let lobbyMusic = new Audio('../music/menu.mp3');
 matchMusic.volume = 0.3;
 lobbyMusic.volume = 0.5;
+lobbyMusic.loop = true;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
 let $mainContainer;
@@ -287,6 +288,12 @@ function loadLobby () {
     `;
     $mainContainer.append(chatHTML);
     loadNewGameButton();
+    // $('#send_button').on('keydown', function (e) {
+    //     if(e.which ==13 ){
+    //         socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
+    //         $('#message').val(""); // Emptys the text input
+    //     }
+    // });
     $('#send_button').on('click', function () {
         socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
         $('#message').val(""); // Emptys the text input
@@ -442,7 +449,7 @@ function loadGameWon (hasWon, totalTime, score) {
     let winLose = "";
     let color = "";
 
-    if (!hasWon) {
+    if (hasWon) {
         winLose = "You Win!";
         color = "#00ff00";
     } else {
@@ -450,6 +457,8 @@ function loadGameWon (hasWon, totalTime, score) {
         color = "#ff0000";
     }
     $page.empty();
+                        
+
     let gameWonHTML = `
     <section class="hero is-fullheight is-link is-bold">
         <div class="hero-body">
@@ -489,7 +498,7 @@ function loadGameWon (hasWon, totalTime, score) {
     </section>`;
     $page.append(gameWonHTML);
 
-    if (!hasWon) {
+    if (hasWon) {
         $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
 
     }

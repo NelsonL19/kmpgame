@@ -9,8 +9,8 @@ class View {
         console.log("New View constructed!");
     }
 
-    gameWon(winner, totalTime) {
-        this.socket.emit("game won", winner, totalTime);
+    gameWon(winner, totalTime, score) {
+        this.socket.emit("game won", winner, totalTime, score);
     }
 
     /**

@@ -34,8 +34,8 @@ class Controller {
             let enemyIsWinner;
             console.log(score);
             switch(winner) {
-                case "enemy": playerIsWinner = false; enemyIsWinner = true;
-                case "player": playerIsWinner = true; enemyIsWinner = false;
+                case "enemy": playerIsWinner = true; enemyIsWinner = false;
+                case "player": playerIsWinner = false; enemyIsWinner = true;
             }
 
             view1.gameWon(playerIsWinner, totalTime, score);
