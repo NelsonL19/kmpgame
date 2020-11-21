@@ -394,6 +394,7 @@ function loadGamePage () {
 }
 
 function loadGameInvite (invitingUserName, invitingUserID) {
+    pendingInvitations.push(invitingUserID);
     let inviteHTML = `
     <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}"> ${invitingUserName} is inviting you to a game. Accept Invite?
         <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
