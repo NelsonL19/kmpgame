@@ -9,12 +9,14 @@ const socket = io();
 const $page = $('body');
 const $mainContainer = $('#main_container');
 
+let usersInLobby = {}; // Key value pairs of
+
 $(function () {
     loadLogIn();
 });
 
-socket.on("game won", (winner, totalTime) => {
-    loadGameWon(winner, totalTime);
+socket.on("game won", (hasWon, totalTime) => {
+    loadGameWon(hasWon, totalTime);
 });
 
 socket.on('game starting', function (role) { // Backend informs client that game is starting 
@@ -61,22 +63,48 @@ socket.on("check if username taken result", found => {
     if (!found) {
         //No Username Found
         // Account already being created in back end
-        socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered
         $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
+        $('#cancel_create').replaceWith('');
+        $('#create_account').replaceWith('');
         setTimeout(function () {
+            socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered
             loadLobby();
-        }, 3500);
+        }, 2000);
 
     } else {
         //Username Found
         $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
         setTimeout(function () {
             $(`#alred`).replaceWith(``)
-        }, 3500);
+        }, 2000);
     }
 });
 
-function loadTableDOM (board) {
+socket.on("verify account", correct => {
+    if (correct) {
+        $('#login_box').append(`<h1 class="title has-text-success" id="err">Logging you in...</h1>`)
+        $('#submit').replaceWith('');
+        $('#create_new_account').replaceWith('');
+        setTimeout(function () {
+            socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
+            loadLobby();
+        }, 2000);
+    } else {
+        $('#login_box').append(`<h1 class="title has-text-danger" id="err">Wrong Username/Password or Account Does Not Exist!</h1>`)
+        setTimeout(function () {
+            $(`#err`).replaceWith(``)
+        }, 2000);
+    }
+});
+
+socket.on('load game invite', (invitingPlayerName, invitingPlayerID) => {
+    loadGameInvite(invitingPlayerName, invitingPlayerID);
+});
+
+
+
+
+function loadTableDOM(board) {
     for (let i = 0; i < 225; i++) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
@@ -120,7 +148,7 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function loadLogIn () {
+function loadLogIn() {
     $mainContainer.empty();
     let logInHTML = `
     <div class="box" id="login_box">
@@ -141,8 +169,10 @@ function loadLogIn () {
     $mainContainer.append(logInHTML);
     // Listener for submit button
     $('#submit').on('click', function (e) {
-        socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
-        loadLobby();
+        console.log("Log in clicked");
+        let username = $('#username').val();
+        let password = $('#password').val(); // Hashes the passwords
+        socket.emit('checkUserPassword', username, password);
     });
     // Listener for create account button
     $('#create_new_account').on('click', function () {
@@ -154,7 +184,7 @@ function loadLogIn () {
 /**
  * Loads in the account creator into $heroBody
  */
-function loadAccountCreator () {
+function loadAccountCreator() {
     $mainContainer.empty();
     let accountCreatorHTML = `
     <div class="box" id="account_creation_box">
@@ -168,12 +198,12 @@ function loadAccountCreator () {
             </div>
         <div class="field">
             <button class="button is-link" id="create_account">Create Account</button>
-            <button class="button is-danger" id="cancel">Cancel</button>
+            <button class="button is-danger" id="cancel_create">Cancel</button>
         </div>
     </div>
     `
     $mainContainer.append(accountCreatorHTML);
-    $('#cancel').on('click', function () {
+    $('#cancel_create').on('click', function () {
         loadLogIn();
     });
 
@@ -191,7 +221,7 @@ function loadAccountCreator () {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby () {
+function loadLobby() {
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
@@ -218,7 +248,7 @@ function loadLobby () {
     });
 }
 
-function loadNewGameButton () {
+function loadNewGameButton() {
     $('#game_creation_box').empty();
     $('#game_creation_box').append('<button class="button is-success" id="new_game">New Game</button>');
     $('#new_game').on('click', function () {
@@ -226,7 +256,7 @@ function loadNewGameButton () {
     });
 }
 
-function loadGameOptions () {
+function loadGameOptions() {
     $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
@@ -249,29 +279,38 @@ function loadGameOptions () {
     });
 }
 
-function loadInvitationCreator () {
+function loadInvitationCreator() {
     $('#game_creation_box').empty(); // Empties the top bar above chat
     let invitationHTML = `
     <label>Recipient of invitation:</label>
     <select class="select" name="users" id="users">
-        <option value="defau//lt">Select a Player</option>
+        <option value="default">Select a Player</option>
     </select>
     <button class="button is-success" id="send">Send</button>
     <button class="button is-danger" id="cancel">Cancel</button>
     `;
     $('#game_creation_box').append(invitationHTML); // Adds in the dropdown selector
-    socket.emit('request users in lobby'); // Sends request to server with a list of users in the lobby
+    socket.emit('request users in lobby'); // Sends request to server with a list of users in the lobby. Handles response at socket.on("users in lobby")
     console.log("requesting users");
 
     $('#users').on('change', function () {
         console.log($('#users').val());
     });
+
+    $('#send').on('click', function () {
+        let recipientID = $('#users').val();
+        if (recipientID != 'default') { // If they've selected a valid player to send the message to
+            $('game_creation_box').replaceWith(`<p>Wherever the spirit moves you</p>`);
+            socket.emit('send game invite', recipientID);
+        }
+    });
+
     $('#cancel').on('click', function () {
         loadGameOptions();
     });
 }
 
-function loadWaitingRoomMessage () {
+function loadWaitingRoomMessage() {
     $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
         <p>Waiting for another player to join, please wait...</p>
@@ -284,7 +323,7 @@ function loadWaitingRoomMessage () {
     });
 }
 
-function loadGamePage () {
+function loadGamePage() {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
@@ -303,7 +342,24 @@ function loadGamePage () {
     $(page).appendTo($page);
 }
 
-function loadStartTable () {
+function loadGameInvite(invitingUserName, invitingUserID) {
+    let inviteHTML = `
+    <p class="field"> ${invitingUserName} is inviting you to a game. Accept Invite?
+        <button class="button is-link" id="accept_${invitingUserID}">Yes</button>
+        <button class="button is-info" id="decline_${invitingUserID}">No</button>
+    </p>`
+    $('#chat_window').append(inviteHTML); // Writes invite to chat window
+    $('#chat_window').animate({ scrollTop: $('#chat_window').height() }, "slow"); // Automatically scrolls to new chat
+    
+    $(`decline_${invitingUserID}`).on('click', function (){
+        socket.emit('decline invite', invitingUserID);
+    })
+    $(`accept_${invitingUserID}`).on('click', function () {
+        socket.emit('accept invite', invitingUserID);
+    })
+}
+
+function loadStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
@@ -316,9 +372,76 @@ function loadStartTable () {
     }
 }
 
-function loadGameWon (winner, totalTime) {
+function loadGameWon(hasWon, totalTime) {
+    // "player"
+    // "enemy"
+
+    // "You Won!"
+    // "You lost, idiot."
+
     $page.empty();
-    let gameWonHTML = ``;
+    let gameWonHTML = `<section class="hero is-fullheight is-link is-bold" id="gameOverContainer">
+    <div class="hero-body">
+        <div class="container">
+
+            <div class="box">
+                <div class="box" style="margin-left: 50px; margin-right: 50px;">
+                    <h1 style = "color: rgb(200, 200, 200);
+                    text-align: center;
+                    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                    text-shadow: 2px 2px 5px rgb(100, 100, 150); font-size: 50px;"
+                    >Game Over</h1>
+
+                    <h2 style="color: rgb(255, 255, 255);
+                    text-align: center;
+                    font-family: verdana;
+                    font-size: 20px;
+                    text-shadow: 0px 0px 5px rgb(0, 0, 0)"
+                    >(INSERT WON/LOST HERE)</h2>
+                </div>
+
+                <h2 style="color: rgb(255, 255, 255);
+                text-align: center;
+                font-family: verdana;
+                font-size: 20px;
+                text-shadow: 0px 0px 5px rgb(0, 0, 0)"
+                >Score: (INSERT SCORE)<br>
+                Time: (INSERT TIME)</h2>
+                <br>
+                <div style="text-align: center;"><button class="button" id="goBack" style="margin-left: auto; margin-right: auto;">Log Score</button></div>
+                <br>
+                <table style="margin-left: auto; margin-right: auto;">
+                    <tr>
+                        <td class="majikes_enemy"></td>
+                        <td class="cynthia_enemy"></td>
+                        <td class="munsell_enemy"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="player"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="sashimi"></td>
+                        <td class="nigiri"></td>
+                        <td class="sushi"></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</section>`;
     $page.append(gameWonHTML);
 }
 
