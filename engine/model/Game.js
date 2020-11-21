@@ -30,8 +30,7 @@ class Game {
     }
 
     getRandomPremadeBoard() {
-        //let random = Math.floor(Math.random() * 4);
-        let random = 0; // Removing randomizer for testing purposes
+        let random = Math.floor(Math.random() * 4);
         switch (random) {
             case 0: return [...boards.board0]; // Needs the ... to make a clone of the array
             case 1: return [...boards.board1]; // so it doesn't change the actual values in boards
@@ -389,7 +388,7 @@ class Game {
             if (this.player.isDead) { winner = "enemy"; } // If a win has occurred and the player is dead, then it means the enemy won
             else { winner = "player"; }
         this.winListeners.forEach(callback => {
-            callback(winner, this.totalTime, this.score);
+            callback(winner, this.totalTime, this.playerScore);
         });
     }
 

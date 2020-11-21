@@ -39,7 +39,8 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('join waiting room', () => {
-        console.log(waitingRoom);
+        removeFromLobby(socket.id);
+        socket.leave("lobby")
         waitingRoom.push(id); // Adds user to the waiting room
         if (waitingRoom.length == 2) { // If there's 2 people in the waiting room after adding the user, move them to a match
             createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]]); // Calls helper method, passing the first 2 socket IDs in waiting room
@@ -120,7 +121,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     socket.on("return to lobby", function () {
         socket.join("lobby"); // Puts the user in the room "lobby"
         lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
-        io.to("lobby").emit('new message', `${users[id]} has completed their game`);
+        io.to("lobby").emit('new message', `${users[id]} has completed their game!`);
         socket.emit('new message', "Welcome Back! We hope you enjoyed your game!");
     });
 
@@ -201,7 +202,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on('disconnect', () => {
         console.log(`${users[id]} has disconnected`);
-
+        io.to("lobby").emit('new message', `${users[id]} has left the game!`);
         users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
         socket[id] = undefined; // Removes socket from list of sockets
         removeFromWaitingRoom(id);
@@ -243,8 +244,19 @@ function removeFromWaitingRoom (userID) {
     waitingRoom = waitingRoom.filter(function (value, index) { return value != userID });
 }
 
+
 function removeFromLobby (userID) {
     lobby = lobby.filter(function (value, index) { return value != userID });
+}
+
+function joinLobby(socket) {
+    lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
+    socket.join("lobby"); // Adds socket to room "lobby"
+}
+
+function leaveLobby(socket) {
+    lobby = lobby.filter(function (value, index) { return value != socket.id });
+    socket.leave("lobby");
 }
 
 

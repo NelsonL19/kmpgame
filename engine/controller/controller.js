@@ -32,7 +32,7 @@ class Controller {
         this.game.onWin(function (winner, totalTime, score) {
             let playerIsWinner;
             let enemyIsWinner;
-
+            console.log(score);
             switch(winner) {
                 case "enemy": playerIsWinner = false; enemyIsWinner = true;
                 case "player": playerIsWinner = true; enemyIsWinner = false;
