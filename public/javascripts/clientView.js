@@ -114,9 +114,13 @@ socket.on('invitation declined', () => {
     loadGameOptions();
 });
 
+socket.on('ranks', (rankings) => {
+    loadLeaderboard(rankings);
+})
 
 
-function loadTableDOM(board) {
+
+function loadTableDOM (board) {
     for (let i = 0; i < 225; i++) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
@@ -163,7 +167,7 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function loadLogIn() {
+function loadLogIn () {
     $mainContainer.empty();
     let logInHTML = `
     <div class="box" id="login_box">
@@ -199,7 +203,7 @@ function loadLogIn() {
 /**
  * Loads in the account creator into $heroBody
  */
-function loadAccountCreator() {
+function loadAccountCreator () {
     $mainContainer.empty();
     let accountCreatorHTML = `
     <div class="box" id="account_creation_box">
@@ -236,7 +240,7 @@ function loadAccountCreator() {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby() {
+function loadLobby () {
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
@@ -263,15 +267,21 @@ function loadLobby() {
     });
 }
 
-function loadNewGameButton() {
+function loadNewGameButton () {
     $('#game_creation_box').empty();
     $('#game_creation_box').append('<button class="button is-success" id="new_game">New Game</button>');
+    $('#game_creation_box').append('<button class="button" id="leader">Leaderboards</button>');
+
     $('#new_game').on('click', function () {
         loadGameOptions();
     });
+
+    $('#leader').on('click', function () {
+        loadLeaderboard();
+    });
 }
 
-function loadGameOptions() {
+function loadGameOptions () {
     $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
@@ -294,7 +304,7 @@ function loadGameOptions() {
     });
 }
 
-function loadInvitationCreator() {
+function loadInvitationCreator () {
     $('#game_creation_box').empty(); // Empties the top bar above chat
     let invitationHTML = `
     <label>Recipient of invitation:</label>
@@ -315,7 +325,7 @@ function loadInvitationCreator() {
     $('#send').on('click', function () {
         let recipientID = $('#users').val();
         if (recipientID != 'default') { // If they've selected a valid player to send the message to
-            $('#game_creation_box').empty().append(`<p>Wherever the spirit moves you</p>`);
+            $('#game_creation_box').empty().append(`<p>Invite Sent! Waiting on a Response</p>`);
             socket.emit('send game invite', recipientID);
         }
     });
@@ -325,7 +335,7 @@ function loadInvitationCreator() {
     });
 }
 
-function loadWaitingRoomMessage() {
+function loadWaitingRoomMessage () {
     $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
         <p>Waiting for another player to join, please wait...</p>
@@ -338,7 +348,7 @@ function loadWaitingRoomMessage() {
     });
 }
 
-function loadGamePage() {
+function loadGamePage () {
     $mainContainer.empty();
     let page = `
                             <h1 class="title">Current Opponent</h1>
@@ -348,11 +358,11 @@ function loadGamePage() {
                             <p class="title">Current Time</p>
                             <h1 class="subtitle" id="time">00:00:00</h1>
                             <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">`
+                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220); opacity: 1;">`
     $(page).appendTo($mainContainer);
 }
 
-function loadGameInvite(invitingUserName, invitingUserID) {
+function loadGameInvite (invitingUserName, invitingUserID) {
     let inviteHTML = `
     <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}"> ${invitingUserName} is inviting you to a game. Accept Invite?
         <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
@@ -369,7 +379,7 @@ function loadGameInvite(invitingUserName, invitingUserID) {
     })
 }
 
-function loadStartTable() {
+function loadStartTable () {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
@@ -382,7 +392,8 @@ function loadStartTable() {
     }
 }
 
-function loadGameWon(hasWon, totalTime, score) {
+function loadGameWon (hasWon, totalTime, score) {
+    let time = (totalTime / 1000).toString();
     gameOver = true;
     lockControls = true;
     // "player"
@@ -425,36 +436,37 @@ function loadGameWon(hasWon, totalTime, score) {
                 font-size: 20px;
                 text-shadow: 1px 1px 1px rgb(100, 128, 153)"
                 >Sushi Eaten: ${score}<br>
-                Time: ${totalTime}</h2>
+                Time: ${time}</h2>
                 <br>
+                <div id="wonLead">
                 <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
-                
+                </div>
                 <br>
                 </div>
             </div>`
-            ;
+        ;
     $mainContainer.append(gameWonHTML);
 
+    if (!hasWon) {
+        $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
+
+    }
+    
     $('#goBack').on('click', function () {
         console.log("loading the lobby")
         socket.emit('return to lobby');
         loadLobby();
     })
-    //<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>
-    // $('#leaderboards').on('click', function () {
-    //     let time = totalTime.toString();
-    //     socket.emit('write leaderboards', globalUsername, time)
-    //     $('#leaderboards').replaceWith('')
-    // })
+
+    $('#leaderboard').on('click', function () {
+        socket.emit('write leaderboards', globalUsername, time)
+        $('#leaderboards').replaceWith('')
+    })
 }
 
-function loadLeaderboard() {
-
-
+function loadLeaderboard (rankings) {
     $mainContainer.empty(); // clears body
     let leaderboardHTML = `
-    <div class="hero-body">
-        <div class="container">
 
             <h1 style = "color: rgb(200, 200, 200);
                 text-align: center;
@@ -464,20 +476,27 @@ function loadLeaderboard() {
             <div class="scrollBox" id="leaderboard_window">
         
             </div>
+            <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>`;
+    $mainContainer.append(leaderboardHTML);
 
-        </div>
-    </div>`;
-    $page.append(leaderboardHTML);
+    $('#goBack').on('click', function () {
+        console.log("loading the lobby")
+        loadLobby();
+    })
 
-
-    //stuff to append leaders
+    for (let i = 0; i < rankings.length; i++) {
+        console.log(rankings[i])
+        let $message = $(`<p># ${i} Name: ${Object.values(rankings[i])[0]}     Time: ${Object.values(rankings[i])[1]}</p>`);
+        // Sanitizes message, parsing string as text and not HTML
+        $('#leaderboard_window').append($message); // Writes message to chat window
+    }
 }
 
 /**
  * Called to accept a particular invitation
  * @param {string} invitingUserID User (socket) ID of the inviting player
  */
-function acceptInvitation(invitingUserID) {
+function acceptInvitation (invitingUserID) {
     socket.emit('accept invitation', invitingUserID); // Tells server that the invitation was accepted
     deleteInvitation(invitingUserID);
     for (let id of pendingInvitations) { // Iterates through array of remaining invitations and declines them
@@ -485,7 +504,7 @@ function acceptInvitation(invitingUserID) {
     }
 }
 
-function declineInvitation(invitingUserID) {
+function declineInvitation (invitingUserID) {
     console.log("Declined invitation");
     socket.emit('decline invitation', invitingUserID); // Tells server that the invitation was declined
     deleteInvitation(invitingUserID);
@@ -495,7 +514,7 @@ function declineInvitation(invitingUserID) {
  * Removes invitation from given user ID from array pendingInvites
  * @param {string} invitingUserID 
  */
-function deleteInvitation(invitingUserID) {
+function deleteInvitation (invitingUserID) {
     pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
         return value != invitingUserID;
     });
