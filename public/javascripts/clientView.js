@@ -27,18 +27,18 @@ $(async function () {
 
 });
 
-socket.on("game won", (hasWon, totalTime) => {
-    loadGameWon(hasWon, totalTime);
+socket.on("game won", (hasWon, totalTime, score) => {
+    loadGameWon(hasWon, totalTime, score);
 });
-
-socket.on('game starting', function (id, role) { // Backend informs client that game is starting
+//
+socket.on('game starting', function (id, role, currPlayer, currEnemy) { // Backend informs client that game is starting
     lobbyMusic.pause();
     matchMusic.currentTime = 0
     matchMusic.play();
     matchID = id;
     console.log("Game starting! Match ID = "+matchID);
     $page.empty(); // Erases the page
-    loadGamePage();
+    loadGamePage(currPlayer, currEnemy);
     loadStartTable();
     gameOver = false;
     lockControls = false;
@@ -49,6 +49,7 @@ socket.on('unlock controls', function () {
 });
 
 socket.on('render board', function (board, time, score) {
+    $('#score').replaceWith(`<h1 class="subtitle" id="score">${score}</h1>`)
     $('td').removeClass(); // Removes class from all <td> elements
     loadTableDOM(board); // reloads the board
     $('#time').text(time);
@@ -252,9 +253,23 @@ function loadAccountCreator () {
     });
 
     $('#create_account').on('click', function () {
-        let username = $('#new_username').val();
-        let password = $('#new_password').val(); 
-        socket.emit("check if username taken", username, password);
+        if($('#new_username').val()!=='' && $('#new_password').val()!==''){
+            if($('#new_username').val().length>=5 && $('#new_password').val().length>=5){
+                let username = $('#new_username').val();
+                let password = $('#new_password').val(); 
+                socket.emit("check if username taken", username, password);
+            } else{
+                $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">Please make sure both fields are at least 5 characters</h1>`)
+                setTimeout(function () {
+                    $(`#alred`).replaceWith(``)
+                }, 2000);
+            }
+        } else{
+            $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">Please make sure both fields are not empty</h1>`)
+            setTimeout(function () {
+                $(`#alred`).replaceWith(``)
+            }, 2000);
+        }
         // Code continues under the socket.on("check if username taken result") listener
     });
 
@@ -277,7 +292,7 @@ function loadLobby () {
 
     </div>
     <footer>
-        <div class="field">
+        <div class="field inputfield">
             <label class="label">Message:</label>
             <input class="input" type="text" id="message">
         </div>
@@ -288,15 +303,19 @@ function loadLobby () {
     `;
     $mainContainer.append(chatHTML);
     loadNewGameButton();
-    // $('#send_button').on('keydown', function (e) {
-    //     if(e.which ==13 ){
-    //         socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
-    //         $('#message').val(""); // Emptys the text input
-    //     }
-    // });
+    $('.inputfield').on('keydown', '#message', function (e) {
+        if($('#message').val()!==''){
+            if(e.which == 13 ){
+                socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
+                $('#message').val(""); // Emptys the text input
+            }
+        }
+    });
     $('#send_button').on('click', function () {
-        socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
-        $('#message').val(""); // Emptys the text input
+        if($('#message').val()!==''){
+            socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
+            $('#message').val(""); // Emptys the text input
+        }
     });
 }
 
@@ -381,13 +400,13 @@ function loadWaitingRoomMessage () {
     });
 }
 
-function loadGamePage () {
+function loadGamePage (currPlayer, currEnemy) {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
                         <div class="container">
                             <h1 class="title">Current Opponent</h1>
-                            <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                            <h1 class="subtitle" id="vs">${currPlayer} vs. ${currEnemy}</h1>
                             <h1 class="title">Current Score</h1>
                             <h1 class="subtitle" id="score">0</h1>
                             <p class="title">Current Time</p>
