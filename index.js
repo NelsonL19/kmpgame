@@ -42,7 +42,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         leaveLobby(socket);
         joinWaitingRoom(socket); // Adds user to the waiting room
         if (waitingRoom.length == 2) { // If there's 2 people in the waiting room after adding the user, move them to a match
-            createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]], users); // Calls helper method, passing the first 2 socket IDs in waiting room
+            createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]]); // Calls helper method, passing the first 2 socket IDs in waiting room
         }
     });
 
@@ -218,7 +218,7 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket1 ID of the first socket
  * @param {string} socket2 ID of the second socket
  */
-function createGame (socket1, socket2, users) {
+function createGame (socket1, socket2) {
     leaveLobby(socket1);
     leaveLobby(socket2);
     leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
