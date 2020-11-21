@@ -197,6 +197,7 @@ function loadLogIn () {
     let logInHTML = `
     <div class="box" id="login_box">
         <div class="field">
+            <h1 class="title is-link">KMP's Spicy 9 Adventure: Delxue Edition</h1>
             <label class="label">Username:</label>
             <input class="input" type="text" id="username">
         </div>
@@ -422,7 +423,7 @@ function loadGamePage (currPlayer, currEnemy) {
 function loadGameInvite (invitingUserName, invitingUserID) {
     pendingInvitations.push(invitingUserID);
     let inviteHTML = `
-    <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}"> ${invitingUserName} is inviting you to a game. Accept Invite?
+    <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}" id = "${invitingUserID}_invite"> ${invitingUserName} is inviting you to a game. Accept Invite?
         <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
         <button style="background-color:#f14668; border-radius:5px; color:white; border-width:0px;" id="decline_${invitingUserID}">No</button>
     </p>`
@@ -589,5 +590,6 @@ function deleteInvitation (invitingUserID) {
     pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
         return value != invitingUserID;
     });
+    $(`#${invitingUserID}_invite`).remove();
 }
 
