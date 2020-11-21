@@ -23,19 +23,28 @@ class Controller {
      * @param {View} view1 View object for Player 1
      * @param {View} view2 View object for Player 2
      */
-    constructor (game, view1, view2) {
+    constructor(game, view1, view2) {
         console.log("Constructing new Controller");
         this.game = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
 
         this.game.onWin(function (winner, totalTime, score) {
+
+            console.log("Final Score: " + score);
+            console.log("Final Winner: " + winner);
             let playerIsWinner;
             let enemyIsWinner;
-            console.log(score);
-            switch(winner) {
-                case "enemy": playerIsWinner = false; enemyIsWinner = true;
-                case "player": playerIsWinner = true; enemyIsWinner = false;
+
+            switch (winner) {
+                case "enemy":
+                    playerIsWinner = false;
+                    enemyIsWinner = true;
+                    break;
+                case "player":
+                    playerIsWinner = true;
+                    enemyIsWinner = false;
+                    break;
             }
 
             view1.gameWon(playerIsWinner, totalTime, score);
@@ -52,7 +61,7 @@ class Controller {
     move (isEnemy, direction) {
         let element // To be defined. The Element object being moved
         if (isEnemy) { // if moving the enemy controlled by Player 2
-            element = this.game.enemies.filter(function (value, index) {return value.isCPU == false})[0]; // gets enemy controlled by Player 2
+            element = this.game.enemies.filter(function (value, index) { return value.isCPU == false })[0]; // gets enemy controlled by Player 2
         }
         else {
             element = this.game.player;
@@ -76,7 +85,7 @@ class Controller {
     /**
      * Notifies the Views of the current state of the board
      */
-    notifyViews() {
+    notifyViews () {
         let gameState = this.game.getGameState();
         let board = gameState.board;
         let score = gameState.score;
@@ -91,13 +100,13 @@ class Controller {
         if (seconds.toString().length == 1) {
             seconds = '0' + seconds;
         }
-        let tenthsOfSeconds = elapsedTenthsOfSeconds - elapsedSeconds*10;
+        let tenthsOfSeconds = elapsedTenthsOfSeconds - elapsedSeconds * 10;
 
         let time = `${minutes}:${seconds}.${tenthsOfSeconds}`;
         this.view1.renderBoard(board, time, score);
         this.view2.renderBoard(board, time, score);
     }
-    
+
 
     startGame () {
         this.gameClock(this.game, this, 0);
@@ -116,7 +125,7 @@ class Controller {
      * @param {Controller} controller instance of the Controller object 
      */
     gameClock (game, controller, totalTicks) {
-        if (totalTicks%4 == 0) { // Only call move AI every 4 ticks
+        if (totalTicks % 4 == 0) { // Only call move AI every 4 ticks
             game.moveAI();
         }
         controller.view1.socket.emit('unlock controls');
@@ -125,7 +134,7 @@ class Controller {
 
         controller.notifyViews();
         totalTicks++;
-        
+
         if (!game.isOver) { // if the game isn't over yet
             setTimeout(controller.gameClock, 125, game, controller, totalTicks);
         }

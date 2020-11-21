@@ -42,7 +42,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         leaveLobby(socket);
         joinWaitingRoom(socket); // Adds user to the waiting room
         if (waitingRoom.length == 2) { // If there's 2 people in the waiting room after adding the user, move them to a match
-            createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]]); // Calls helper method, passing the first 2 socket IDs in waiting room
+            createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]], users); // Calls helper method, passing the first 2 socket IDs in waiting room
         }
     });
 
@@ -218,7 +218,7 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket1 ID of the first socket
  * @param {string} socket2 ID of the second socket
  */
-function createGame (socket1, socket2) {
+function createGame (socket1, socket2, users) {
     leaveLobby(socket1);
     leaveLobby(socket2);
     leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
@@ -227,8 +227,12 @@ function createGame (socket1, socket2) {
     console.log("Match ID: " + matchID);
     matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
     // Notifies the client-facing code that the game is starting and what role their player has
-    socket1.emit('game starting', matchID, 'player1');
-    socket2.emit('game starting', matchID, 'player2');
+    console.log("sending user: "+ socket1.id);
+    console.log("sending user: "+ socket2.id);
+    console.log("sending user: "+ socket1);
+    console.log("sending user: "+ socket2);
+    socket1.emit('game starting', matchID, 'player1', users[socket1.id], users[socket2.id]);
+    socket2.emit('game starting', matchID, 'player2', users[socket2.id], users[socket1.id]);
     matches[matchID].controller.notifyViews();
     matches[matchID].controller.startGame();
 }
