@@ -63,9 +63,9 @@ socket.on("check if username taken result", found => {
     if (!found) {
         //No Username Found
         createAccount(username, password);
+        socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered
         $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
         setTimeout(function () {
-            socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
             loadLobby();
         }, 3500);
 
@@ -264,7 +264,7 @@ function loadInvitationCreator () {
     let invitationHTML = `
     <label>Recipient of invitation:</label>
     <select class="select" name="users" id="users">
-        <option value="default">Select a Player</option>
+        <option value="defau//lt">Select a Player</option>
     </select>
     <button class="button is-success" id="send">Send</button>
     <button class="button is-danger" id="cancel">Cancel</button>
