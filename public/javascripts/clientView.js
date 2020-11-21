@@ -4,6 +4,8 @@
  * This is the javascript file to be used on that one HTML page
  */
 
+import { sha256 } from 'js-sha256';
+
 const socket = io();
 
 const $page = $('body');
@@ -181,7 +183,7 @@ function loadAccountCreator () {
 
     $('#create_account').on('click', function () {
         let username = $('#new_username').val();
-        let password = $('#new_password').val();
+        let password = sha256($('#new_password').val());
         socket.emit("check if username taken", username);
         // Code continues under the socket.on("check if username taken result") listener
     });
