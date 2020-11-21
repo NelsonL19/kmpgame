@@ -26,17 +26,17 @@ class Controller {
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
 
-        this.game.onWin(function (winner, totalTime) {
+        this.game.onWin(function (winner, totalTime, score) {
             let playerIsWinner;
             let enemyIsWinner;
 
             switch(winner) {
                 case "enemy": playerIsWinner = false; enemyIsWinner = true;
-                case "player": playerIsWinner = ture; enemyIsWinner = false;
+                case "player": playerIsWinner = true; enemyIsWinner = false;
             }
 
-            this.view1.gameWon(playerIsWinner, totalTime);
-            this.view2.gameWon(enemyIsWinner, totalTime);
+            view1.gameWon(playerIsWinner, totalTime, score);
+            view2.gameWon(enemyIsWinner, totalTime, score);
         });
     }
 

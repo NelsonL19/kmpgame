@@ -8,8 +8,9 @@ const socket = io();
 
 const $page = $('body');
 const $mainContainer = $('#main_container');
+let globalUsername;
 
-let usersInLobby = {}; // Key value pairs of
+let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
 $(function () {
     loadLogIn();
@@ -67,6 +68,7 @@ socket.on("check if username taken result", found => {
         $('#cancel_create').replaceWith('');
         $('#create_account').replaceWith('');
         setTimeout(function () {
+            globalUsername = $('#new_username').val()
             socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered
             loadLobby();
         }, 2000);
@@ -86,6 +88,7 @@ socket.on("verify account", correct => {
         $('#submit').replaceWith('');
         $('#create_new_account').replaceWith('');
         setTimeout(function () {
+            globalUsername = $('#username').val()
             socket.emit('user logged in', $('#username').val()); // Sends the server code what the user has entered 
             loadLobby();
         }, 2000);
@@ -101,6 +104,10 @@ socket.on('load game invite', (invitingPlayerName, invitingPlayerID) => {
     loadGameInvite(invitingPlayerName, invitingPlayerID);
 });
 
+socket.on('invitation declined', () => {
+    console.log("Your invitation got declined you loser");
+    loadGameOptions();
+});
 
 
 
@@ -300,7 +307,7 @@ function loadInvitationCreator() {
     $('#send').on('click', function () {
         let recipientID = $('#users').val();
         if (recipientID != 'default') { // If they've selected a valid player to send the message to
-            $('game_creation_box').replaceWith(`<p>Wherever the spirit moves you</p>`);
+            $('#game_creation_box').empty().append(`<p>Wherever the spirit moves you</p>`);
             socket.emit('send game invite', recipientID);
         }
     });
@@ -345,17 +352,17 @@ function loadGamePage() {
 function loadGameInvite(invitingUserName, invitingUserID) {
     let inviteHTML = `
     <p class="field"> ${invitingUserName} is inviting you to a game. Accept Invite?
-        <button class="button is-link" id="accept_${invitingUserID}">Yes</button>
-        <button class="button is-info" id="decline_${invitingUserID}">No</button>
+        <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
+        <button style="background-color:#f14668; border-radius:5px; color:white; border-width:0px;" id="decline_${invitingUserID}">No</button>
     </p>`
     $('#chat_window').append(inviteHTML); // Writes invite to chat window
     $('#chat_window').animate({ scrollTop: $('#chat_window').height() }, "slow"); // Automatically scrolls to new chat
     
-    $(`decline_${invitingUserID}`).on('click', function (){
-        socket.emit('decline invite', invitingUserID);
+    $(`#decline_${invitingUserID}`).on('click', function (){
+        declineInvitation(invitingUserID);
     })
-    $(`accept_${invitingUserID}`).on('click', function () {
-        socket.emit('accept invite', invitingUserID);
+    $(`#accept_${invitingUserID}`).on('click', function () {
+        acceptInvitation(invitingUserID);
     })
 }
 
@@ -372,14 +379,28 @@ function loadStartTable() {
     }
 }
 
-function loadGameWon(hasWon, totalTime) {
+function loadGameWon(hasWon, totalTime, score) {
     // "player"
     // "enemy"
 
     // "You Won!"
     // "You lost, idiot."
 
-    $page.empty();
+    let winLose = "";
+    let color = "";
+    let kmpFace = "";
+
+    if (hasWon) {
+        winLose = "You Win!";
+        color = "#00ff00";
+        kmpFace = "player";
+    } else {
+        winLose = "Congratulations, you lost!";
+        color = "#ff0000";
+        kmpFace = "dead_player";
+    }
+
+    $page.empty(); // clears body
     let gameWonHTML = `<section class="hero is-fullheight is-link is-bold" id="gameOverContainer">
     <div class="hero-body">
         <div class="container">
@@ -389,45 +410,52 @@ function loadGameWon(hasWon, totalTime) {
                     <h1 style = "color: rgb(200, 200, 200);
                     text-align: center;
                     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-                    text-shadow: 2px 2px 5px rgb(100, 100, 150); font-size: 50px;"
+                    text-shadow: 2px 2px 5px ${color}; font-size: 50px;"
                     >Game Over</h1>
 
-                    <h2 style="color: rgb(255, 255, 255);
+                    <h2 style="color: rgb(130, 130, 130);
                     text-align: center;
                     font-family: verdana;
                     font-size: 20px;
-                    text-shadow: 0px 0px 5px rgb(0, 0, 0)"
-                    >(INSERT WON/LOST HERE)</h2>
+                    text-shadow: 1px 1px 2px rgb(100, 128, 153)"
+                    >${winLose}</h2>
                 </div>
 
-                <h2 style="color: rgb(255, 255, 255);
+                <h2 style="color: rgb(130, 130, 130);
                 text-align: center;
                 font-family: verdana;
                 font-size: 20px;
-                text-shadow: 0px 0px 5px rgb(0, 0, 0)"
-                >Score: (INSERT SCORE)<br>
-                Time: (INSERT TIME)</h2>
+                text-shadow: 1px 1px 1px rgb(100, 128, 153)"
+                >Sushi Eaten: ${score}<br>
+                Time: ${totalTime}</h2>
                 <br>
-                <div style="text-align: center;"><button class="button" id="goBack" style="margin-left: auto; margin-right: auto;">Log Score</button></div>
+
+                <table style="text-align: center; background-image: none; margin-left: auto; margin-right: auto;">
+                    <tr>
+                        <td style="background-image: none; background-color: white;"><button class="button is-primary is-light" id="goBack">Back To Lobby</button></td>
+                        <td style="background-image: none; background-color: white;"><button class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button></td>
+                    </tr>
+                </table>
+
                 <br>
                 <table style="margin-left: auto; margin-right: auto;">
                     <tr>
-                        <td class="majikes_enemy"></td>
-                        <td class="cynthia_enemy"></td>
+                        <td class="jordan_enemy"></td>
                         <td class="munsell_enemy"></td>
+                        <td class="stotts_enemy"></td>
+                        <td class="snoeyink_enemy"></td>
+                        <td class="majikes_enemy"></td>
+                        <td class="plaisted_enemy"></td>
+                        <td class="cynthia_enemy"></td>
+                        <td class="terrell_enemy"></td>
+                        <td class="porter_enemy"></td>
+                        <td class="diane_enemy"></td>
+                        <td class="kevin_enemy"></td>
+                        <td class="folt_enemy"></td>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="player"></td>
+                        <td class="${kmpFace}"></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -443,6 +471,49 @@ function loadGameWon(hasWon, totalTime) {
     </div>
 </section>`;
     $page.append(gameWonHTML);
+    
+    $('.jordan_enemy').on('click', function () {
+        window.open( 
+            "https://krisjordan.com/", "_blank"); 
+    })
+
+    $('#goBack').on('click', function () {
+        loadLobby();
+    })
+
+    $('#leaderboards').on('click', function () {
+        let time = totalTime.toString();
+        socket.emit('write leaderboards', globalUsername, time)
+        $('#leaderboards').replaceWith('')
+    })
 }
 
+
+/**
+ * Called to accept a particular invitation
+ * @param {string} invitingUserID User (socket) ID of the inviting player
+ */
+function acceptInvitation(invitingUserID) {
+    socket.emit('accept invitation', invitingUserID); // Tells server that the invitation was accepted
+    deleteInvitation(invitingUserID);
+    for (let id of pendingInvitations) { // Iterates through array of remaining invitations and declines them
+        declineInvitation(id);
+    }
+}
+
+function declineInvitation(invitingUserID) {
+    console.log("Declined invitation");
+    socket.emit('decline invitation', invitingUserID); // Tells server that the invitation was declined
+    deleteInvitation(invitingUserID);
+}
+
+/**
+ * Removes invitation from given user ID from array pendingInvites
+ * @param {string} invitingUserID 
+ */
+function deleteInvitation (invitingUserID) { 
+    pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
+        return value != invitingUserID;
+    });
+}
 

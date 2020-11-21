@@ -385,7 +385,7 @@ class Game {
             if (this.player.isDead) { winner = "enemy"; } // If a win has occurred and the player is dead, then it means the enemy won
             else { winner = "player"; }
         this.winListeners.forEach(callback => {
-            callback(winner, this.totalTime);
+            callback(winner, this.totalTime, this.score);
         });
     }
 

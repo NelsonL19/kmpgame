@@ -83,13 +83,27 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         });
     });
 
-    socket.on('write leaderboards', function (username, score, time) {
+    socket.on('write leaderboards', function (username, time) {
 
         fs.readFile('./DB/leaderboards.json', 'utf-8', function (err, data) {
             if (err) throw err
             let db = JSON.parse(data)
             let rankings = db.rankings;
 
+
+            for (let i = 0; i < db.rankings.length; i++) {
+                if (parseInt(time) < parseInt(Object.values(db.rankings[i])[1], 10)) {
+                    db.rankings.splice(i, 0, {"name":username, "time": time});
+                    break;
+                }
+            }
+
+
+            db.rankings.push(account);
+            fs.writeFile('./DB/leaderboards.json', JSON.stringify(db), 'utf-8', function (err, data) {
+                if (err) throw err;
+            });
+            socket.emit("added to leaderboards"); // Emits the result of whether the username was taken or not to client
         });
     });
 
@@ -99,8 +113,8 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on("check if username taken", function (username, password) {
         // Callback
-        console.log("username passed in: " + username);
-        console.log("password passed in: " + password);
+        // console.log("username passed in: " + username);
+        // console.log("password passed in: " + password);
 
         fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
             if (err) throw err
@@ -124,7 +138,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                 db.accounts.push(account);
                 fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
                     if (err) throw err;
-                    console.log("Account created");
+                    //console.log("Account created");
                 })
 
             }
@@ -134,8 +148,8 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on("checkUserPassword", function (username, password) {
 
-        console.log("username passed in: " + username);
-        console.log("password passed in: " + password);
+        //console.log("username passed in: " + username);
+        //console.log("password passed in: " + password);
 
         fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
             if (err) throw err
@@ -146,20 +160,29 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                 if (username === Object.values(db.accounts[i])[0]) {
                     //console.log("name passed in: " + username);
                     if (password === Object.values(db.accounts[i])[1]) {
-                        console.log("found");
+                        //console.log("found");
                         found = true;
                         break;
                     }
                 }
             }
-            console.log(found)
+            //console.log(found)
             socket.emit("verify account", found); // Emits the result of whether the username was taken or not to client
         });
     })
 
     socket.on('send game invite', (userID) => {
         let recipientSocket = sockets[userID]; // Gets the socket associated with the invite's recipient
-        recipientSocket.emit('load game invite', users[socket], socket.id) // Passes the username and ID of who invited them to join a game
+        recipientSocket.emit('load game invite', users[socket.id], socket.id) // Passes the username and ID of who invited them to join a game
+    });
+
+    socket.on('accept invitation', (invitingUserID)=>{
+        createGame(sockets[invitingUserID], socket);
+    });
+
+    socket.on('decline invitation', (invitingUserID)=>{
+        console.log("Declining invitation");
+        sockets[invitingUserID].emit('invitation declined');
     });
 
     socket.on('disconnect', () => {
@@ -212,3 +235,4 @@ function removeFromLobby(userID) {
 
 
 
+{}
