@@ -4,7 +4,9 @@ class View {
      * @param {Socket} socket instance of socket object that represents the connection made by gameview.js running client-side
      */
     constructor(socket) {
+        console.log("Constructing new View");
         this.socket = socket;
+        console.log("New View constructed!");
     }
 
     gameWon(winner, totalTime) {

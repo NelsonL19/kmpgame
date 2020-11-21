@@ -1,8 +1,9 @@
-const Air = require('./elements/Air').airClass;
-const Enemy = require('./elements/Enemy').enemyClass;
-const Player = require('./elements/Player').playerClass;
-const Sushi = require('./elements/Sushi').sushiClass;
-const Wall = require('./elements/Wall').wallClass;
+let Air = require('./elements/Air').airClass;
+let Enemy = require('./elements/Enemy').enemyClass;
+let Player = require('./elements/Player').playerClass;
+let Sushi = require('./elements/Sushi').sushiClass;
+let Wall = require('./elements/Wall').wallClass;
+const { Console } = require('console');
 const boards = require('./Boards');
 
 // Class used for creating Model objects
@@ -11,6 +12,7 @@ class Game {
      * Creates a new instance of the Game object
      */
     constructor() {
+        console.log("Constructing new Game...");
         this.player; // reference to Player object
         this.enemies = new Array(); // array who's elements are references to the Enemy objects
         let randomBoard = this.getRandomPremadeBoard();
@@ -24,15 +26,17 @@ class Game {
         this.isOver = false;
         this.moveListeners = new Array();
         this.winListeners = new Array();
+        console.log("New Game constructed!");
     }
 
     getRandomPremadeBoard() {
-        let random = Math.floor(Math.random() * 4);
+        //let random = Math.floor(Math.random() * 4);
+        let random = 0; // Removing randomizer for testing purposes
         switch (random) {
-            case 0: return boards.board0;
-            case 1: return boards.board1;
-            case 2: return boards.board2;
-            case 3: return boards.board3;
+            case 0: return [...boards.board0]; // Needs the ... to make a clone of the array
+            case 1: return [...boards.board1]; // so it doesn't change the actual values in boards
+            case 2: return [...boards.board2];
+            case 3: return [...boards.board3];
         }
     }
 
@@ -48,7 +52,7 @@ class Game {
             switch (board[i]) {
                 case "w": elementObj = new Wall(); break; // Wall object
                 case "a": elementObj = new Air(); break; // Air object
-                case "p": elementObj = new Player(); this.player = elementObj; break; // Player object
+                case "p": elementObj = new Player(); this.player = elementObj; console.log("Game.js: loaded in \"p\" and made a new Player"); break; // Player object
                 case "n": elementObj = new Sushi("nigiri"); break; // Sushi object with type "nigiri"
                 case "sa": elementObj = new Sushi("sashimi"); break; // Sushi object with type "sashimi"
                 case "su": elementObj = new Sushi("sushi"); break; // Sushi object with type "sushi"

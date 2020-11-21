@@ -1,9 +1,11 @@
-const Game = require('../model/Game').gameClass;
-const View = require('../view/View').viewClass;
-const Controller = require('./controller').controllerClass;
+let Game = require('../model/Game').gameClass;
+let View = require('../view/View').viewClass;
+let Controller = require('./controller').controllerClass;
 
 class Match {
-    constructor (player1Socket, player2Socket) {
+    constructor (matchID, player1Socket, player2Socket) {
+        console.log("Constructing new Match...")
+        this.id = matchID;
         this.player1Socket = player1Socket;
         this.player2Socket = player2Socket;
 
@@ -11,6 +13,7 @@ class Match {
         this.view1 = new View(this.player1Socket);
         this.view2 = new View(this.player2Socket);
         this.controller = new Controller(this.game, this.view1, this.view2);
+        console.log("New Match Constructed!")
     }
 
 }

@@ -12,6 +12,7 @@ let globalUsername;
 
 let lockControls = false // Set true to keep from spamming emits to the server by holding down arrow keys
 let gameOver = true;
+let matchID = undefined;
 
 let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
@@ -24,8 +25,9 @@ socket.on("game won", (hasWon, totalTime) => {
     loadGameWon(hasWon, totalTime);
 });
 
-socket.on('game starting', function (role) { // Backend informs client that game is starting 
-    console.log("Game starting!");
+socket.on('game starting', function (id, role) { // Backend informs client that game is starting 
+    matchID = id;
+    console.log("Game starting! Match ID = "+matchID);
     $page.empty(); // Erases the page
     loadGamePage();
     loadStartTable();
@@ -38,7 +40,7 @@ socket.on('unlock controls', function () {
 });
 
 socket.on('render board', function (board, time, score) {
-    $('td').removeClass();
+    $('td').removeClass(); // Removes class from all <td> elements
     loadTableDOM(board); // reloads the board
     $('#time').text(time);
 });
@@ -138,7 +140,7 @@ function loadTableDOM (board) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
             case "a": $(`#c${i}`).addClass('air'); break;
-            case "p": $(`#c${i}`).addClass('player'); break;
+            case "p": $(`#c${i}`).addClass('player'); console.log("loaded player"); break;
 
             case "n": $(`#c${i}`).addClass('nigiri'); $(`#c${i}`).addClass('powerup'); break;
             case "sa": $(`#c${i}`).addClass('sashimi'); $(`#c${i}`).addClass('powerup'); break;
@@ -171,10 +173,10 @@ function loadTableDOM (board) {
 window.addEventListener('keydown', (event) => {
     if (!lockControls && !gameOver) {
         switch (event.key) {
-            case 'ArrowUp': socket.emit('move', 'up'); break;
-            case 'ArrowDown': socket.emit('move', 'down'); break;
-            case 'ArrowLeft': socket.emit('move', 'left'); break;
-            case 'ArrowRight': socket.emit('move', 'right'); break;
+            case 'ArrowUp': socket.emit('move', matchID, 'up'); break;
+            case 'ArrowDown': socket.emit('move', matchID, 'down'); break;
+            case 'ArrowLeft': socket.emit('move', matchID, 'left'); break;
+            case 'ArrowRight': socket.emit('move', matchID, 'right'); break;
         }
         lockControls = true; // Locks controls until the next game tick
     }
@@ -413,11 +415,12 @@ function loadStartTable () {
 
 function loadGameWon (hasWon, totalTime, score) {
 
-    socket.emit('game ended');
+    socket.emit('game ended', matchID);
 
     let time = (totalTime / 1000).toString();
     gameOver = true;
     lockControls = true;
+    matchID = undefined;
     // "player"
     // "enemy"
 

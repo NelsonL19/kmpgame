@@ -24,6 +24,7 @@ class Controller {
      * @param {View} view2 View object for Player 2
      */
     constructor (game, view1, view2) {
+        console.log("Constructing new Controller");
         this.game = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
@@ -40,7 +41,8 @@ class Controller {
             view1.gameWon(playerIsWinner, totalTime, score);
             view2.gameWon(enemyIsWinner, totalTime, score);
         });
-    }
+        console.log("New Controller constructed!");
+    };
 
     /**
      * Moves either the Player or Enemy controlled by Player 2 in a given direction
@@ -92,8 +94,6 @@ class Controller {
         let tenthsOfSeconds = elapsedTenthsOfSeconds - elapsedSeconds*10;
 
         let time = `${minutes}:${seconds}.${tenthsOfSeconds}`;
-
-        console.log(time);
         this.view1.renderBoard(board, time, score);
         this.view2.renderBoard(board, time, score);
     }
