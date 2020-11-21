@@ -5,6 +5,10 @@
  */
 
 const socket = io();
+let matchMusic = new Audio('../music/Boss_Fight.mp3');
+let lobbyMusic = new Audio('../music/alexloop.mp3');
+matchMusic.volume = 0.3;
+lobbyMusic.volume = 0.3;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
 let $mainContainer;
@@ -19,13 +23,17 @@ let pendingInvitations = new Array() // Stores the user IDs of all pending invit
 $(async function () {
     loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
     loadLogIn();
+
 });
 
 socket.on("game won", (hasWon, totalTime) => {
     loadGameWon(hasWon, totalTime);
 });
 
-socket.on('game starting', function (id, role) { // Backend informs client that game is starting 
+socket.on('game starting', function (id, role) { // Backend informs client that game is starting
+    lobbyMusic.pause();
+    matchMusic.currentTime = 0
+    matchMusic.play();
     matchID = id;
     console.log("Game starting! Match ID = "+matchID);
     $page.empty(); // Erases the page
@@ -257,6 +265,8 @@ function loadAccountCreator () {
  * the HTML for the chat window in the lobby
  */
 function loadLobby () {
+    lobbyMusic.time = 0;
+    lobbyMusic.play();
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
@@ -414,8 +424,9 @@ function loadStartTable () {
 }
 
 function loadGameWon (hasWon, totalTime, score) {
-
+    matchMusic.pause();
     socket.emit('game ended', matchID);
+    
 
     let time = (totalTime / 1000).toString();
     gameOver = true;

@@ -39,16 +39,15 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('join waiting room', () => {
-        removeFromLobby(socket.id);
-        socket.leave("lobby")
-        waitingRoom.push(id); // Adds user to the waiting room
+        leaveLobby(socket);
+        joinWaitingRoom(socket); // Adds user to the waiting room
         if (waitingRoom.length == 2) { // If there's 2 people in the waiting room after adding the user, move them to a match
             createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]]); // Calls helper method, passing the first 2 socket IDs in waiting room
         }
     });
 
     socket.on('leave waiting room', () => {
-        removeFromWaitingRoom(id);
+        leaveWaitingRoom(socket);
     });
 
     /**
@@ -69,7 +68,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('request users in lobby', () => {
-        console.log("recieving request for users");
+        console.log("recieving request for users in lobby");
         console.log(`Users in lobby: ${lobby}`);
         socket.emit('users in lobby', lobby, users); // Sends requesting socket an array of IDs in the lobby and the users Map to decode the IDs
     });
@@ -119,8 +118,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on("return to lobby", function () {
-        socket.join("lobby"); // Puts the user in the room "lobby"
-        lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
+        joinLobby(socket);
         io.to("lobby").emit('new message', `${users[id]} has completed their game!`);
         socket.emit('new message', "Welcome Back! We hope you enjoyed your game!");
     });
@@ -144,6 +142,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                 }
             }
             if (!found) {
+                newPass = 0;
                 let account = {
                     username: username,
                     password: password
@@ -205,8 +204,8 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         io.to("lobby").emit('new message', `${users[id]} has left the game!`);
         users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
         socket[id] = undefined; // Removes socket from list of sockets
-        removeFromWaitingRoom(id);
-        removeFromLobby(id);
+        leaveWaitingRoom(socket);
+        leaveLobby(socket);
     })
 });
 
@@ -220,12 +219,10 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket2 ID of the second socket
  */
 function createGame (socket1, socket2) {
-    socket1.leave("lobby");
-    socket2.leave("lobby");
-    removeFromWaitingRoom(socket1.id); // Removes Player 1 from the waiting room
-    removeFromLobby(socket1.id)
-    removeFromWaitingRoom(socket2.id) // Removes Player 2 from the waiting room
-    removeFromLobby(socket2.id);
+    leaveLobby(socket1);
+    leaveLobby(socket2);
+    leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
+    leaveWaitingRoom(socket2); // Removes Player 2 from the waiting room
     let matchID = Date.now(); // Unique identifier
     console.log("Match ID: " + matchID);
     matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
@@ -236,17 +233,12 @@ function createGame (socket1, socket2) {
     matches[matchID].controller.startGame();
 }
 
-/**
- * Removes a socket (user) from the waiting room
- * @param {string} userID the ID of a given socket
- */
-function removeFromWaitingRoom (userID) {
-    waitingRoom = waitingRoom.filter(function (value, index) { return value != userID });
+function joinWaitingRoom (socket) {
+    waitingRoom.push(socket.id); // Adds socket ID to list of IDs in the waiting room
 }
 
-
-function removeFromLobby (userID) {
-    lobby = lobby.filter(function (value, index) { return value != userID });
+function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs in the waiting room
+    waitingRoom = waitingRoom.filter(function (value, index) { return value != socket.id });
 }
 
 function joinLobby(socket) {
@@ -255,8 +247,8 @@ function joinLobby(socket) {
 }
 
 function leaveLobby(socket) {
-    lobby = lobby.filter(function (value, index) { return value != socket.id });
-    socket.leave("lobby");
+    lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
+    socket.leave("lobby"); // Removes socket from room "lobby"
 }
 
 
