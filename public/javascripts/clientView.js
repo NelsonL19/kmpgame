@@ -6,8 +6,8 @@
 
 const socket = io();
 
-const $page = $('body');
-const $mainContainer = $('#main_container');
+const $page = $('#page'); // This way it keeps the script tags in when you clear the page
+let $mainContainer;
 let globalUsername;
 
 let lockControls = false // Set true to keep from spamming emits to the server by holding down arrow keys
@@ -15,7 +15,8 @@ let gameOver = true;
 
 let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
-$(function () {
+$(async function () {
+    loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
     loadLogIn();
 });
 
@@ -25,7 +26,7 @@ socket.on("game won", (hasWon, totalTime) => {
 
 socket.on('game starting', function (role) { // Backend informs client that game is starting 
     console.log("Game starting!");
-    //$page.empty(); // Erases the page
+    $page.empty(); // Erases the page
     loadGamePage();
     loadStartTable();
     gameOver = false;
@@ -118,7 +119,19 @@ socket.on('ranks', (rankings) => {
     loadLeaderboard(rankings);
 })
 
-
+function loadHeroAndBackground () {
+    $page.empty(); // Clears out the #page div 
+    let heroAndBackgroundHTML = `
+    <section class="hero is-fullheight is-link is-bold" style="background-image: url(/images/kmpgamelogo.png); background-size: contain; background-repeat: no-repeat; background-position: center;">
+        <div class="hero-body" id="hero_body">
+            <div class="container" id="main_container" style="opacity: 0.9;">
+            </div>
+        </div>
+    </section>
+    `;
+    $page.append(heroAndBackgroundHTML);
+    $mainContainer = $('#main_container');
+}
 
 function loadTableDOM (board) {
     for (let i = 0; i < 225; i++) {
@@ -186,6 +199,7 @@ function loadLogIn () {
     </div>
     `;
     $mainContainer.append(logInHTML);
+    console.log("Loaded in login");
     // Listener for submit button
     $('#submit').on('click', function (e) {
         console.log("Log in clicked");
@@ -197,7 +211,7 @@ function loadLogIn () {
     $('#create_new_account').on('click', function () {
         loadAccountCreator();
     });
-
+    
 }
 
 /**
@@ -228,7 +242,7 @@ function loadAccountCreator () {
 
     $('#create_account').on('click', function () {
         let username = $('#new_username').val();
-        let password = $('#new_password').val(); // Hashes the passwords
+        let password = $('#new_password').val(); 
         socket.emit("check if username taken", username, password);
         // Code continues under the socket.on("check if username taken result") listener
     });
@@ -349,17 +363,21 @@ function loadWaitingRoomMessage () {
 }
 
 function loadGamePage () {
-    $mainContainer.empty();
     let page = `
-                            <h1 class="title">Current Opponent</h1>
-                            <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
-                            <h1 class="title">Current Score</h1>
-                            <h1 class="subtitle" id="score">0</h1>
-                            <p class="title">Current Time</p>
-                            <h1 class="subtitle" id="time">00:00:00</h1>
-                            <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220); opacity: 1;">`
-    $(page).appendTo($mainContainer);
+        <section class="hero is-fullheight is-link is-bold">
+            <div class="hero-body" id="hero_body">
+                <h1 class="title">Current Opponent</h1>
+                <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
+                <h1 class="title">Current Score</h1>
+                <h1 class="subtitle" id="score">0</h1>
+                <p class="title">Current Time</p>
+                <h1 class="subtitle" id="time">00:00:00</h1>
+                <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220); opacity: 1;">
+            </div>
+        </section>
+        `
+    $page.append(page);
 }
 
 function loadGameInvite (invitingUserName, invitingUserID) {
