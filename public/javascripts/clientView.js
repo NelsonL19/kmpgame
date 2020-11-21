@@ -197,6 +197,7 @@ function loadLogIn () {
     let logInHTML = `
     <div class="box" id="login_box">
         <div class="field">
+            <h1 class="title is-link">KMP's Spicy 9 Adventure: Delxue Edition</h1>
             <label class="label">Username:</label>
             <input class="input" type="text" id="username">
         </div>
