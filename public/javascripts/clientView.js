@@ -6,9 +6,9 @@
 
 const socket = io();
 let matchMusic = new Audio('../music/Boss_Fight.mp3');
-let lobbyMusic = new Audio('../music/alexloop.mp3');
+let lobbyMusic = new Audio('../music/menu.mp3');
 matchMusic.volume = 0.3;
-lobbyMusic.volume = 0.3;
+lobbyMusic.volume = 0.5;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
 let $mainContainer;
