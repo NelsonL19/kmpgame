@@ -62,19 +62,19 @@ socket.on("check if username taken result", found => {
     console.log("Result of checking if username was taken: " + found);
     if (!found) {
         //No Username Found
-        //createAccount(username, password);
+        createAccount(username, password);
         $('#account_creation_box').append(`<h1 class="title has-text-success">Account Registered! Logging you in...</h1>`)
         setTimeout(function () {
-            //socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
-            //loadLobby();
-        }, 4000);
+            socket.emit('user logged in', $('#new_username').val()); // Sends the server code what the user has entered 
+            loadLobby();
+        }, 3500);
 
     } else {
         //Username Found
         $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
         setTimeout(function () {
             $(`#alred`).replaceWith(``)
-        }, 4000);
+        }, 3500);
     }
 });
 

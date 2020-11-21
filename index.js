@@ -4,7 +4,8 @@ const app = express()
 const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io')(server);
-let fs = require('fs')
+const sha256 = require('js-sha256');
+const fs = require('fs')
 
 
 let users = {}; // Key, Value pairs where the Key is the Socket ID and the value is the screen name
