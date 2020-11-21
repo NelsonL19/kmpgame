@@ -351,7 +351,7 @@ function loadGamePage() {
 
 function loadGameInvite(invitingUserName, invitingUserID) {
     let inviteHTML = `
-    <p class="field"> ${invitingUserName} is inviting you to a game. Accept Invite?
+    <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}"> ${invitingUserName} is inviting you to a game. Accept Invite?
         <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
         <button style="background-color:#f14668; border-radius:5px; color:white; border-width:0px;" id="decline_${invitingUserID}">No</button>
     </p>`
@@ -472,10 +472,10 @@ function loadGameWon(hasWon, totalTime, score) {
 </section>`;
     $page.append(gameWonHTML);
     
-    $('.jordan_enemy').on('click', function () {
-        window.open( 
-            "https://krisjordan.com/", "_blank"); 
-    })
+    // $('.jordan_enemy').on('click', function () {
+    //     window.open( 
+    //         "https://krisjordan.com/", "_blank"); 
+    // })
 
     $('#goBack').on('click', function () {
         loadLobby();
