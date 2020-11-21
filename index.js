@@ -107,7 +107,13 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         });
     });
 
-
+    socket.on("return to lobby", function () {
+        //let currentUser = users[socket.id]
+        socket.join("lobby"); // Puts the user in the room "lobby"
+        lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
+        io.to("lobby").emit('new message', `${users[id]} has completed their game`);
+        socket.emit('new message', "Welcome Back! We hope you enjoyed your game!");
+    })
 
 
 

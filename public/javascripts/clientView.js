@@ -25,7 +25,7 @@ socket.on("game won", (hasWon, totalTime) => {
 
 socket.on('game starting', function (role) { // Backend informs client that game is starting 
     console.log("Game starting!");
-    $page.empty(); // Erases the page
+    //$page.empty(); // Erases the page
     loadGamePage();
     loadStartTable();
     gameOver = false;
@@ -339,10 +339,8 @@ function loadWaitingRoomMessage() {
 }
 
 function loadGamePage() {
+    $mainContainer.empty();
     let page = `
-                <section class="hero is-fullheight is-link is-bold">
-                    <div class="hero-body">
-                        <div class="container" id="main_container">
                             <h1 class="title">Current Opponent</h1>
                             <h1 class="subtitle" id="vs">You vs. Current Opponent</h1>
                             <h1 class="title">Current Score</h1>
@@ -350,11 +348,8 @@ function loadGamePage() {
                             <p class="title">Current Time</p>
                             <h1 class="subtitle" id="time">00:00:00</h1>
                             <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
-                            </div>
-                        </div>
-                </section>`
-    $(page).appendTo($page);
+                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">`
+    $(page).appendTo($mainContainer);
 }
 
 function loadGameInvite(invitingUserName, invitingUserID) {
@@ -398,26 +393,16 @@ function loadGameWon(hasWon, totalTime, score) {
 
     let winLose = "";
     let color = "";
-    let kmpFace = "";
 
     if (!hasWon) {
         winLose = "You Win!";
         color = "#00ff00";
-        kmpFace = "player";
     } else {
         winLose = "You lost!";
         color = "#ff0000";
-        kmpFace = "dead_player";
     }
-
-    $page.empty(); // clears body
-
+    $mainContainer.empty();
     let gameWonHTML = `
-
-    <section class="hero is-fullheight is-link is-bold">
-    <div class="hero-body">
-
-        <div class="container" id="main_container">
             <div class="box">
                 <div class="box" style="margin-left: 50px; margin-right: 50px;">
                     <h1 style = "color: rgb(200, 200, 200);
@@ -442,61 +427,25 @@ function loadGameWon(hasWon, totalTime, score) {
                 >Sushi Eaten: ${score}<br>
                 Time: ${totalTime}</h2>
                 <br>
-
-                <table style="text-align: center; background-image: none; margin-left: auto; margin-right: auto;">
-                    <tr>
-                        <td style="background-image: none; background-color: white;"><button class="button is-primary is-light" id="goBack">Back To Lobby</button></td>
-                        <td style="background-image: none; background-color: white;"><button class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button></td>
-                    </tr>
-                </table>
-
+                <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
+                
                 <br>
-                <div class="columns" style="margin-left: auto; margin-right: auto;">
-                    <div class="column jordan_enemy" style="display:inline"></div>
-                    <div class="munsell_enemy" style="display:inline"></div>
-                    <div class="stotts_enemy" style="display:inline"></div>
-                    <div class="snoeyink_enemy" style="display:inline"></div>
-                    <div class="majikes_enemy" style="display:inline"></div>
-                    <div class="plaisted_enemy" style="display:inline"></div>
-                    <div class="cynthia_enemy" style="display:inline"></div>
-                    <div class="terrell_enemy" style="display:inline"></div>
-                    <div class="porter_enemy" style="display:inline"></div>
-                    <div class="diane_enemy" style="display:inline"></div>
-                    <div class="kevin_enemy" style="display:inline"></div>
-                    <div class="folt_enemy" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class="${kmpFace}" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class ="air" style="display:inline"></div>
-                    <div class="sashimi" style="display:inline"></div>
-                    <div class="nigiri" style="display:inline"></div>
-                    <div class="sushi" style="display:inline"></div>
                 </div>
-            </div>
-        </div>
-        
-        </div>
-        </section>`;
-    $page.append(gameWonHTML);
-
-    $('.jordan_enemy').on('click', function () {
-        window.open(
-            "https://krisjordan.com/", "_blank");
-    })
+            </div>`
+            ;
+    $mainContainer.append(gameWonHTML);
 
     $('#goBack').on('click', function () {
+        console.log("loading the lobby")
+        socket.emit('return to lobby');
         loadLobby();
     })
-
-    $('#leaderboards').on('click', function () {
-        let time = totalTime.toString();
-        socket.emit('write leaderboards', globalUsername, time)
-        $('#leaderboards').replaceWith('')
-    })
+    //<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>
+    // $('#leaderboards').on('click', function () {
+    //     let time = totalTime.toString();
+    //     socket.emit('write leaderboards', globalUsername, time)
+    //     $('#leaderboards').replaceWith('')
+    // })
 }
 
 function loadLeaderboard() {
