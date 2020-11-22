@@ -27,8 +27,16 @@ $(async function () {
 
 });
 
-socket.on("game won", (hasWon, totalTime, score) => {
-    loadGameWon(hasWon, totalTime, score);
+/**
+ * Called when the game ends
+ * 
+ * hasWon: boolean value. True if clientView is winner
+ * totalTime: how much time the game took
+ * score: how many sushi were collected
+ * wasForfeit: boolean value. If true, then it means that the other player disconnected 
+ */
+socket.on("game won", (hasWon, totalTime, score, wasForfeit) => {
+    loadGameWon(hasWon, totalTime, score, wasForfeit);
 });
 //
 socket.on('game starting', function (id, role, currPlayer, currEnemy) { // Backend informs client that game is starting
@@ -36,7 +44,7 @@ socket.on('game starting', function (id, role, currPlayer, currEnemy) { // Backe
     matchMusic.currentTime = 0
     matchMusic.play();
     matchID = id;
-    console.log("Game starting! Match ID = "+matchID);
+    console.log("Game starting! Match ID = " + matchID);
     $page.empty(); // Erases the page
     loadGamePage(currPlayer, currEnemy);
     loadStartTable();
@@ -131,7 +139,7 @@ socket.on('ranks', (rankings) => {
     loadLeaderboard(rankings);
 })
 
-function loadHeroAndBackground () {
+function loadHeroAndBackground() {
     $page.empty(); // Clears out the #page div 
     let heroAndBackgroundHTML = `
     <section class="hero is-fullheight is-link is-bold" style="background-image: url(/images/kmpgamelogo.png); background-size: contain; background-repeat: no-repeat; background-position: center;">
@@ -145,7 +153,7 @@ function loadHeroAndBackground () {
     $mainContainer = $('#main_container');
 }
 
-function loadTableDOM (board) {
+function loadTableDOM(board) {
     for (let i = 0; i < 225; i++) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
@@ -192,12 +200,12 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function loadLogIn () {
+function loadLogIn() {
     $mainContainer.empty();
     let logInHTML = `
     <div class="box" id="login_box">
         <div class="field">
-            <h1 class="title is-link">KMP's Spicy 9 Adventure: Delxue Edition</h1>
+            <h1 class="title has-text-link">KMP's Spicy 9 Adventure: Delxue Edition</h1>
             <label class="label">Username:</label>
             <input class="input" type="text" id="username">
         </div>
@@ -224,13 +232,13 @@ function loadLogIn () {
     $('#create_new_account').on('click', function () {
         loadAccountCreator();
     });
-    
+
 }
 
 /**
  * Loads in the account creator into $heroBody
  */
-function loadAccountCreator () {
+function loadAccountCreator() {
     $mainContainer.empty();
     let accountCreatorHTML = `
     <div class="box" id="account_creation_box">
@@ -254,18 +262,18 @@ function loadAccountCreator () {
     });
 
     $('#create_account').on('click', function () {
-        if($('#new_username').val()!=='' && $('#new_password').val()!==''){
-            if($('#new_username').val().length>=5 && $('#new_password').val().length>=5){
+        if ($('#new_username').val() !== '' && $('#new_password').val() !== '') {
+            if ($('#new_username').val().length >= 5 && $('#new_password').val().length >= 5 && $('#new_username').val().length <= 15) {
                 let username = $('#new_username').val();
-                let password = $('#new_password').val(); 
+                let password = $('#new_password').val();
                 socket.emit("check if username taken", username, password);
-            } else{
-                $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">Please make sure both fields are at least 5 characters</h1>`)
+            } else {
+                $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">Please make sure username is between 5 and 15 characters and/or password is at least 5 characters.</h1>`)
                 setTimeout(function () {
                     $(`#alred`).replaceWith(``)
                 }, 2000);
             }
-        } else{
+        } else {
             $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">Please make sure both fields are not empty</h1>`)
             setTimeout(function () {
                 $(`#alred`).replaceWith(``)
@@ -281,7 +289,7 @@ function loadAccountCreator () {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby () {
+function loadLobby() {
     lobbyMusic.time = 0;
     lobbyMusic.play();
     $mainContainer.empty(); // Clears out the Hero Body
@@ -305,36 +313,36 @@ function loadLobby () {
     $mainContainer.append(chatHTML);
     loadNewGameButton();
     $('.inputfield').on('keydown', '#message', function (e) {
-        if($('#message').val()!==''){
-            if(e.which == 13 ){
+        if ($('#message').val() !== '') {
+            if (e.which == 13) {
                 socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
                 $('#message').val(""); // Emptys the text input
             }
         }
     });
     $('#send_button').on('click', function () {
-        if($('#message').val()!==''){
+        if ($('#message').val() !== '') {
             socket.emit('message sent', $('#message').val()); // Tells server a message was sent a passes the message text
             $('#message').val(""); // Emptys the text input
         }
     });
 }
 
-function loadNewGameButton () {
+function loadNewGameButton() {
     $('#game_creation_box').empty();
     $('#game_creation_box').append('<button class="button is-success" id="new_game">New Game</button>');
-    $('#game_creation_box').append('<button class="button" id="leader">Leaderboards</button>');
+    $('#game_creation_box').append('<button class="button" id="help">Tutorial</button>');
 
     $('#new_game').on('click', function () {
         loadGameOptions();
     });
 
-    $('#leader').on('click', function () {
-        loadLeaderboard();
+    $('#help').on('click', function () {
+        loadTutorial();
     });
 }
 
-function loadGameOptions () {
+function loadGameOptions() {
     $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
@@ -357,7 +365,7 @@ function loadGameOptions () {
     });
 }
 
-function loadInvitationCreator () {
+function loadInvitationCreator() {
     $('#game_creation_box').empty(); // Empties the top bar above chat
     let invitationHTML = `
     <label>Recipient of invitation:</label>
@@ -388,7 +396,7 @@ function loadInvitationCreator () {
     });
 }
 
-function loadWaitingRoomMessage () {
+function loadWaitingRoomMessage() {
     $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
         <p>Waiting for another player to join, please wait...</p>
@@ -401,7 +409,7 @@ function loadWaitingRoomMessage () {
     });
 }
 
-function loadGamePage (currPlayer, currEnemy) {
+function loadGamePage(currPlayer, currEnemy) {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
@@ -420,7 +428,7 @@ function loadGamePage (currPlayer, currEnemy) {
     $(page).appendTo($page);
 }
 
-function loadGameInvite (invitingUserName, invitingUserID) {
+function loadGameInvite(invitingUserName, invitingUserID) {
     pendingInvitations.push(invitingUserID);
     let inviteHTML = `
     <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}" id = "${invitingUserID}_invite"> ${invitingUserName} is inviting you to a game. Accept Invite?
@@ -438,7 +446,7 @@ function loadGameInvite (invitingUserName, invitingUserID) {
     })
 }
 
-function loadStartTable () {
+function loadStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
@@ -451,10 +459,10 @@ function loadStartTable () {
     }
 }
 
-function loadGameWon (hasWon, totalTime, score) {
+function loadGameWon(hasWon, totalTime, score, wasForfeit) {
     matchMusic.pause();
     socket.emit('game ended', matchID);
-    
+
 
     let time = (totalTime / 1000).toString();
     gameOver = true;
@@ -477,7 +485,15 @@ function loadGameWon (hasWon, totalTime, score) {
         color = "#ff0000";
     }
     $page.empty();
-                        
+
+    let winMessageBody = `
+    Sushi Eaten: ${score}<br>
+    Time: ${time}
+    `
+
+    if (wasForfeit) {
+        winMessageBody = "The other player has disconnected, forfeiting the game.";
+    }
 
     let gameWonHTML = `
     <section class="hero is-fullheight is-link is-bold">
@@ -504,8 +520,7 @@ function loadGameWon (hasWon, totalTime, score) {
                     font-family: verdana;
                     font-size: 20px;
                     text-shadow: 1px 1px 1px rgb(100, 128, 153)"
-                    >Sushi Eaten: ${score}<br>
-                    Time: ${time}</h2>
+                    >${winMessageBody}</h2>
                     <br>
                     <div id="wonLead">
                     <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
@@ -520,9 +535,8 @@ function loadGameWon (hasWon, totalTime, score) {
 
     if (hasWon) {
         $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
-
     }
-    
+    //hello Owen (kep this here)
     $('#goBack').on('click', function () {
         console.log("loading the lobby")
         socket.emit('return to lobby');
@@ -536,7 +550,51 @@ function loadGameWon (hasWon, totalTime, score) {
     })
 }
 
-function loadLeaderboard (rankings) {
+function loadTutorial() {
+    $mainContainer.empty(); // clears body
+    let tutorialHTML = `
+            
+            <div class="box" id="tutorial_window">
+            <div class"box">
+            <h1 style = "color: rgb(0, 153, 0);
+                text-align: center;
+                font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+                text-shadow: 2px 2px 5px rgb(120, 120, 200); font-size: 50px;"
+                >Tutorial</h1>
+                </div>
+            
+            <h1 class="subtitle has-text-danger"><strong>Help!</strong> KMP is on the loose and he's eating everyone's lunch!!!</h1>
+            <br>
+            <br>
+            <p>
+            Welcome to KMP'S Spicy 9 Adventure! Here, you can either play as a ravenous KMP and collect sushi or play as a wide assortment of other UNC CS professors and try to stop KMP!
+            In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors is randomly the second user, and their goal to is stop KMP. If you're playing as KMP, you win if you're able to
+            collect all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
+            or challenge other players directly! Good luck and have fun!
+            <br>
+            <br>
+            Designed and Created by:
+            <br>
+            Nelson Lopez
+            <br>
+            Andres Menjivar
+            <br>
+            Samuel Miller
+            <br>
+            Alexander Harvey
+            </p>
+            </div>
+            <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>`;
+    //<audio src=""><embed src="Exploration_1.mp3" width="0px" height="0px" hidden="true" autostart="true"></audio>
+    $mainContainer.append(tutorialHTML);
+
+    $('#goBack').on('click', function () {
+        console.log("loading the lobby")
+        loadLobby();
+    })
+}
+
+function loadLeaderboard(rankings) {
     $mainContainer.empty(); // clears body
     let leaderboardHTML = `
 
@@ -568,7 +626,7 @@ function loadLeaderboard (rankings) {
  * Called to accept a particular invitation
  * @param {string} invitingUserID User (socket) ID of the inviting player
  */
-function acceptInvitation (invitingUserID) {
+function acceptInvitation(invitingUserID) {
     socket.emit('accept invitation', invitingUserID); // Tells server that the invitation was accepted
     deleteInvitation(invitingUserID);
     for (let id of pendingInvitations) { // Iterates through array of remaining invitations and declines them
@@ -576,7 +634,7 @@ function acceptInvitation (invitingUserID) {
     }
 }
 
-function declineInvitation (invitingUserID) {
+function declineInvitation(invitingUserID) {
     console.log("Declined invitation");
     socket.emit('decline invitation', invitingUserID); // Tells server that the invitation was declined
     deleteInvitation(invitingUserID);
@@ -586,7 +644,7 @@ function declineInvitation (invitingUserID) {
  * Removes invitation from given user ID from array pendingInvites
  * @param {string} invitingUserID 
  */
-function deleteInvitation (invitingUserID) {
+function deleteInvitation(invitingUserID) {
     pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
         return value != invitingUserID;
     });
