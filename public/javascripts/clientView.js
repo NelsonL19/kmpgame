@@ -7,8 +7,10 @@
 const socket = io();
 let matchMusic = new Audio('../music/Boss_Fight.mp3');
 let lobbyMusic = new Audio('../music/menu.mp3');
+let tutorialMusic = new Audio('../music/tutorial_audio.mp3');
 matchMusic.volume = 0.3;
 lobbyMusic.volume = 0.5;
+tutorialMusic.volume = 1;
 lobbyMusic.loop = true;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
@@ -22,21 +24,9 @@ let matchID = undefined;
 let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
 $(async function () {
-    //Locks scrolling: Code from https://stackoverflow.com/questions/3656592/how-to-programmatically-disable-page-scrolling-with-jquery
-    //====================================================
-    var scrollPosition = [
-        self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-        self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
-    ];
-    var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
-    html.data('scroll-position', scrollPosition);
-    html.data('previous-overflow', html.css('overflow'));
-    html.css('overflow', 'hidden');
-    window.scrollTo(scrollPosition[0], scrollPosition[1]);
-    //=====================================================
     loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
     loadLogIn();
-
+    
 });
 
 /**
@@ -307,7 +297,7 @@ function loadLobby() {
     $mainContainer.empty(); // Clears out the Hero Body
     let chatHTML = `
     <div class="box" id="game_creation_box">
-        
+      
     </div>
     <div class="scrollBox" id="chat_window">
 
@@ -426,14 +416,20 @@ function loadGamePage(currPlayer, currEnemy) {
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
                         <div class="container">
-                            <h1 class="title">Current Opponent</h1>
-                            <h1 class="subtitle" id="vs">${currPlayer} vs. ${currEnemy}</h1>
-                            <h1 class="title">Current Score</h1>
-                            <h1 class="subtitle" id="score">0</h1>
-                            <p class="title">Current Time</p>
-                            <h1 class="subtitle" id="time">00:00:00</h1>
-                            <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
-                                <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
+                            <div class="columns is-one-fifth">
+                                <div class="column">
+                                    <h1 class="title">Current Players</h1>
+                                    <h1 class="subtitle" id="vs">${currPlayer} vs. ${currEnemy}</h1>
+                                    <h1 class="title">Current Score</h1>
+                                    <h1 class="subtitle" id="score">0</h1>
+                                    <p class="title">Current Time</p>
+                                    <h1 class="subtitle" id="time">00:00:00</h1>
+                                </div>
+                                <div class="column is-four-fifths">
+                                    <div style="border: 0px solid; width: 705px;height:705px; margin:0 auto;">
+                                        <table name="game" id='game' style="margin: 0 auto; background: rgb(50,116,220);">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                 </section>`
@@ -563,9 +559,12 @@ function loadGameWon(hasWon, totalTime, score, wasForfeit) {
 }
 
 function loadTutorial() {
+    lobbyMusic.pause();
+    tutorialMusic.time = 0
+    tutorialMusic.play();
+
     $mainContainer.empty(); // clears body
     let tutorialHTML = `
-            <audio src=""><embed src="" width="0px" height="0px" hidden="true" autostart="true"></audio>
             <div class="box has-text-centered" id="tutorial_window">
             <div class="box has-text-centered">
             <h1 class="title" style = "color: rgb(0, 153, 0);
@@ -573,31 +572,42 @@ function loadTutorial() {
                 font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
                 text-shadow: 2px 2px 5px rgb(120, 120, 200); font-size: 50px;"
                 >Tutorial</h1>
-                <h1 class="subtitle has-text-danger">Help! KMP is on the loose and he's eating everyone's lunch!!!</h1>
+                <h1 class="subtitle has-text-danger" autoplay>Help! KMP is on the loose and he's eating everyone's lunch!!!</h1>
                 </div>
             <br>
-            <p>
-            Welcome to KMP'S Spicy 9 Adventure! Play as either a ravenous KMP who steals sushi, 
-            or as the bewildered UNC CS professors trying to stop him! In this game, KMP is 
-            loaded in a board with 3 other CS Professors. One of those professors will be the 
-            second user, who's sole mission is stop KMP. If you're playing as KMP, you win if 
-            you're able to collect all of the Sushi before anyone can catch you. In the lobby, 
-            you can chat to other users, join a random match, or challenge other players directly! 
-            Good luck and have fun!
-            <br>
-            <br>
-            Designed and Created by:
-            <br>
-            Nelson Lopez
-            <br>
-            Andres Menjivar
-            <br>
-            Samuel Miller
-            <br>
-            Alexander Harvey
-            </p>
-            <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
-            </div>`;
+            
+            <div class="columns">
+                <div class="column">
+                    <figure class="image">
+                        <img src="../images/gameplay_gif.gif" alt="Tutorial Gif">
+                        </figure>
+                </div>
+            
+                <div class="column">
+                    <p>
+                    Welcome to KMP'S Spicy 9 Adventure! Play as either a ravenous KMP who steals sushi, 
+                    or as the bewildered UNC CS professors trying to stop him! In this game, KMP is 
+                    loaded in a board with 3 other CS Professors. One of those professors will be the 
+                    second user, who's sole mission is stop KMP. If you're playing as KMP, you win if 
+                    you're able to collect all of the Sushi before anyone can catch you. In the lobby, 
+                    you can chat to other users, join a random match, or challenge other players directly! 
+                    Good luck and have fun!
+                    <br>
+                    <br>
+                    Designed and Created by:
+                    <br>
+                    Nelson Lopez
+                    <br>
+                    Andres Menjivar
+                    <br>
+                    Samuel Miller
+                    <br>
+                    Alexander Harvey
+                    </p>
+                    <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
+                </div>
+            </div>
+        </div>`;
     $mainContainer.append(tutorialHTML);
 
     $('#goBack').on('click', function () {
@@ -662,4 +672,8 @@ function deleteInvitation(invitingUserID) {
     });
     $(`#${invitingUserID}_invite`).remove();
 }
+  
+
+
+
 
