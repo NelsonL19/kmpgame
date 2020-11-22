@@ -7,10 +7,8 @@
 const socket = io();
 let matchMusic = new Audio('../music/Boss_Fight.mp3');
 let lobbyMusic = new Audio('../music/menu.mp3');
-let tutorialMusic = new Audio('../music/tutorial_audio.mp3');
 matchMusic.volume = 0.3;
 lobbyMusic.volume = 0.5;
-tutorialMusic.volume = 0.8;
 lobbyMusic.loop = true;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
@@ -26,7 +24,7 @@ let pendingInvitations = new Array() // Stores the user IDs of all pending invit
 $(async function () {
     loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
     loadLogIn();
-    
+
 });
 
 /**
@@ -560,7 +558,9 @@ function loadGameWon(hasWon, totalTime, score, wasForfeit) {
 
 function loadTutorial() {
     lobbyMusic.pause();
-    tutorialMusic.time = 0
+
+    let tutorialMusic = new Audio('../music/tutorial_audio.mp3');
+    tutorialMusic.volume = 0.8;
     tutorialMusic.play();
 
     $mainContainer.empty(); // clears body
@@ -673,7 +673,7 @@ function deleteInvitation(invitingUserID) {
     });
     $(`#${invitingUserID}_invite`).remove();
 }
-  
+
 
 
 
