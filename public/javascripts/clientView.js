@@ -533,9 +533,9 @@ function loadGameWon(hasWon, totalTime, score, wasForfeit) {
     </section>`;
     $page.append(gameWonHTML);
 
-    if (hasWon) {
-        $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
-    }
+    //if (hasWon) {
+    //    $('#wonLead').append(`<button type="button" class="button is-danger is-light" id="leaderboard">Post to Leaderboards</button>`)
+    //}
     //hello Owen (kep this here)
     $('#goBack').on('click', function () {
         console.log("loading the lobby")
@@ -544,32 +544,30 @@ function loadGameWon(hasWon, totalTime, score, wasForfeit) {
         loadLobby();
     })
 
-    $('#leaderboard').on('click', function () {
-        socket.emit('write leaderboards', globalUsername, time)
-        $('#leaderboards').replaceWith('')
-    })
+    //$('#leaderboard').on('click', function () {
+    //    socket.emit('write leaderboards', globalUsername, time)
+    //    $('#leaderboards').replaceWith('')
+    //})
 }
 
 function loadTutorial() {
     $mainContainer.empty(); // clears body
     let tutorialHTML = `
             
-            <div class="box" id="tutorial_window">
-            <div class"box">
-            <h1 style = "color: rgb(0, 153, 0);
+            <div class="box has-text-centered" id="tutorial_window">
+            <div class="box has-text-centered">
+            <h1 class="title" style = "color: rgb(0, 153, 0);
                 text-align: center;
                 font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
                 text-shadow: 2px 2px 5px rgb(120, 120, 200); font-size: 50px;"
                 >Tutorial</h1>
+                <h1 class="subtitle has-text-danger">Help! KMP is on the loose and he's eating everyone's lunch!!!</h1>
                 </div>
-            
-            <h1 class="subtitle has-text-danger"><strong>Help!</strong> KMP is on the loose and he's eating everyone's lunch!!!</h1>
-            <br>
             <br>
             <p>
             Welcome to KMP'S Spicy 9 Adventure! Here, you can either play as a ravenous KMP and collect sushi or play as a wide assortment of other UNC CS professors and try to stop KMP!
             In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors is randomly the second user, and their goal to is stop KMP. If you're playing as KMP, you win if you're able to
-            collect all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
+            eat all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
             or challenge other players directly! Good luck and have fun!
             <br>
             <br>
@@ -583,8 +581,8 @@ function loadTutorial() {
             <br>
             Alexander Harvey
             </p>
-            </div>
-            <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>`;
+            <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
+            </div>`;
     //<audio src=""><embed src="Exploration_1.mp3" width="0px" height="0px" hidden="true" autostart="true"></audio>
     $mainContainer.append(tutorialHTML);
 
