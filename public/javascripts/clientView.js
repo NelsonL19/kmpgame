@@ -381,7 +381,7 @@ function loadUpdater () {
         <div class="box" id="updatebox">
         <div class="field inputfield">
         <label class="label">New Password:</label>
-        <input type="password" class="input" id="newPassword">
+        <input class="input" type="password" id="newPassword">
     </div>
 
     <div class="field inputfield">
