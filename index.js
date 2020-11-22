@@ -252,15 +252,19 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             let match = Object.values(matches).filter(value => {
                 return (value.player1Socket == socket) || (value.player2Socket == socket);
             })[0];
-            match.game.isOver = true;
 
-            if (match.player1Socket == socket) { // If the socket diconnecting was socket1, give win to socket2
-                match.player2Socket.emit('game won', true, undefined, undefined, true);
-            }
-            else {
-                match.player1Socket.emit('game won', true, undefined, undefined, true); // Else, socket disconnecting is socket2, so give win to socket1
-            }
+            if (match != undefined) {
+                match.game.isOver = true;
 
+                if (match.player1Socket == socket) { // If the socket diconnecting was socket1, give win to socket2
+                    match.player2Socket.emit('game won', true, undefined, undefined, true);
+                }
+                else {
+                    match.player1Socket.emit('game won', true, undefined, undefined, true); // Else, socket disconnecting is socket2, so give win to socket1
+                }
+
+            }
+            
         }
 
 
