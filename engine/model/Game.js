@@ -31,13 +31,15 @@ class Game {
     }
 
     getRandomPremadeBoard () {
-        let random = Math.floor(Math.random() * 5);
+        let random = Math.floor(Math.random() * 7);
         switch (random) {
             case 0: return [...boards.board0]; // Needs the ... to make a clone of the array
             case 1: return [...boards.board1]; // so it doesn't change the actual values in boards
             case 2: return [...boards.board2];
             case 3: return [...boards.board3];
             case 4: return [...boards.board4];
+            case 5: return [...boards.board5];
+            case 6: return [...boards.board6];
         }
     }
 
