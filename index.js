@@ -11,7 +11,7 @@ let users = {}; // Key, Value pairs where the Key is the Socket ID and the value
 let sockets = {}; // Key, Value pairs where the Key is the Socket ID and the value is the associated socket object
 let lobby = new Array(); // Keeps track of which sockets are in the lobby
 let waitingRoom = new Array(); // Purgatory, stores Socket IDs
-let matches = { } // Key value pairs of Match object. Key is a unique ID associated with each Match and value is that Match object
+let matches = {} // Key value pairs of Match object. Key is a unique ID associated with each Match and value is that Match object
 
 app.use(express.static(__dirname + '/public'));
 
@@ -185,6 +185,49 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         });
     })
 
+
+    socket.on("update password", function (newPassword, oldPassword) {
+        let userex = users[socket.id];
+        fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
+            if (err) throw err
+            let db = JSON.parse(data)
+            for (let i = 0; i < db.accounts.length; i++) {
+                if (userex === Object.values(db.accounts[i])[0]) {
+                    if (oldPassword === Object.values(db.accounts[i])[1]) {
+                        
+                        db.accounts.splice(i,1,{"username":userex,"password":newPassword})
+                        
+                        fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
+                            if (err) throw err;
+                        })
+
+                        break;
+                    }
+                }
+            }
+            socket.emit("password changed");
+        });
+    })
+
+    socket.on('delete account', function () {
+        let userex = users[socket.id];
+        fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
+            if (err) throw err
+            let db = JSON.parse(data)
+            for (let i = 0; i < db.accounts.length; i++) {
+                if (userex === Object.values(db.accounts[i])[0]) {
+                    db.accounts.splice(i,1)
+                }
+            }  
+            fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
+                if (err) throw err;
+            })
+
+
+            socket.emit("account deleted");
+        })
+    })
+
     socket.on('send game invite', (userID) => {
         let recipientSocket = sockets[userID]; // Gets the socket associated with the invite's recipient
         recipientSocket.emit('load game invite', users[socket.id], socket.id) // Passes the username and ID of who invited them to join a game
@@ -200,9 +243,9 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('disconnect', () => {
-        console.log("lobby: "+lobby);
-        console.log("waiting room: "+waitingRoom);
-        console.log("Socket ID: "+socket.id)
+        console.log("lobby: " + lobby);
+        console.log("waiting room: " + waitingRoom);
+        console.log("Socket ID: " + socket.id)
         if ((waitingRoom.indexOf(socket.id) == -1) && (lobby.indexOf(socket.id) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
             console.log("in game");
             //TODO give win to other player in the match
@@ -217,7 +260,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             else {
                 match.player1Socket.emit('game won', true, undefined, undefined, true); // Else, socket disconnecting is socket2, so give win to socket1
             }
-            
+
         }
 
 
@@ -248,10 +291,10 @@ function createGame (socket1, socket2) {
     console.log("Match ID: " + matchID);
     matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
     // Notifies the client-facing code that the game is starting and what role their player has
-    console.log("sending user: "+ socket1.id);
-    console.log("sending user: "+ socket2.id);
-    console.log("sending user: "+ socket1);
-    console.log("sending user: "+ socket2);
+    console.log("sending user: " + socket1.id);
+    console.log("sending user: " + socket2.id);
+    console.log("sending user: " + socket1);
+    console.log("sending user: " + socket2);
     socket1.emit('game starting', matchID, 'player1', users[socket1.id], users[socket2.id]);
     socket2.emit('game starting', matchID, 'player2', users[socket2.id], users[socket1.id]);
     matches[matchID].controller.notifyViews();
@@ -266,12 +309,12 @@ function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs i
     waitingRoom = waitingRoom.filter(function (value, index) { return value != socket.id });
 }
 
-function joinLobby(socket) {
+function joinLobby (socket) {
     lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
     socket.join("lobby"); // Adds socket to room "lobby"
 }
 
-function leaveLobby(socket) {
+function leaveLobby (socket) {
     lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
     socket.leave("lobby"); // Removes socket from room "lobby"
 }
