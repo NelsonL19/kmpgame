@@ -22,6 +22,18 @@ let matchID = undefined;
 let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
 
 $(async function () {
+    //Locks scrolling: Code from https://stackoverflow.com/questions/3656592/how-to-programmatically-disable-page-scrolling-with-jquery
+    //====================================================
+    var scrollPosition = [
+        self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+        self.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop
+    ];
+    var html = jQuery('html'); // it would make more sense to apply this to body, but IE7 won't have that
+    html.data('scroll-position', scrollPosition);
+    html.data('previous-overflow', html.css('overflow'));
+    html.css('overflow', 'hidden');
+    window.scrollTo(scrollPosition[0], scrollPosition[1]);
+    //=====================================================
     loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
     loadLogIn();
 
@@ -553,7 +565,7 @@ function loadGameWon(hasWon, totalTime, score, wasForfeit) {
 function loadTutorial() {
     $mainContainer.empty(); // clears body
     let tutorialHTML = `
-            
+            <audio src=""><embed src="" width="0px" height="0px" hidden="true" autostart="true"></audio>
             <div class="box has-text-centered" id="tutorial_window">
             <div class="box has-text-centered">
             <h1 class="title" style = "color: rgb(0, 153, 0);
@@ -565,10 +577,7 @@ function loadTutorial() {
                 </div>
             <br>
             <p>
-            Welcome to KMP'S Spicy 9 Adventure! Here, you can either play as a ravenous KMP and collect sushi or play as a wide assortment of other UNC CS professors and try to stop KMP!
-            In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors is randomly the second user, and their goal to is stop KMP. If you're playing as KMP, you win if you're able to
-            collect all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
-            or challenge other players directly! Good luck and have fun!
+            Welcome to KMP'S Spicy 9 Adventure! Play as either a ravenous KMP who steals sushi, or as the bewildered UNC CS professors trying to stop him! In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors will be the second user, who's sole mission is stop KMP. If you're playing as KMP, you win if you're able to collect all of the Sushi before anyone can catch you. In the lobby, you can chat to other users, join a random match, or challenge other players directly! Good luck and have fun!
             <br>
             <br>
             Designed and Created by:
@@ -583,7 +592,6 @@ function loadTutorial() {
             </p>
             <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
             </div>`;
-    //<audio src=""><embed src="Exploration_1.mp3" width="0px" height="0px" hidden="true" autostart="true"></audio>
     $mainContainer.append(tutorialHTML);
 
     $('#goBack').on('click', function () {
