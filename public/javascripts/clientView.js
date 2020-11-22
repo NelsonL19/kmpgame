@@ -567,7 +567,7 @@ function loadTutorial() {
             <p>
             Welcome to KMP'S Spicy 9 Adventure! Here, you can either play as a ravenous KMP and collect sushi or play as a wide assortment of other UNC CS professors and try to stop KMP!
             In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors is randomly the second user, and their goal to is stop KMP. If you're playing as KMP, you win if you're able to
-            eat all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
+            collect all of the Sushi before anyone can catch you. As the other professors, your goal is to catch KMP before he collects all of the sushi! In the lobby, you can chat to other users, join a random match,
             or challenge other players directly! Good luck and have fun!
             <br>
             <br>
