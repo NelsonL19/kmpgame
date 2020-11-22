@@ -64,8 +64,6 @@ prettyPrint(game.getGameState().board);
 
 
 
-
-
 process.stdin.on('keypress', function (ch, key) {
     let obj = game.player//game.gameBoard.objectRepresentation;
     console.log(obj)
