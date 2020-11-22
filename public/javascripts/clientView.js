@@ -166,6 +166,7 @@ socket.on("account deleted", function () {
     $('#updatebox').replaceWith('<h1 class="title has-text-success">Account Deleted!</h1>')
     $('#delete').replaceWith('')
     $('#goBack').replaceWith('')
+    $('#delreplace').replaceWith('')
     setTimeout(function () {
         loadLogIn();
     }, 2500);
