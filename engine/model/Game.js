@@ -4,6 +4,7 @@ let Player = require('./elements/Player').playerClass;
 let Sushi = require('./elements/Sushi').sushiClass;
 let Wall = require('./elements/Wall').wallClass;
 const { Console } = require('console');
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 const boards = require('./Boards');
 
 // Class used for creating Model objects
@@ -47,11 +48,21 @@ class Game {
     convertFromStringToObjectRepresentation (board) {
         let objectRepresentation = new Array(board.length); // Array to be returned
         let elementObj;
-        //let enemyArray = [];
-        // for(let i = 0; i<board.length; i++){
+        // let enemyArray = [];
+        // for (let i = 0; i < board.length; i++) {
         //     switch (board[i]) {
-        //         case "me": enemyArray.push("munsell");break;
-        //         case "je":;
+        //         case "me": enemyArray.push("munsell"); break;
+        //         case "je": enemyArray.push("jordan"); break;
+        //         case "se": enemyArray.push("stotts"); break;
+        //         case "mje": enemyArray.push("majikes"); break;
+        //         case "sne": enemyArray.push("snoeyink"); break;
+        //         case "pe": enemyArray.push("plaisted"); break;
+        //         case "ce": enemyArray.push("cynthia"); break;
+        //         case "poe": enemyArray.push("porter"); break;
+        //         case "ke": enemyArray.push("kevin"); break;
+        //         case "te": enemyArray.push("terrell"); break;
+        //         case "de": enemyArray.push("diane"); break;
+        //         case "fe": enemyArray.push("folt"); break;
         //     }
         // }
         for (let i = 0; i < board.length; i++) {
@@ -64,92 +75,109 @@ class Game {
                 case "su": elementObj = new Sushi("sushi"); break; // Sushi object with type "sushi"
                 case "me": // Enemy object with type "munsell"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("munsell", false); break;
+                        case 0: elementObj = new Enemy("munsell", true); break;
                         default: elementObj = new Enemy("munsell", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "je": // Enemy object with type "jordan"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("jordan", false); break;
+                        case 0: elementObj = new Enemy("jordan", true); break;
                         default: elementObj = new Enemy("jordan", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "se": // Enemy object with type "stotts"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("stotts", false); break;
+                        case 0: elementObj = new Enemy("stotts", true); break;
                         default: elementObj = new Enemy("stotts", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "mje": // Enemy object with type "majikes"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("majikes", false); break;
+                        case 0: elementObj = new Enemy("majikes", true); break;
                         default: elementObj = new Enemy("majikes", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "sne": // Enemy object with type "snoeyink"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("snoeyink", false); break;
+                        case 0: elementObj = new Enemy("snoeyink", true); break;
                         default: elementObj = new Enemy("snoeyink", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "pe": // Enemy object with type "plaisted"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("plaisted", false); break;
+                        case 0: elementObj = new Enemy("plaisted", true); break;
                         default: elementObj = new Enemy("plaisted", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "ce": // Enemy object with type "cynthia"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("cynthia", false); break;
+                        case 0: elementObj = new Enemy("cynthia", true); break;
                         default: elementObj = new Enemy("cynthia", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "poe": // Enemy object with type "porter"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("porter", false); break;
+                        case 0: elementObj = new Enemy("porter", true); break;
                         default: elementObj = new Enemy("porter", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "te": // Enemy object with type "terrell"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("terrell", false); break;
+                        case 0: elementObj = new Enemy("terrell", true); break;
                         default: elementObj = new Enemy("terrell", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "de": // Enemy object with type "diane"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("diane", false); break;
+                        case 0: elementObj = new Enemy("diane", true); break;
                         default: elementObj = new Enemy("diane", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "ke": // Enemy object with type "kevin"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("kevin", false); break;
+                        case 0: elementObj = new Enemy("kevin", true); break;
                         default: elementObj = new Enemy("kevin", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 case "fe": // Enemy object with type "folt"
                     switch (this.enemies.length) {
-                        case 0: elementObj = new Enemy("folt", false); break;
+                        case 0: elementObj = new Enemy("folt", true); break;
                         default: elementObj = new Enemy("folt", true);
                     }
                     this.enemies.push(elementObj);
                     break;
                 default: throw `convertFromStringToObjectRepresentation Error: ${board[i]} not recognized as a string representation of an Element`;
             }
+            //Elements are added into the Object Repsentation Array
             objectRepresentation[i] = elementObj;
         }
+
+        let random = Math.floor(Math.random()*3);
+        console.log(random);
+        for (let i = 0; i < objectRepresentation.length; i++) {
+            let count = 0;
+            if (objectRepresentation[i].constructor.name == "Enemy") {
+                if (random == count) {
+                    objectRepresentation[i].isCPU = false;
+                    break;
+                }
+                count++;
+            }
+        }
+
+        this.enemies[random].isCPU = false;
+
         return objectRepresentation;
     }
 
