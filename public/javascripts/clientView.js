@@ -68,6 +68,12 @@ socket.on('new message', function (message) {
     $('#chat_window').animate({ scrollTop: $('#chat_window').height() }, "slow"); // Automatically scrolls to new chat
 });
 
+/**
+ * Handles getting all the users in the Lobby
+ * @param {Array} usersInLobby
+ * @param {Array} users
+ */
+
 socket.on('users in lobby', (usersInLobby, users) => { // Processes server response
     for (let user of usersInLobby) {
         if (user == socket.id) { // Want to skip over the entry if it's the current client (client should be able to invite themselves)
@@ -80,6 +86,7 @@ socket.on('users in lobby', (usersInLobby, users) => { // Processes server respo
 
 /**
  * Only used after the create_account button is clicked
+ * @param {Boolean} found
  */
 socket.on("check if username taken result", found => {
     if (!found) {
@@ -103,6 +110,10 @@ socket.on("check if username taken result", found => {
     }
 });
 
+/**
+ * Handles Accoutn Verification
+ * @param {Boolean} correct
+ */
 socket.on("verify account", correct => {
     if (correct) {
         $('#login_box').append(`<h1 class="title has-text-success" id="err">Logging you in...</h1>`)
@@ -120,6 +131,13 @@ socket.on("verify account", correct => {
         }, 2000);
     }
 });
+
+/**
+ * Handles loading the game invites
+ * @param {string} Name
+ * @param {int} ID
+ * 
+ */
 
 socket.on('load game invite', (invitingPlayerName, invitingPlayerID) => {
     loadGameInvite(invitingPlayerName, invitingPlayerID);
@@ -148,16 +166,18 @@ socket.on("account deleted", function () {
     $('#updatebox').replaceWith('<h1 class="title has-text-success">Account Deleted!</h1>')
     $('#delete').replaceWith('')
     $('#goBack').replaceWith('')
-    setTimeout(function() {
-    loadLogIn();
-    },2500);
+    setTimeout(function () {
+        loadLogIn();
+    }, 2500);
 })
 
 
+/**
+ * Handles loading the Hero-Body and the Background
+ * 
+ */
 
-
-
-function loadHeroAndBackground () {
+function loadHeroAndBackground() {
     $page.empty(); // Clears out the #page div 
     let heroAndBackgroundHTML = `
     <section class="hero is-fullheight is-link is-bold" style="background-image: url(/images/kmpgamelogo.png); background-size: contain; background-repeat: no-repeat; background-position: center;">
@@ -171,7 +191,7 @@ function loadHeroAndBackground () {
     $mainContainer = $('#main_container');
 }
 
-function loadTableDOM (board) {
+function loadTableDOM(board) {
     for (let i = 0; i < 225; i++) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
@@ -205,6 +225,7 @@ function loadTableDOM (board) {
 
 /**
  * Takes user input and depending on input, tells controller how to move the player
+ * @param {event} keypress the key being pressed
  */
 window.addEventListener('keydown', (event) => {
     if (!lockControls && !gameOver) {
@@ -218,7 +239,7 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function loadLogIn () {
+function loadLogIn() {
     $mainContainer.empty();
     let logInHTML = `
     <div class="box" id="login_box">
@@ -254,7 +275,7 @@ function loadLogIn () {
 /**
  * Loads in the account creator into $heroBody
  */
-function loadAccountCreator () {
+function loadAccountCreator() {
     $mainContainer.empty();
     let accountCreatorHTML = `
     <div class="box" id="account_creation_box">
@@ -305,7 +326,7 @@ function loadAccountCreator () {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
-function loadLobby () {
+function loadLobby() {
     lobbyMusic.time = 0;
     lobbyMusic.play();
     $mainContainer.empty(); // Clears out the Hero Body
@@ -345,7 +366,13 @@ function loadLobby () {
     });
 }
 
-function loadNewGameButton () {
+/**
+ * 
+ * Handles the Navbar//
+ * 
+ */
+
+function loadNewGameButton() {
     $('#game_creation_box').empty();
     $('#game_creation_box').append(`<button class="button is-success is-light" id="new_game">New Game</button>
     <button class="button is-warning is-light" id="help">Tutorial</button>
@@ -366,7 +393,13 @@ function loadNewGameButton () {
 
 }
 
-function loadUpdater () {
+/**
+ * 
+ * Handles CRUD Perams
+ * 
+ */
+
+function loadUpdater() {
     $mainContainer.empty(); // clears body
     let tutorialHTML = `
     <div class="box">
@@ -408,17 +441,18 @@ function loadUpdater () {
     })
 
     $('#delete').on('click', function () {
+        $('#delete').replaceWith('')
         $('#delreplace').replaceWith(`<div id="delreplace">
         <h1 class="title has-text-danger">Are you sure you wanna delete?</h1>
-        <button type="button" class="button is-danger" id="delete">Delete Account</button>
-        </div>`)
-
-
-        socket.emit("delete account");
+        <button type="button" class="button is-danger" id="finaldel">Delete Account</button>
+        </div>/`)
+        $('#finaldel').on('click', function () {
+            socket.emit("delete account");
+        })
     })
 }
 
-function loadGameOptions () {
+function loadGameOptions() {
     $('#game_creation_box').empty();
     let gameOptionsHTML = `
     <button class="button" id="join_random_match">Join a Random Match</button>
@@ -441,7 +475,7 @@ function loadGameOptions () {
     });
 }
 
-function loadInvitationCreator () {
+function loadInvitationCreator() {
     $('#game_creation_box').empty(); // Empties the top bar above chat
     let invitationHTML = `
     <label>Recipient of invitation:</label>
@@ -467,7 +501,7 @@ function loadInvitationCreator () {
     });
 }
 
-function loadWaitingRoomMessage () {
+function loadWaitingRoomMessage() {
     $('#game_creation_box').empty();
     let waitingRoomMessageHTML = `
         <p>Waiting for another player to join, please wait...</p>
@@ -480,7 +514,13 @@ function loadWaitingRoomMessage () {
     });
 }
 
-function loadGamePage (currPlayer, currEnemy) {
+/**
+ * Only used after the create_account button is clicked
+ * @param {Socket.id} currPlayer
+ * @param {Socket.id} currEnemy
+ */
+
+function loadGamePage(currPlayer, currEnemy) {
     let page = `
                 <section class="hero is-fullheight is-link is-bold">
                     <div class="hero-body">
@@ -505,7 +545,7 @@ function loadGamePage (currPlayer, currEnemy) {
     $(page).appendTo($page);
 }
 
-function loadGameInvite (invitingUserName, invitingUserID) {
+function loadGameInvite(invitingUserName, invitingUserID) {
     pendingInvitations.push(invitingUserID);
     let inviteHTML = `
     <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}" id = "${invitingUserID}_invite"> ${invitingUserName} is inviting you to a game. Accept Invite?
@@ -523,7 +563,7 @@ function loadGameInvite (invitingUserName, invitingUserID) {
     })
 }
 
-function loadStartTable () {
+function loadStartTable() {
     const $table = $(`#game`);
     for (let i = 0; i < 15; i++) {
         let row = `<tr id = r${i}></tr>`
@@ -536,7 +576,15 @@ function loadStartTable () {
     }
 }
 
-function loadGameWon (hasWon, totalTime, score, wasForfeit) {
+/**
+ * Only used after the create_account button is clicked
+ * @param {Boolean} hasWon
+ * @param {Int} totalTime
+ * @param {string} score
+ * @param {Boolean} wasForfeit
+ */
+
+function loadGameWon(hasWon, totalTime, score, wasForfeit) {
     gameOver = true;
     lockControls = true;
     matchMusic.pause();
@@ -544,7 +592,7 @@ function loadGameWon (hasWon, totalTime, score, wasForfeit) {
 
 
     let time = (totalTime / 1000).toString();
-    
+
     matchID = undefined;
     // "player"
     // "enemy"
@@ -627,7 +675,7 @@ function loadGameWon (hasWon, totalTime, score, wasForfeit) {
     //})
 }
 
-function loadTutorial () {
+function loadTutorial() {
     lobbyMusic.pause();
 
     let tutorialMusic = new Audio('../music/tutorial_audio.mp3');
@@ -675,6 +723,7 @@ function loadTutorial () {
                     <br>
                     Alexander Harvey
                     </p>
+                    <br>
                     <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
                 </div>
             </div>
@@ -687,7 +736,7 @@ function loadTutorial () {
     })
 }
 
-function loadLeaderboard (rankings) {
+function loadLeaderboard(rankings) {
     $mainContainer.empty(); // clears body
     let leaderboardHTML = `
 
@@ -717,7 +766,7 @@ function loadLeaderboard (rankings) {
  * Called to accept a particular invitation
  * @param {string} invitingUserID User (socket) ID of the inviting player
  */
-function acceptInvitation (invitingUserID) {
+function acceptInvitation(invitingUserID) {
     socket.emit('accept invitation', invitingUserID); // Tells server that the invitation was accepted
     deleteInvitation(invitingUserID);
     for (let id of pendingInvitations) { // Iterates through array of remaining invitations and declines them
@@ -725,7 +774,7 @@ function acceptInvitation (invitingUserID) {
     }
 }
 
-function declineInvitation (invitingUserID) {
+function declineInvitation(invitingUserID) {
     socket.emit('decline invitation', invitingUserID); // Tells server that the invitation was declined
     deleteInvitation(invitingUserID);
 }
@@ -734,7 +783,7 @@ function declineInvitation (invitingUserID) {
  * Removes invitation from given user ID from array pendingInvites
  * @param {string} invitingUserID 
  */
-function deleteInvitation (invitingUserID) {
+function deleteInvitation(invitingUserID) {
     pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
         return value != invitingUserID;
     });

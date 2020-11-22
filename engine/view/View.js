@@ -1,7 +1,7 @@
 class View {
     /**
      * creates a new View object
-     * @param {Socket} socket instance of socket object that represents the connection made by gameview.js running client-side
+     * @param {Socket} socket instance of socket object that represents the connection made by clientView.js running client-side
      */
     constructor(socket) {
         this.socket = socket;
@@ -23,6 +23,11 @@ class View {
      * Function that will get an updated board from a client
      * 
      */
+
+
+
+
+     
 
     clientPushed() {
         this.socket.on('board', function(data){

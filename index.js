@@ -180,9 +180,9 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             for (let i = 0; i < db.accounts.length; i++) {
                 if (userex === Object.values(db.accounts[i])[0]) {
                     if (oldPassword === Object.values(db.accounts[i])[1]) {
-                        
-                        db.accounts.splice(i,1,{"username":userex,"password":newPassword})
-                        
+
+                        db.accounts.splice(i, 1, { "username": userex, "password": newPassword })
+
                         fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
                             if (err) throw err;
                         })
@@ -202,9 +202,9 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             let db = JSON.parse(data)
             for (let i = 0; i < db.accounts.length; i++) {
                 if (userex === Object.values(db.accounts[i])[0]) {
-                    db.accounts.splice(i,1)
+                    db.accounts.splice(i, 1)
                 }
-            }  
+            }
             fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
                 if (err) throw err;
             })
@@ -253,7 +253,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                 }
 
             }
-            
+
         }
 
 
@@ -266,6 +266,12 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     })
 });
 
+/**
+ * Handles Port Assignment
+ * Likes assigning port automatically by current environment, falls back on port 3000 if one is not automatically defined
+ * @param {port} process.env.PORT
+ */
+
 server.listen(process.env.PORT || 3000, () => {
     console.log("Listening");
 });
@@ -275,14 +281,14 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket1 ID of the first socket
  * @param {string} socket2 ID of the second socket
  */
-function createGame (socket1, socket2) {
+function createGame(socket1, socket2) {
     if (socket1 != undefined && socket2 != undefined) {
         leaveLobby(socket1);
         leaveLobby(socket2);
         leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
         leaveWaitingRoom(socket2); // Removes Player 2 from the waiting room
         let matchID = Date.now(); // Unique identifier
-        if (Math.floor(Math.random()*2) == 0) {
+        if (Math.floor(Math.random() * 2) == 0) {
             matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
         } else {
             matches[matchID] = new Match(matchID, socket2, socket1); // Adds Key, Value pair
@@ -297,7 +303,7 @@ function createGame (socket1, socket2) {
     }
 }
 
-function joinWaitingRoom (socket) {
+function joinWaitingRoom(socket) {
     if (socket != undefined) {
         waitingRoom.push(socket.id); // Adds socket ID to list of IDs in the waiting room
     } else {
@@ -305,11 +311,11 @@ function joinWaitingRoom (socket) {
     }
 }
 
-function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs in the waiting room
+function leaveWaitingRoom(socket) { // Removes socket ID from the list of IDs in the waiting room
     waitingRoom = waitingRoom.filter(function (value, index) { return value != socket.id });
 }
 
-function joinLobby (socket) {
+function joinLobby(socket) {
     if (socket != undefined) {
         lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
         socket.join("lobby"); // Adds socket to room "lobby"
@@ -318,7 +324,7 @@ function joinLobby (socket) {
     }
 }
 
-function leaveLobby (socket) {
+function leaveLobby(socket) {
     if (socket != undefined) {
         lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
         socket.leave("lobby"); // Removes socket from room "lobby"
