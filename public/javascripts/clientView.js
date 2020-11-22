@@ -44,7 +44,6 @@ socket.on('game starting', function (id, role, currPlayer, currEnemy) { // Backe
     matchMusic.currentTime = 0
     matchMusic.play();
     matchID = id;
-    console.log("Game starting! Match ID = " + matchID);
     $page.empty(); // Erases the page
     loadGamePage(currPlayer, currEnemy);
     loadStartTable();
@@ -71,13 +70,11 @@ socket.on('new message', function (message) {
 });
 
 socket.on('users in lobby', (usersInLobby, users) => { // Processes server response
-    console.log(`Users in lobby: ${usersInLobby}`);
     for (let user of usersInLobby) {
         if (user == socket.id) { // Want to skip over the entry if it's the current client (client should be able to invite themselves)
             continue;
         }
         let userName = users[user]; // gets name associated with user's ID
-        console.log(`Apending ${userName}`);
         $('#users').append(`<option value="${user}">${userName}</option>`);
     }
 });
@@ -86,7 +83,6 @@ socket.on('users in lobby', (usersInLobby, users) => { // Processes server respo
  * Only used after the create_account button is clicked
  */
 socket.on("check if username taken result", found => {
-    console.log("Result of checking if username was taken: " + found);
     if (!found) {
         //No Username Found
         // Account already being created in back end
@@ -131,7 +127,6 @@ socket.on('load game invite', (invitingPlayerName, invitingPlayerID) => {
 });
 
 socket.on('invitation declined', () => {
-    console.log("Your invitation got declined you loser");
     loadGameOptions();
 });
 
@@ -182,7 +177,7 @@ function loadTableDOM (board) {
         switch (board[i]) {
             case "w": $(`#c${i}`).addClass('wall'); break;
             case "a": $(`#c${i}`).addClass('air'); break;
-            case "p": $(`#c${i}`).addClass('player'); console.log("loaded player"); break;
+            case "p": $(`#c${i}`).addClass('player'); break;
 
             case "n": $(`#c${i}`).addClass('nigiri'); $(`#c${i}`).addClass('powerup'); break;
             case "sa": $(`#c${i}`).addClass('sashimi'); $(`#c${i}`).addClass('powerup'); break;
@@ -244,10 +239,8 @@ function loadLogIn () {
     </div>
     `;
     $mainContainer.append(logInHTML);
-    console.log("Loaded in login");
     // Listener for submit button
     $('#submit').on('click', function (e) {
-        console.log("Log in clicked");
         let username = $('#username').val();
         let password = $('#password').val(); // Hashes the passwords
         socket.emit('checkUserPassword', username, password);
@@ -397,7 +390,9 @@ function loadUpdater () {
 
 
         <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
-        <button type="button" class="button is-danger" id="delete">Delete Account</button>
+        <div id="delreplace">
+            <button type="button" class="button is-danger" id="delete">Delete Account</button>
+        </div>
     </div>
     `;
     $mainContainer.append(tutorialHTML);
@@ -410,11 +405,16 @@ function loadUpdater () {
 
 
     $('#goBack').on('click', function () {
-        console.log("loading the lobby")
         loadLobby();
     })
 
     $('#delete').on('click', function () {
+        $('#delreplace').replaceWith(`<div id="delreplace">
+        <h1 class="title has-text-danger">Are you sure you wanna delete?</h1>
+        <button type="button" class="button is-danger" id="delete">Delete Account</button>
+        </div>`)
+
+
         socket.emit("delete account");
     })
 }
@@ -454,11 +454,6 @@ function loadInvitationCreator () {
     `;
     $('#game_creation_box').append(invitationHTML); // Adds in the dropdown selector
     socket.emit('request users in lobby'); // Sends request to server with a list of users in the lobby. Handles response at socket.on("users in lobby")
-    console.log("requesting users");
-
-    $('#users').on('change', function () {
-        console.log($('#users').val());
-    });
 
     $('#send').on('click', function () {
         let recipientID = $('#users').val();
@@ -543,13 +538,14 @@ function loadStartTable () {
 }
 
 function loadGameWon (hasWon, totalTime, score, wasForfeit) {
+    gameOver = true;
+    lockControls = true;
     matchMusic.pause();
     socket.emit('game ended', matchID);
 
 
     let time = (totalTime / 1000).toString();
-    gameOver = true;
-    lockControls = true;
+    
     matchID = undefined;
     // "player"
     // "enemy"
@@ -621,7 +617,6 @@ function loadGameWon (hasWon, totalTime, score, wasForfeit) {
     //}
     //hello Owen (kep this here)
     $('#goBack').on('click', function () {
-        console.log("loading the lobby")
         socket.emit('return to lobby');
         loadHeroAndBackground(); // Needs to load in this HTML before it can load the lobby
         loadLobby();
@@ -688,7 +683,6 @@ function loadTutorial () {
     $mainContainer.append(tutorialHTML);
 
     $('#goBack').on('click', function () {
-        console.log("loading the lobby")
         tutorialMusic.pause();
         loadLobby();
     })
@@ -710,12 +704,10 @@ function loadLeaderboard (rankings) {
     $mainContainer.append(leaderboardHTML);
 
     $('#goBack').on('click', function () {
-        console.log("loading the lobby")
         loadLobby();
     })
 
     for (let i = 0; i < rankings.length; i++) {
-        console.log(rankings[i])
         let $message = $(`<p># ${i} Name: ${Object.values(rankings[i])[0]}     Time: ${Object.values(rankings[i])[1]}</p>`);
         // Sanitizes message, parsing string as text and not HTML
         $('#leaderboard_window').append($message); // Writes message to chat window
@@ -735,7 +727,6 @@ function acceptInvitation (invitingUserID) {
 }
 
 function declineInvitation (invitingUserID) {
-    console.log("Declined invitation");
     socket.emit('decline invitation', invitingUserID); // Tells server that the invitation was declined
     deleteInvitation(invitingUserID);
 }
@@ -750,8 +741,3 @@ function deleteInvitation (invitingUserID) {
     });
     $(`#${invitingUserID}_invite`).remove();
 }
-
-
-
-
-

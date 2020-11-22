@@ -35,7 +35,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         socket.join("lobby"); // Puts the user in the room "lobby"
         lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
         io.to("lobby").emit('new message', `${users[id]} has joined the lobby`);
-        socket.emit('new message', "Welcome to the Lobby! Click \"New Game\" to create a match. To send messages privately, type \"@\" followed by their username.");
+        socket.emit('new message', "Welcome to the Lobby! Click \"New Game\" to create a match. To send messages privately, press \"tab\" followed typing their username.");
     });
 
     socket.on('join waiting room', () => {
@@ -54,9 +54,14 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
      * When server is told a player made a move
      */
     socket.on('move', (id, direction) => {
-        let isEnemy = matches[id].player2Socket == socket; // get whether or not the socket is the player or the enemy
-        matches[id].controller.move(isEnemy, direction); // tells Controller to make move
-    })
+        if (matches[id] != undefined) { // Checks first to see if the referenced Match exists
+            let isEnemy = matches[id].player2Socket == socket; // get whether or not the socket is the player or the enemy
+            matches[id].controller.move(isEnemy, direction); // tells Controller to make move
+        }
+        else {
+            console.log(`Error: Index.js socket.on('move'): Socket ${socket.id} with username ${users[socket.id]} is trying to make a move, but Match object ${id} does not exist.`);
+        }
+    });
 
     /**
      * When server is told a user sent a message in chat
@@ -68,8 +73,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('request users in lobby', () => {
-        console.log("recieving request for users in lobby");
-        console.log(`Users in lobby: ${lobby}`);
         socket.emit('users in lobby', lobby, users); // Sends requesting socket an array of IDs in the lobby and the users Map to decode the IDs
     });
 
@@ -84,11 +87,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('write leaderboards', function (username, time) {
-
-        console.log("username passed in: " + username);
-        console.log("time passed in: " + time);
-
-
         fs.readFile('./DB/leaderboards.json', 'utf-8', function (err, data) {
             if (err) throw err
             let db = JSON.parse(data)
@@ -97,7 +95,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             let triggered = false;
             for (let i = 0; i < db.rankings.length; i++) {
                 if (parseInt(time) < parseInt(Object.values(db.rankings[i])[1], 10)) {
-                    console.log("better time");
                     db.rankings.splice(i, 0, { "name": username, "time": time });
                     fs.writeFile('./DB/leaderboards.json', JSON.stringify(db), 'utf-8', function (err, data) {
                         if (err) throw err;
@@ -134,9 +131,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
             let db = JSON.parse(data)
             let found = false;
             for (let i = 0; i < db.accounts.length; i++) {
-                //console.log("name in DB: " + (Object.values(db.accounts[i])[0]))
                 if (username === Object.values(db.accounts[i])[0]) {
-                    //console.log("name passed in: " + username);
                     found = true;
                     break;
                 }
@@ -152,7 +147,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
                 db.accounts.push(account);
                 fs.writeFile('./DB/logins.json', JSON.stringify(db), 'utf-8', function (err, data) {
                     if (err) throw err;
-                    //console.log("Account created");
                 })
 
             }
@@ -161,26 +155,18 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on("checkUserPassword", function (username, password) {
-
-        //console.log("username passed in: " + username);
-        //console.log("password passed in: " + password);
-
         fs.readFile('./DB/logins.json', 'utf-8', function (err, data) {
             if (err) throw err
             let db = JSON.parse(data)
             let found = false;
             for (let i = 0; i < db.accounts.length; i++) {
-                //console.log("name in DB: " + (Object.values(db.accounts[i])[0]))
                 if (username === Object.values(db.accounts[i])[0]) {
-                    //console.log("name passed in: " + username);
                     if (password === Object.values(db.accounts[i])[1]) {
-                        //console.log("found");
                         found = true;
                         break;
                     }
                 }
             }
-            //console.log(found)
             socket.emit("verify account", found); // Emits the result of whether the username was taken or not to client
         });
     })
@@ -230,25 +216,28 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on('send game invite', (userID) => {
         let recipientSocket = sockets[userID]; // Gets the socket associated with the invite's recipient
-        recipientSocket.emit('load game invite', users[socket.id], socket.id) // Passes the username and ID of who invited them to join a game
+        if (sockets[userID] != undefined) {
+            recipientSocket.emit('load game invite', users[socket.id], socket.id) // Passes the username and ID of who invited them to join a game
+        } else {
+            socket.emit('invitation declined') // Automatically declines invitation
+            console.log(`Error: Index.js socket.on('send game invite'): The socket with ID ${userID} does not exist, thus the invitation can not be sent.`)
+        }
     });
 
     socket.on('accept invitation', (invitingUserID) => {
-        createGame(sockets[invitingUserID], socket);
+        createGame(sockets[invitingUserID], socket); // Error handling in createGame
     });
 
     socket.on('decline invitation', (invitingUserID) => {
-        console.log("Declining invitation");
-        sockets[invitingUserID].emit('invitation declined');
+        if (sockets[invitingUserID] != undefined) {
+            sockets[invitingUserID].emit('invitation declined');
+        } else {
+            console.log(`Error: Index.js socket.on('decline invitation'): The inviting user socket with ID ${invitingUserID} does not exist.`);
+        }
     });
 
     socket.on('disconnect', () => {
-        console.log("lobby: " + lobby);
-        console.log("waiting room: " + waitingRoom);
-        console.log("Socket ID: " + socket.id)
         if ((waitingRoom.indexOf(socket.id) == -1) && (lobby.indexOf(socket.id) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
-            console.log("in game");
-            //TODO give win to other player in the match
             let match = Object.values(matches).filter(value => {
                 return (value.player1Socket == socket) || (value.player2Socket == socket);
             })[0];
@@ -287,31 +276,33 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket2 ID of the second socket
  */
 function createGame (socket1, socket2) {
-    leaveLobby(socket1);
-    leaveLobby(socket2);
-    leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
-    leaveWaitingRoom(socket2); // Removes Player 2 from the waiting room
-    let matchID = Date.now(); // Unique identifier
-    console.log("Match ID: " + matchID);
-
-    if (Math.floor(Math.random()*2) == 0) {
-        matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
+    if (socket1 != undefined && socket2 != undefined) {
+        leaveLobby(socket1);
+        leaveLobby(socket2);
+        leaveWaitingRoom(socket1); // Removes Player 1 from the waiting room
+        leaveWaitingRoom(socket2); // Removes Player 2 from the waiting room
+        let matchID = Date.now(); // Unique identifier
+        if (Math.floor(Math.random()*2) == 0) {
+            matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
+        } else {
+            matches[matchID] = new Match(matchID, socket2, socket1); // Adds Key, Value pair
+        }
+        // Notifies the client-facing code that the game is starting and what role their player has
+        socket1.emit('game starting', matchID, 'player1', users[socket1.id], users[socket2.id]);
+        socket2.emit('game starting', matchID, 'player2', users[socket2.id], users[socket1.id]);
+        matches[matchID].controller.notifyViews();
+        matches[matchID].controller.startGame();
     } else {
-        matches[matchID] = new Match(matchID, socket2, socket1); // Adds Key, Value pair
+        console.log(`Error: index.js createGame(): socket1 = ${socket1} socket2 = ${socket2}. One or both of the sockets do not exist`);
     }
-    // Notifies the client-facing code that the game is starting and what role their player has
-    console.log("sending user: " + socket1.id);
-    console.log("sending user: " + socket2.id);
-    console.log("sending user: " + socket1);
-    console.log("sending user: " + socket2);
-    socket1.emit('game starting', matchID, 'player1', users[socket1.id], users[socket2.id]);
-    socket2.emit('game starting', matchID, 'player2', users[socket2.id], users[socket1.id]);
-    matches[matchID].controller.notifyViews();
-    matches[matchID].controller.startGame();
 }
 
 function joinWaitingRoom (socket) {
-    waitingRoom.push(socket.id); // Adds socket ID to list of IDs in the waiting room
+    if (socket != undefined) {
+        waitingRoom.push(socket.id); // Adds socket ID to list of IDs in the waiting room
+    } else {
+        console.log("Error: index.js joinWaitingRoom(): Cannot add socket to waiting room because the passed socket is undefined");
+    }
 }
 
 function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs in the waiting room
@@ -319,11 +310,19 @@ function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs i
 }
 
 function joinLobby (socket) {
-    lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
-    socket.join("lobby"); // Adds socket to room "lobby"
+    if (socket != undefined) {
+        lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
+        socket.join("lobby"); // Adds socket to room "lobby"
+    } else {
+        console.log("Error: index.js joinLobby(): Cannot add passed socket to the lobby as it is undefined");
+    }
 }
 
 function leaveLobby (socket) {
-    lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
-    socket.leave("lobby"); // Removes socket from room "lobby"
+    if (socket != undefined) {
+        lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
+        socket.leave("lobby"); // Removes socket from room "lobby"
+    } else {
+        console.log("Error: index.js leaveLobby(): Cannot remove passwd socket from Lobby as it's undefined");
+    }
 }

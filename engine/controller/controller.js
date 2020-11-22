@@ -24,15 +24,11 @@ class Controller {
      * @param {View} view2 View object for Player 2
      */
     constructor(game, view1, view2) {
-        console.log("Constructing new Controller");
         this.game = game;
         this.view1 = view1; // View for player 1
         this.view2 = view2; // View for player 2
 
         this.game.onWin(function (winner, totalTime, score) {
-
-            console.log("Final Score: " + score);
-            console.log("Final Winner: " + winner);
             let playerIsWinner;
             let enemyIsWinner;
 
@@ -50,7 +46,6 @@ class Controller {
             view1.gameWon(playerIsWinner, totalTime, score);
             view2.gameWon(enemyIsWinner, totalTime, score);
         });
-        console.log("New Controller constructed!");
     };
 
     /**

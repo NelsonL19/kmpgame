@@ -13,7 +13,6 @@ class Game {
      * Creates a new instance of the Game object
      */
     constructor() {
-        console.log("Constructing new Game...");
         this.player; // reference to Player object
         this.enemies = new Array(); // array who's elements are references to the Enemy objects
         let randomBoard = this.getRandomPremadeBoard();
@@ -27,7 +26,6 @@ class Game {
         this.isOver = false;
         this.moveListeners = new Array();
         this.winListeners = new Array();
-        console.log("New Game constructed!");
     }
 
     getRandomPremadeBoard () {
@@ -72,7 +70,7 @@ class Game {
             switch (board[i]) {
                 case "w": elementObj = new Wall(); break; // Wall object
                 case "a": elementObj = new Air(); break; // Air object
-                case "p": elementObj = new Player(); this.player = elementObj; console.log("Game.js: loaded in \"p\" and made a new Player"); break; // Player object
+                case "p": elementObj = new Player(); this.player = elementObj; break; // Player object
                 case "n": elementObj = new Sushi("nigiri"); break; // Sushi object with type "nigiri"
                 case "sa": elementObj = new Sushi("sashimi"); break; // Sushi object with type "sashimi"
                 case "su": elementObj = new Sushi("sushi"); break; // Sushi object with type "sushi"
@@ -167,15 +165,19 @@ class Game {
         }
 
         let random = Math.floor(Math.random() * 3);
-        console.log(random);
         for (let i = 0; i < objectRepresentation.length; i++) {
             let count = 0;
-            if (objectRepresentation[i].constructor.name == "Enemy") {
-                if (random == count) {
-                    objectRepresentation[i].isCPU = false;
-                    break;
+            let currObj = objectRepresentation[i];
+            if (currObj != undefined) {
+                if (currObj.constructor.name == "Enemy") {
+                    if (random == count) {
+                        objectRepresentation[i].isCPU = false;
+                        break;
+                    }
+                    count++;
                 }
-                count++;
+            } else {
+                console.log("Error: Game.js convertFromStringToObjectRepresentation(): One of the objects being added is undefined");
             }
         }
 
@@ -209,8 +211,12 @@ class Game {
      * @param {Element} object instance of an object being added to gameBoard
      */
     set (r, c, object) {
-        this.gameBoard.objectRepresentation[15 * r + c] = object; // Updates data in the Array of objects
-        this.gameBoard.stringRepresentation[15 * r + c] = object.stringRepresentation; // Updates the Array of strings to keep the two arrays identical
+        if (object != undefined) {
+            this.gameBoard.objectRepresentation[15 * r + c] = object; // Updates data in the Array of objects
+            this.gameBoard.stringRepresentation[15 * r + c] = object.stringRepresentation; // Updates the Array of strings to keep the two arrays identical
+        } else {
+            console.log("Error: Game.js set(): The element passed in setter is undefined");
+        }
     }
 
     /**
@@ -218,7 +224,11 @@ class Game {
      * @param {Element} object Instance of an object
      */
     getRowOf (object) {
-        return (Math.floor((this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object)) / 15));
+        if (object != undefined) {
+            return (Math.floor((this.gameBoard.objectRepresentation.indexOf(object) - this.getColumnOf(object)) / 15));
+        } else {
+            console.log("Error: Game.js getRowOf(): Cannot get the row of element the element because it is undefined");
+        }
     }
 
     /**
@@ -226,7 +236,11 @@ class Game {
      * @param {Object} object 
      */
     getColumnOf = function (object) {
-        return this.gameBoard.objectRepresentation.indexOf(object) % 15;
+        if (object != undefined) {
+            return this.gameBoard.objectRepresentation.indexOf(object) % 15;
+        } else {
+            console.log("Error: Game.js getColumnOf: Cannot get the column of element because the element is undefined");
+        }
     }
 
     /**
@@ -235,57 +249,61 @@ class Game {
      * @param {String} direction String representation of the direction the object is being moved in 
      */
     move (object, direction) {
-        let objectRow = this.getRowOf(object);      // row the object occupies before the move
-        let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
-        let targetRow;  // row that the object is attempting to move into
-        let targetCol;  // column that the object is attempting to move into
-        //Switch to distinguish different function calls of actionSelector based on given direction
-        //Left is -1 to objectCol, Right is +1 to objectCol, Up is -1 to objectRow, Down is +1 to objectRow
-        switch (direction) {
-            case 'up':
-                targetRow = objectRow - 1;
-                targetCol = objectCol;
-                break;
-            case 'down':
-                targetRow = objectRow + 1;
-                targetCol = objectCol
-                break;
-            case 'left':
-                targetRow = objectRow;
-                targetCol = objectCol - 1;
-                break;
-            case 'right':
-                targetRow = objectRow;
-                targetCol = objectCol + 1;
-                break;
+        if (object != undefined) {
+            let objectRow = this.getRowOf(object);      // row the object occupies before the move
+            let objectCol = this.getColumnOf(object);   // column the object occupies before the move 
+            let targetRow;  // row that the object is attempting to move into
+            let targetCol;  // column that the object is attempting to move into
+            //Switch to distinguish different function calls of actionSelector based on given direction
+            //Left is -1 to objectCol, Right is +1 to objectCol, Up is -1 to objectRow, Down is +1 to objectRow
+            switch (direction) {
+                case 'up':
+                    targetRow = objectRow - 1;
+                    targetCol = objectCol;
+                    break;
+                case 'down':
+                    targetRow = objectRow + 1;
+                    targetCol = objectCol
+                    break;
+                case 'left':
+                    targetRow = objectRow;
+                    targetCol = objectCol - 1;
+                    break;
+                case 'right':
+                    targetRow = objectRow;
+                    targetCol = objectCol + 1;
+                    break;
+            }
+            let currentSquare = object.constructor.name;
+            let targetSquare = this.get(targetRow, targetCol).constructor.name;
+            let moveValid = true;
+            switch (targetSquare) {
+                case "Player": this.killPlayer(); break; // The only way the targetSquare can encounter a Player is if it is an Enemy
+                case "Enemy": //Enemy
+                    if (currentSquare == "Enemy") {
+                        moveValid = false; // Can't move an Enemy into an Enemy
+                    } else {
+                        this.killPlayer();
+                    }
+                    break;
+                case "Sushi"://Sushi
+                    if (currentSquare == "Enemy") {
+                        moveValid = false; // An Enemy shouldn't be able to move into a Suhsi             
+                    } else { // A Player should collect Sushi
+                        this.collectSushi(targetRow, targetCol); // then call collect sushi and treat it as Air
+                    }
+                    break;
+                case "Wall": moveValid = false; break;
+                case "Air": break;
+            }
+            if (moveValid) {
+                this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
+                this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object 
+            }
+            this.notifyMoveListeners();
+        } else {
+            console.log("Error: Game.js move(): Cannot make move because the element being moved is undefined");
         }
-        let currentSquare = object.constructor.name;
-        let targetSquare = this.get(targetRow, targetCol).constructor.name;
-        let moveValid = true;
-        switch (targetSquare) {
-            case "Player": this.killPlayer(); break; // The only way the targetSquare can encounter a Player is if it is an Enemy
-            case "Enemy": //Enemy
-                if (currentSquare == "Enemy") {
-                    moveValid = false; // Can't move an Enemy into an Enemy
-                } else {
-                    this.killPlayer();
-                }
-                break;
-            case "Sushi"://Sushi
-                if (currentSquare == "Enemy") {
-                    moveValid = false; // An Enemy shouldn't be able to move into a Suhsi             
-                } else { // A Player should collect Sushi
-                    this.collectSushi(targetRow, targetCol); // then call collect sushi and treat it as Air
-                }
-                break;
-            case "Wall": moveValid = false; break;
-            case "Air": break;
-        }
-        if (moveValid) {
-            this.set(targetRow, targetCol, object); // replace the Air object with the object being moved
-            this.set(objectRow, objectCol, new Air()); // set the tile the object used to occupy with a new Air object 
-        }
-        this.notifyMoveListeners();
     }
 
 
@@ -423,14 +441,12 @@ class Game {
      */
     notifyWinListeners () {
         let winner;
-        console.log(this.player.isDead);
         if (this.player.isDead) {
             winner = "enemy";
         } // If a win has occurred and the player is dead, then it means the enemy won
         else {
             winner = "player";
         }
-        console.log(winner);
         this.winListeners.forEach(callback => {
             callback(winner, this.totalTime, this.playerScore);
         });
