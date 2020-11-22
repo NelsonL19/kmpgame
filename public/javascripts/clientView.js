@@ -10,7 +10,7 @@ let lobbyMusic = new Audio('../music/menu.mp3');
 let tutorialMusic = new Audio('../music/tutorial_audio.mp3');
 matchMusic.volume = 0.3;
 lobbyMusic.volume = 0.5;
-tutorialMusic.volume = 1;
+tutorialMusic.volume = 0.8;
 lobbyMusic.loop = true;
 
 const $page = $('#page'); // This way it keeps the script tags in when you clear the page
@@ -612,6 +612,7 @@ function loadTutorial() {
 
     $('#goBack').on('click', function () {
         console.log("loading the lobby")
+        tutorialMusic.pause();
         loadLobby();
     })
 }
