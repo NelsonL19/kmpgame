@@ -31,12 +31,13 @@ class Game {
     }
 
     getRandomPremadeBoard () {
-        let random = Math.floor(Math.random() * 4);
+        let random = Math.floor(Math.random() * 5);
         switch (random) {
             case 0: return [...boards.board0]; // Needs the ... to make a clone of the array
             case 1: return [...boards.board1]; // so it doesn't change the actual values in boards
             case 2: return [...boards.board2];
             case 3: return [...boards.board3];
+            case 4: return [...boards.board4];
         }
     }
 
@@ -163,7 +164,7 @@ class Game {
             objectRepresentation[i] = elementObj;
         }
 
-        let random = Math.floor(Math.random()*3);
+        let random = Math.floor(Math.random() * 3);
         console.log(random);
         for (let i = 0; i < objectRepresentation.length; i++) {
             let count = 0;

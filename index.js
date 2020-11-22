@@ -299,7 +299,6 @@ function createGame (socket1, socket2) {
     } else {
         matches[matchID] = new Match(matchID, socket2, socket1); // Adds Key, Value pair
     }
-
     // Notifies the client-facing code that the game is starting and what role their player has
     console.log("sending user: " + socket1.id);
     console.log("sending user: " + socket2.id);
