@@ -327,7 +327,3 @@ function leaveLobby (socket) {
     lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
     socket.leave("lobby"); // Removes socket from room "lobby"
 }
-
-
-
-{ }
