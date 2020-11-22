@@ -200,7 +200,10 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('disconnect', () => {
-        if ((waitingRoom.indexOf(socket) == -1) && (lobby.indexOf(socket) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
+        console.log("lobby: "+lobby);
+        console.log("waiting room: "+waitingRoom);
+        console.log("Socket ID: "+socket.id)
+        if ((waitingRoom.indexOf(socket.id) == -1) && (lobby.indexOf(socket.id) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
             console.log("in game");
             //TODO give win to other player in the match
             let match = Object.values(matches).filter(value => {

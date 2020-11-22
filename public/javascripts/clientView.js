@@ -577,7 +577,13 @@ function loadTutorial() {
                 </div>
             <br>
             <p>
-            Welcome to KMP'S Spicy 9 Adventure! Play as either a ravenous KMP who steals sushi, or as the bewildered UNC CS professors trying to stop him! In this game, KMP is loaded in a board with 3 other CS Professors. One of those professors will be the second user, who's sole mission is stop KMP. If you're playing as KMP, you win if you're able to collect all of the Sushi before anyone can catch you. In the lobby, you can chat to other users, join a random match, or challenge other players directly! Good luck and have fun!
+            Welcome to KMP'S Spicy 9 Adventure! Play as either a ravenous KMP who steals sushi, 
+            or as the bewildered UNC CS professors trying to stop him! In this game, KMP is 
+            loaded in a board with 3 other CS Professors. One of those professors will be the 
+            second user, who's sole mission is stop KMP. If you're playing as KMP, you win if 
+            you're able to collect all of the Sushi before anyone can catch you. In the lobby, 
+            you can chat to other users, join a random match, or challenge other players directly! 
+            Good luck and have fun!
             <br>
             <br>
             Designed and Created by:
