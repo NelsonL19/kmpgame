@@ -3,8 +3,6 @@ let Enemy = require('./elements/Enemy').enemyClass;
 let Player = require('./elements/Player').playerClass;
 let Sushi = require('./elements/Sushi').sushiClass;
 let Wall = require('./elements/Wall').wallClass;
-const { Console } = require('console');
-const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants');
 const boards = require('./Boards');
 
 // Class used for creating Model objects
@@ -49,23 +47,6 @@ class Game {
     convertFromStringToObjectRepresentation (board) {
         let objectRepresentation = new Array(board.length); // Array to be returned
         let elementObj;
-        // let enemyArray = [];
-        // for (let i = 0; i < board.length; i++) {
-        //     switch (board[i]) {
-        //         case "me": enemyArray.push("munsell"); break;
-        //         case "je": enemyArray.push("jordan"); break;
-        //         case "se": enemyArray.push("stotts"); break;
-        //         case "mje": enemyArray.push("majikes"); break;
-        //         case "sne": enemyArray.push("snoeyink"); break;
-        //         case "pe": enemyArray.push("plaisted"); break;
-        //         case "ce": enemyArray.push("cynthia"); break;
-        //         case "poe": enemyArray.push("porter"); break;
-        //         case "ke": enemyArray.push("kevin"); break;
-        //         case "te": enemyArray.push("terrell"); break;
-        //         case "de": enemyArray.push("diane"); break;
-        //         case "fe": enemyArray.push("folt"); break;
-        //     }
-        // }
         for (let i = 0; i < board.length; i++) {
             switch (board[i]) {
                 case "w": elementObj = new Wall(); break; // Wall object

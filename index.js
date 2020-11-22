@@ -35,7 +35,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         socket.join("lobby"); // Puts the user in the room "lobby"
         lobby.push(id) // Pushes Socket ID onto the Array of users in the lobby
         io.to("lobby").emit('new message', `${users[id]} has joined the lobby`);
-        socket.emit('new message', "Welcome to the Lobby! Click \"New Game\" to create a match. To send messages privately, press \"tab\" followed typing their username.");
+        socket.emit('new message', "Welcome to the Lobby! Click \"New Game\" to create a match.");
     });
 
     socket.on('join waiting room', () => {

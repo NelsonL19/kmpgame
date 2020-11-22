@@ -3,7 +3,6 @@
  * This would screw up how the index.js keeps track of users so we're going to just dynamically load a single HTML page
  * This is the javascript file to be used on that one HTML page
  */
-
 const socket = io();
 let matchMusic = new Audio('../music/Boss_Fight.mp3');
 let lobbyMusic = new Audio('../music/menu.mp3');
