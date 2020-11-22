@@ -75,9 +75,29 @@ const board3 =
     "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
     ];
 
+const board4 =
+    [
+        "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w",
+        "w","je", "a", "a", "su","a", "a", "w", "a", "a", "su","a", "a", "a", "w",
+        "w", "a", "a", "a", "w", "a", "a", "a", "a", "a", "w", "a", "a", "a", "w",
+        "w", "a", "a", "a", "w", "a", "a", "a", "a", "a", "w", "a", "a", "a", "w",
+        "w","su", "w", "w", "a", "a", "w","sa", "w", "a", "a", "w", "w", "su","w",
+        "w", "a", "a", "a", "w", "w", "a", "w", "a", "w", "w", "a", "a", "a", "w",
+        "w", "a", "a", "a", "a", "a", "n", "a", "su", "a", "a", "a", "a", "a", "w",
+        "w", "sa", "a", "a", "w", "w", "a", "w", "a", "w", "w", "a", "a", "sa", "w",
+        "w", "a", "a", "a", "a", "a", "su", "a", "n", "a", "a", "a", "a", "a", "w",
+        "w", "a", "a", "a", "w", "w", "a", "w", "a", "w", "w", "a", "a", "a", "w",
+        "w", "a", "a", "a", "a", "w", "a", "w", "a", "w", "a", "a", "a", "a", "w",
+        "w", "a", "w", "a", "a", "a", "a", "a", "a", "a", "a", "a", "w", "a", "w",
+        "w", "a", "w", "w", "a", "a", "a", "sa", "a", "a", "a", "w", "w", "a", "w",
+        "w", "me", "a", "a", "a", "a", "a", "w", "a", "a", "a", "a", "a", "mje", "w",
+        "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w"
+    ];
+
 module.exports = {
     board0: board0,
     board1: board1,
     board2: board2,
-    board3: board3
+    board3: board3,
+    board4: board4
 }
