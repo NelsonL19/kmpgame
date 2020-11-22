@@ -293,7 +293,13 @@ function createGame (socket1, socket2) {
     leaveWaitingRoom(socket2); // Removes Player 2 from the waiting room
     let matchID = Date.now(); // Unique identifier
     console.log("Match ID: " + matchID);
-    matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
+
+    if (Math.floor(Math.random()*2) == 0) {
+        matches[matchID] = new Match(matchID, socket1, socket2); // Adds Key, Value pair
+    } else {
+        matches[matchID] = new Match(matchID, socket2, socket1); // Adds Key, Value pair
+    }
+
     // Notifies the client-facing code that the game is starting and what role their player has
     console.log("sending user: " + socket1.id);
     console.log("sending user: " + socket2.id);
