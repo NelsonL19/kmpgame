@@ -443,10 +443,11 @@ function loadUpdater() {
     $('#delete').on('click', function () {
         $('#delete').replaceWith('')
         $('#delreplace').replaceWith(`<div id="delreplace">
-        <h1 class="title has-text-danger">Are you sure you wanna delete?</h1>
+        <h1 class="title has-text-danger" id="delAcc">Are you sure you wanna delete?</h1>
         <button type="button" class="button is-danger" id="finaldel">Delete Account</button>
-        </div>/`)
+        </div>`)
         $('#finaldel').on('click', function () {
+            ('#delAcc').replaceWith('')
             socket.emit("delete account");
         })
     })
