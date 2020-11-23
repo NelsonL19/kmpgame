@@ -727,6 +727,7 @@ function loadTutorial() {
                     <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
                 </div>
             </div>
+            <div>hello</div>
         </div>`;
     $mainContainer.append(tutorialHTML);
 
