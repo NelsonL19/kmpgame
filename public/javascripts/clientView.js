@@ -733,8 +733,11 @@ function loadTutorial() {
             <div class="columns">
                 <div class="column">
                     <figure class="image">
-                        <img src="../images/gameplay_gif.gif" alt="Tutorial Gif">
-                        </figure>
+                        <img src="../images/gameplay_gif.gif" style="width:75%; height:auto; margin:0 auto;" alt="Tutorial Gif">
+                    </figure>
+                    <figure class="image">
+                        <img src="../images/keys.png" style="width:50%; height:auto; margin:0 auto;" alt="Arrow keys">
+                    </figure>
                 </div>
             
                 <div class="column">
