@@ -377,7 +377,6 @@ function loadLobby() {
         }
     });
     for (let invite of pendingInvitations) {
-        console.log(invite);
         loadGameInvite(invite.sender, invite.id);
     }
 }
@@ -508,15 +507,12 @@ function loadInvitationCreator() {
         let recipientID = $('#users').val();
         if (recipientID != 'default') { // If they've selected a valid player to send the message to
             $('#game_creation_box').empty().append(`<p>Invite Sent! Waiting on a Response </p><button class="button is-danger" id="cancelInvite">Cancel</button>`);
+            $('#cancelInvite').on('click', function () {
+                socket.emit('cancel invite', recipientID);
+            });
             socket.emit('send game invite', recipientID);
         }
     });
-
-    $('#cancelInvite').on('click', function () {
-        let recipientID = $('#users').val();
-        socket.emit('invitation canceled', recipientID);
-    });
-
     $('#cancel').on('click', function () {
         loadGameOptions();
     });
