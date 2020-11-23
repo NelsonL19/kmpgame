@@ -345,6 +345,15 @@ function loadAccountCreator() {
  * Clears out all the content under #hero_body and replaces it with
  * the HTML for the chat window in the lobby
  */
+
+socket.on('return users', function (users) {
+    $("#message").autocomplete({
+        source: users,
+    })
+    $('.ui-helper-hidden-accessible').remove();
+})
+
+
 function loadLobby() {
     lobbyMusic.time = 0;
     lobbyMusic.play();
@@ -358,7 +367,7 @@ function loadLobby() {
     </div>
     <footer>
     <br>
-    <div class="box">
+    <div class="box has-text-right">
         <div class="field inputfield">
             <label class="label">Message:</label>
             <input class="input" type="text" id="message">
@@ -369,7 +378,10 @@ function loadLobby() {
         </div>
     </footer>
     `;
+    
     $mainContainer.append(chatHTML);
+    socket.emit('autocomplete');
+
     loadNewGameButton();
     $('.inputfield').on('keydown', '#message', function (e) {
         if ($('#message').val() !== '' && $('#message').val().length <= 100 && e.which == 13) {

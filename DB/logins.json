@@ -1,1 +1,28 @@
-{"accounts":[{"username":"sammy","password":"abc"},{"username":"t","password":"t"},{"username":"MiraiHurri","password":"test1"},{"username":"u","password":"u"},{"username":"12345","password":"12345"},{"username":"abcdef","password":"12345"},{"username":"[Regional Manager] Andres","password":"menjivar"},{"username":"[District Manager] Alex","password":"harvey"},{"username":"[Assistant to the Regional Manager] Sam","password":"miller"},{"username":"[Assistant to the Assistant to the Regional Manager] Nelson","password":"lopez"},{"username":"teddy","password":"12345"},{"username":"fakeacount","password":"123456"}]}
+{
+    "accounts": [
+        {
+            "username": "sammy",
+            "password": "abc"
+        },
+        {
+            "username": "MiraiHurri",
+            "password": "test1"
+        },
+        {
+            "username": "[Regional Manager] Andres",
+            "password": "menjivar"
+        },
+        {
+            "username": "[District Manager] Alex",
+            "password": "harvey"
+        },
+        {
+            "username": "[Assistant to the Regional Manager] Sam",
+            "password": "miller"
+        },
+        {
+            "username": "[Assistant to the Assistant to the Regional Manager] Nelson",
+            "password": "lopez"
+        }
+    ]
+}
