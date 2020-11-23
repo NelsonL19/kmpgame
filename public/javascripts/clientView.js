@@ -18,7 +18,14 @@ let lockControls = false // Set true to keep from spamming emits to the server b
 let gameOver = true;
 let matchID = undefined;
 
-let pendingInvitations = new Array() // Stores the user IDs of all pending invitations
+let pendingInvitations = new Array() // Stores the user IDs of all pending invite objects
+/**
+ * Invite object structure:
+ * {
+ *  id: invitingUserID
+ *  sender: invitingUserName
+ * }
+ */
 
 $(async function () {
     loadHeroAndBackground(); // Loads in the blue hero section and the Sushi 9 background image
@@ -140,6 +147,7 @@ socket.on("verify account", correct => {
  */
 
 socket.on('load game invite', (invitingPlayerName, invitingPlayerID) => {
+    addGameInvite(invitingPlayerName, invitingPlayerID);
     loadGameInvite(invitingPlayerName, invitingPlayerID);
 });
 
@@ -364,6 +372,10 @@ function loadLobby() {
             $('#message').val(""); // Emptys the text input
         }
     });
+    for (let invite of pendingInvitations) {
+        console.log(invite);
+        loadGameInvite(invite.sender, invite.id);
+    }
 }
 
 /**
@@ -545,8 +557,14 @@ function loadGamePage(currPlayer, currEnemy) {
     $(page).appendTo($page);
 }
 
+function addGameInvite(invitingUserName, invitingUserID) {
+    pendingInvitations.push({
+        id: invitingUserID,
+        sender: invitingUserName
+    });
+}
+
 function loadGameInvite(invitingUserName, invitingUserID) {
-    pendingInvitations.push(invitingUserID);
     let inviteHTML = `
     <p = "${invitingUserName}" class="field ${invitingUserName} ${invitingUserID}" id = "${invitingUserID}_invite"> ${invitingUserName} is inviting you to a game. Accept Invite?
         <button style="background-color:#48c774; border-radius:5px; color:white; border-width:0px;" id="accept_${invitingUserID}">Yes</button>
@@ -713,7 +731,10 @@ function loadTutorial() {
                     Good luck and have fun!
                     <br>
                     <br>
-                    Designed and Created by:
+                    <h1 class="title" style = "color:#4B9CD3">Designed and Created by:</h1>
+                    <figure class="image">
+                        <img src="../images/team8_sign_off.png" style="width:33%;margin:0 auto;" alt="Team signoff">
+                    </figure>
                     <br>
                     Nelson Lopez
                     <br>
@@ -727,7 +748,6 @@ function loadTutorial() {
                     <button type="button" class="button is-primary is-light" id="goBack">Back To Lobby</button>
                 </div>
             </div>
-            <div>hello</div>
         </div>`;
     $mainContainer.append(tutorialHTML);
 
@@ -770,8 +790,8 @@ function loadLeaderboard(rankings) {
 function acceptInvitation(invitingUserID) {
     socket.emit('accept invitation', invitingUserID); // Tells server that the invitation was accepted
     deleteInvitation(invitingUserID);
-    for (let id of pendingInvitations) { // Iterates through array of remaining invitations and declines them
-        declineInvitation(id);
+    for (let invite of pendingInvitations) { // Iterates through array of remaining invitations and declines them
+        declineInvitation(invite.id);
     }
 }
 
@@ -785,8 +805,8 @@ function declineInvitation(invitingUserID) {
  * @param {string} invitingUserID 
  */
 function deleteInvitation(invitingUserID) {
-    pendingInvitations = pendingInvitations.filter(value => { // filters out deletedInvite's id
-        return value != invitingUserID;
+    pendingInvitations = pendingInvitations.filter(invite => { // filters out deletedInvite's id
+        return invite.id != invitingUserID;
     });
     $(`#${invitingUserID}_invite`).remove();
 }
