@@ -238,7 +238,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
     socket.on('cancel invite', (recipientID) => {
         if (sockets[recipientID] != undefined) {
-            socket[recipientID].emit('force decline invite', socket.id)
+            sockets[recipientID].emit('force decline invite', socket.id)
         } else {
             console.log("Error: Index.js socket.on('cancel invite'): The recipient is undefined")
         }
