@@ -180,6 +180,9 @@ socket.on("account deleted", function () {
     }, 2500);
 })
 
+socket.on('force decline invite', (inviterID) => {
+    declineInvitation(inviterID);
+});
 
 /**
  * Handles loading the Hero-Body and the Background
@@ -504,9 +507,14 @@ function loadInvitationCreator() {
     $('#send').on('click', function () {
         let recipientID = $('#users').val();
         if (recipientID != 'default') { // If they've selected a valid player to send the message to
-            $('#game_creation_box').empty().append(`<p>Invite Sent! Waiting on a Response</p>`);
+            $('#game_creation_box').empty().append(`<p>Invite Sent! Waiting on a Response </p><button class="button is-danger" id="cancelInvite">Cancel</button>`);
             socket.emit('send game invite', recipientID);
         }
+    });
+
+    $('#cancelInvite').on('click', function () {
+        let recipientID = $('#users').val();
+        socket.emit('invitation canceled', recipientID);
     });
 
     $('#cancel').on('click', function () {
