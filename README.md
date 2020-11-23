@@ -1,7 +1,9 @@
 #!kmpgame
 
 <h1>Toastipher: the sequel’s prequel’s addendum; live to toast another day: Toastal Recall: Deluxe Ed's private game repo</h1>
+
 ## Gameplay Manual
+
 <h2>Controls</h2>
     <h3>Player 1</h3>
         <p>You Control KMP</p>
