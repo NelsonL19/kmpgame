@@ -298,6 +298,13 @@ function loadAccountCreator() {
             <label class="label">New Password</label>
             <input class="input" type="password" id="new_password">
             </div>
+
+            <div class="field passwordfield">
+            <label class="label">Confirm New Password</label>
+            <input class="input" type="password" id="confirm_pw">
+            </div>
+
+
         <div class="field">
             <button class="button is-link" id="create_account">Create Account</button>
             <button class="button is-danger" id="cancel_create">Cancel</button>
@@ -310,7 +317,7 @@ function loadAccountCreator() {
     });
 
     $('#create_account').on('click', function () {
-        if ($('#new_username').val() !== '' && $('#new_password').val() !== '') {
+        if ($('#new_username').val() !== '' && $('#new_password').val() !== '' && $('#new_password').val() == $('#confirm_pw').val()) {
             if ($('#new_username').val().length >= 5 && $('#new_password').val().length >= 5 && $('#new_username').val().length <= 15) {
                 let username = $('#new_username').val();
                 let password = $('#new_password').val();
@@ -390,7 +397,8 @@ function loadNewGameButton() {
     $('#game_creation_box').empty();
     $('#game_creation_box').append(`<button class="button is-success is-light" id="new_game">New Game</button>
     <button class="button is-warning is-light" id="help">Tutorial</button>
-    <button class="button is-link is-light" id="update">Update your Account</button>`);
+    <button class="button is-link is-light" id="update">Update your Account</button>
+    <button class="button is-danger is-light" id="signoff">Log Out</button>`);
 
 
     $('#new_game').on('click', function () {
@@ -405,6 +413,11 @@ function loadNewGameButton() {
         loadUpdater();
     });
 
+    $('#signoff').on('click', function () {
+        socket.emit('signoff')
+        loadHeroAndBackground();
+        loadLogIn();
+    });
 }
 
 /**

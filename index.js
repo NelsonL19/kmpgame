@@ -39,7 +39,6 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
     });
 
     socket.on('join waiting room', () => {
-        leaveLobby(socket);
         joinWaitingRoom(socket); // Adds user to the waiting room
         if (waitingRoom.length == 2) { // If there's 2 people in the waiting room after adding the user, move them to a match
             createGame(sockets[waitingRoom[0]], sockets[waitingRoom[1]]); // Calls helper method, passing the first 2 socket IDs in waiting room
@@ -294,7 +293,7 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
 
             }
             console.log(`${users[id]} has disconnected`);
-            io.to("lobby").emit('new message', `${users[id]} has left the game!`);
+            io.to("lobby").emit('new message', `${users[id]} has signed out!`);
             users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
             socket[id] = undefined; // Removes socket from list of sockets
             leaveWaitingRoom(socket);
