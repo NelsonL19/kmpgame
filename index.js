@@ -236,6 +236,43 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         }
     });
 
+    socket.on('cancel invite', (recipientID) => {
+        if (sockets[recipientID] != undefined) {
+            socket[recipientID].emit('force decline invite', socket.id)
+        } else {
+            console.log("Error: Index.js socket.on('cancel invite'): The recipient is undefined")
+        }
+    });
+
+    socket.on('signoff', () => {
+        if (users[id] != undefined) { // Only needs to do extra things if user is logged in
+            if ((waitingRoom.indexOf(socket.id) == -1) && (lobby.indexOf(socket.id) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
+                let match = Object.values(matches).filter(value => {
+                    return (value.player1Socket == socket) || (value.player2Socket == socket);
+                })[0];
+
+                if (match != undefined) {
+                    match.game.isOver = true;
+
+                    if (match.player1Socket == socket) { // If the socket diconnecting was socket1, give win to socket2
+                        match.player2Socket.emit('game won', true, undefined, undefined, true);
+                    }
+                    else {
+                        match.player1Socket.emit('game won', true, undefined, undefined, true); // Else, socket disconnecting is socket2, so give win to socket1
+                    }
+
+                }
+
+            }
+            console.log(`${users[id]} has disconnected`);
+            io.to("lobby").emit('new message', `${users[id]} has left the game!`);
+            users[id] = undefined; // Removes the user from the list of Key Value pairs mathing IDs to screen names
+            leaveWaitingRoom(socket);
+            leaveLobby(socket);
+        }
+    })
+
+
     socket.on('disconnect', () => {
         if (users[id] != undefined) { // Only needs to do extra things if user is logged in
             if ((waitingRoom.indexOf(socket.id) == -1) && (lobby.indexOf(socket.id) == -1) && (users[socket.id] != undefined)) { // If socket not in the waiting room or the lobby, then it must be in a game
