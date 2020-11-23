@@ -86,6 +86,11 @@ io.on('connection', async (socket) => { // Listens for a new user (represented b
         });
     });
 
+    socket.on('autocomplete', () => {
+        //console.log(Object.values(users));
+        socket.emit("return users", Object.values(users)); // Emits current usernames
+    });
+
     socket.on('write leaderboards', function (username, time) {
         fs.readFile('./DB/leaderboards.json', 'utf-8', function (err, data) {
             if (err) throw err
@@ -318,7 +323,7 @@ server.listen(process.env.PORT || 3000, () => {
  * @param {string} socket1 ID of the first socket
  * @param {string} socket2 ID of the second socket
  */
-function createGame(socket1, socket2) {
+function createGame (socket1, socket2) {
     if (socket1 != undefined && socket2 != undefined) {
         leaveLobby(socket1);
         leaveLobby(socket2);
@@ -340,7 +345,7 @@ function createGame(socket1, socket2) {
     }
 }
 
-function joinWaitingRoom(socket) {
+function joinWaitingRoom (socket) {
     if (socket != undefined) {
         waitingRoom.push(socket.id); // Adds socket ID to list of IDs in the waiting room
     } else {
@@ -348,11 +353,11 @@ function joinWaitingRoom(socket) {
     }
 }
 
-function leaveWaitingRoom(socket) { // Removes socket ID from the list of IDs in the waiting room
+function leaveWaitingRoom (socket) { // Removes socket ID from the list of IDs in the waiting room
     waitingRoom = waitingRoom.filter(function (value, index) { return value != socket.id });
 }
 
-function joinLobby(socket) {
+function joinLobby (socket) {
     if (socket != undefined) {
         lobby.push(socket.id); // Adds socket ID to list of IDs in lobby
         socket.join("lobby"); // Adds socket to room "lobby"
@@ -361,7 +366,7 @@ function joinLobby(socket) {
     }
 }
 
-function leaveLobby(socket) {
+function leaveLobby (socket) {
     if (socket != undefined) {
         lobby = lobby.filter(function (value, index) { return value != socket.id }); // Removes socket ID from the list of ID's in lobby
         socket.leave("lobby"); // Removes socket from room "lobby"
