@@ -734,7 +734,7 @@ function loadTutorial() {
                     <br>
                     <h1 class="title" style = "color:#4B9CD3">Designed and Created by:</h1>
                     <figure class="image">
-                        <img src="../images/team8_sign_off.png" style="width:33%;margin:0 auto;" alt="Team signoff">
+                        <img src="../images/team_signoff.png" style="width:33%;margin:0 auto;" alt="Team signoff">
                     </figure>
                     <br>
                     Nelson Lopez
