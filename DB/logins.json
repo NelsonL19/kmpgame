@@ -9,19 +9,19 @@
             "password": "test1"
         },
         {
-            "username": "[Regional Manager] Andres",
+            "username": "[Manager] Andres",
             "password": "menjivar"
         },
         {
-            "username": "[District Manager] Alex",
+            "username": "[Manager] Alex",
             "password": "harvey"
         },
         {
-            "username": "[Assistant to the Regional Manager] Sam",
+            "username": "[Manager] Sam",
             "password": "miller"
         },
         {
-            "username": "[Assistant to the Assistant to the Regional Manager] Nelson",
+            "username": "[Manager] Nelson",
             "password": "lopez"
         }
     ]
