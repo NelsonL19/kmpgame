@@ -314,29 +314,36 @@ class Game {
                     let row = this.getRowOf(enemy); // Row Enemy occupies
                     let col = this.getColumnOf(enemy); // Column Enemy occupies
                     let validDirections = new Array(); // Array storing all the possible directions the Enemy could move in 
-                    switch (this.get(row - 1, col).constructor.name) {
-                        case "Air": validDirections.push("up"); break;
-                        case "Player": this.move(enemy, "up"); continue;
-                    }
-                    switch (this.get(row + 1, col).constructor.name) {
-                        case "Air": validDirections.push("down"); break;
-                        case "Player": this.move(enemy, "down"); continue;
-                    }
-                    switch (this.get(row, col - 1).constructor.name) {
-                        case "Air": validDirections.push("left"); break;
-                        case "Player": this.move(enemy, "left"); continue;
-                    }
-                    switch (this.get(row, col + 1).constructor.name) {
-                        case "Air": validDirections.push("right"); break;
-                        case "Player": this.move(enemy, "right"); continue;
-                    }
-                    if (validDirections.length > 0) { // if there's at least 1 direction the Enemy can move in
-                        let switcharoo = Math.floor(Math.random() * 4);
-                        if ((validDirections.indexOf(enemy.direction) == -1) || switcharoo == 0) { // If it can't keep going in the current direction or randomy decides to switch directions
-                            let randomIndex = Math.floor(Math.random() * validDirections.length); // Chooses a random index from validDirections
-                            enemy.direction = validDirections[randomIndex]; // picks a new direction to move in
+                    if (this.get(row - 1, col) != undefined 
+                    && this.get(row + 1, col) != undefined 
+                    && this.get(row, col + 1) != undefined 
+                    && this.get(row, col - 1) != undefined) {
+                        switch (this.get(row - 1, col).constructor.name) {
+                            case "Air": validDirections.push("up"); break;
+                            case "Player": this.move(enemy, "up"); continue;
                         }
-                        this.move(enemy, enemy.direction);
+                        switch (this.get(row + 1, col).constructor.name) {
+                            case "Air": validDirections.push("down"); break;
+                            case "Player": this.move(enemy, "down"); continue;
+                        }
+                        switch (this.get(row, col - 1).constructor.name) {
+                            case "Air": validDirections.push("left"); break;
+                            case "Player": this.move(enemy, "left"); continue;
+                        }
+                        switch (this.get(row, col + 1).constructor.name) {
+                            case "Air": validDirections.push("right"); break;
+                            case "Player": this.move(enemy, "right"); continue;
+                        }
+                        if (validDirections.length > 0) { // if there's at least 1 direction the Enemy can move in
+                            let switcharoo = Math.floor(Math.random() * 4);
+                            if ((validDirections.indexOf(enemy.direction) == -1) || switcharoo == 0) { // If it can't keep going in the current direction or randomy decides to switch directions
+                                let randomIndex = Math.floor(Math.random() * validDirections.length); // Chooses a random index from validDirections
+                                enemy.direction = validDirections[randomIndex]; // picks a new direction to move in
+                            }
+                            this.move(enemy, enemy.direction);
+                        }
+                    } else {
+                        console.log("Error: Game.js moveAI(): this.get() returns undefined");
                     }
                 }
                 else { // Else, playerDirection is known
