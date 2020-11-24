@@ -369,8 +369,7 @@ function loadLobby() {
     <br>
     <div class="box has-text-right">
         <div class="field inputfield">
-            <label class="label">Message:</label>
-            <input class="input" type="text" id="message">
+            <input class="input" type="text" id="message" placeholder="Write message here.">
         </div>
         <div class="field">
             <button class="button is-primary is-light" id="send_button">Send</button>

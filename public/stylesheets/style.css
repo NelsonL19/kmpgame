@@ -68,6 +68,7 @@ td, .powerup, .wall, .player, .dead_player, .enemy {
 }
 /* table end */
 
+/* lobby room chat box */
 .scrollBox {
     height: 500px;
     width: auto;
