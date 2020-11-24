@@ -30,7 +30,7 @@
 ## Final Thoughts 
 
 ## Credits
-    <h3>Nelson Lopez</h3>
-    <h3>Sam Miller</h3>
-    <h3>Andres Menjivar</h3>
-    <h3>Alexander Harvey</h3>
+<h3>Nelson Lopez</h3>
+<h3>Sam Miller</h3>
+<h3>Andres Menjivar</h3>
+<h3>Alexander Harvey</h3>
