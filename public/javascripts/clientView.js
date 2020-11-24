@@ -113,7 +113,7 @@ socket.on("check if username taken result", found => {
         $('#account_creation_box').append(`<h1 class="title has-text-danger" id="alred">This Username is Already Registered! Please Select a New One!</h1>`)
         setTimeout(function () {
             $(`#alred`).replaceWith(``)
-        }, 2000);
+        }, 3000);
     }
 });
 
