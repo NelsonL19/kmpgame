@@ -40,14 +40,25 @@
         <p>A custom made stylesheet providing images for each table cell based on class name (i.e. player, enemy, sashimi, munsell, etc.). Also adds customization to our lobby room chat box.</p>
     <h6>bulma</h6>
         <p>External css stylesheet</p>
-<h5>Table Images</h5>
+<h5>Images</h5>
+    <p>Game images desgined by Alex Harvey</p>
+    <p>Logos designed by Andres Menjivar</p>
+<h5>Music</h5>
+    <p>Music by Alex Harvey</p>
+<h5>NPC A.I. development</h5>
+    <p>Souls thrust into the computer science professors by Sam Miller</p>
+<h5>Realtime Gameplay Integration (Genius behind socket.io)</h5>
+    <p>Sam Miller</p>
+<h5>Data Base and Backend</h5>
+    <p>Nelson Lopez and Andres Menjivar</p>
+
+<!--<p>Nelson Lopez originally established this in the early 1700s on dare from Kris Jordan's Ancestors. They all said he couldn't do it, especially considering computers hadn't been invented yet. But who's laughing now? Not Kris Jordan, that's for sure.</p>-->
 
 ## Final Thoughts 
-<h2>Final Thoughts</h2>
-    <p>We had a lot of fun making this game and will continue develop it even after this course concludes.</p>
+<p>We had a lot of fun making this game and will continue develop it even after this course concludes.</p>
 
 ## Credits
-<h3>Nelson Lopez</h3>
-<h3>Sam Miller</h3>
-<h3>Andres Menjivar</h3>
-<h3>Alexander Harvey</h3>
+<h3>Nelson Lopez [Assistant to the Assistant to the Regional Manager]: Full Stack Development</h3>
+<h3>Sam Miller [Assistant to the Regional Manager]: Full Stack Development</h3>
+<h3>Andres Menjivar [Regional Manager]: Frontend Development and Design</h3>
+<h3>Alexander Harvey [District Manager]: Frontend Development and Art</h3>
